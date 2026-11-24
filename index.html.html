@@ -1,0 +1,2877 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Plan Diety dla Dwojga — 7 Dni (1700 kcal & 3100 kcal)</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts: Inter & Plus Jakarta Sans -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            display: ['Plus Jakarta Sans', 'sans-serif'],
+          },
+          colors: {
+            cream: {
+              50: '#FDFBF7',
+              100: '#F7F3EB',
+              200: '#EFE7D6',
+              300: '#E2D4B7',
+            },
+            sage: {
+              50: '#F3F7F4',
+              100: '#E2ECE5',
+              200: '#C5D9CC',
+              500: '#5C836B',
+              600: '#496B56',
+              700: '#395444',
+              800: '#2A3F33',
+            },
+            walnut: {
+              50: '#FAF6F3',
+              100: '#F2E8E1',
+              500: '#9C6644',
+              600: '#7F5539',
+              700: '#63412C',
+              800: '#462D1E',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body {
+      background-color: #FDFBF7;
+      color: #2A2522;
+    }
+    /* Ukrywanie paska przewijania na poziomych zakładkach */
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+    .no-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+    .card-shadow {
+      box-shadow: 0 4px 20px -2px rgba(70, 45, 30, 0.06), 0 1px 4px -1px rgba(70, 45, 30, 0.04);
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col antialiased selection:bg-sage-200 selection:text-sage-800">
+
+  <!-- GÓRNY PASEK NAWIGACJI -->
+  <header class="sticky top-0 z-30 bg-cream-50/95 backdrop-blur-md border-b border-cream-200">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 py-3.5 flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-2xl bg-sage-600 text-white flex items-center justify-center shadow-sm">
+            <!-- Ikona liścia / miski SVG -->
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 20.94c1.5 0 2.75 1.06 4 1.06 3 0 6-8 6-12.22A4.91 4.91 0 0 0 17 5c-2.22 0-4 1.44-5 2-1-.56-2.78-2-5-2a4.9 4.9 0 0 0-5 4.78C2 14 5 22 8 22c1.25 0 2.5-1.06 4-1.06Z"/>
+              <path d="M10 2c1 .5 2 2 2 5"/>
+            </svg>
+          </div>
+          <div>
+            <h1 class="font-display font-bold text-lg sm:text-xl text-walnut-800 leading-tight">Wspólna Kuchnia • Plan 7 Dni</h1>
+            <p class="text-xs text-walnut-600">Osoba 1: ~1700 kcal (Wege) &nbsp;|&nbsp; Osoba 2: ~3100 kcal (Z mięsem)</p>
+      <!-- Przełącznik głównego widoku: Jadłospis vs Lista zakupów vs Nasze smaki -->
+      <div class="flex flex-wrap items-center gap-1.5 bg-cream-100 p-1 rounded-2xl border border-cream-200 self-start md:self-auto">
+        <button id="tab-plan" onclick="switchMainTab('plan')" class="px-3.5 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all bg-white text-sage-700 shadow-sm flex items-center gap-1.5">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          Plan tygodnia
+        </button>
+        <button id="tab-shopping" onclick="switchMainTab('shopping')" class="px-3.5 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all text-walnut-600 hover:text-walnut-800 flex items-center gap-1.5">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+          Lista zakupów
+        </button>
+        <button id="tab-tastes" onclick="switchMainTab('tastes')" class="px-3.5 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all text-walnut-600 hover:text-walnut-800 flex items-center gap-1.5">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          Nasze smaki i oceny
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- GŁÓWNA ZAWARTOŚĆ -->
+  <main class="flex-1 max-w-6xl w-full mx-auto px-4 sm:px-6 py-6">
+
+    <!-- ==================== WIDOK 1: JADŁOSPIS I PRZEPISY ==================== -->
+    <div id="view-plan" class="space-y-6">
+
+      <!-- Pasek wyboru dnia tygodnia (Dzień 1 - Dzień 7) -->
+      <div class="bg-white rounded-3xl p-2 border border-cream-200 card-shadow">
+        <div id="day-selector" class="flex items-center gap-1.5 overflow-x-auto no-scrollbar">
+          <!-- Renderowane dynamicznie w JS -->
+        </div>
+      </div>
+
+      <!-- Panel filtrów widoku porcji + Paski postępu kalorii i makro -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 items-stretch">
+
+        <!-- Przełącznik widoku porcji -->
+        <div class="lg:col-span-4 bg-white rounded-3xl p-5 border border-cream-200 card-shadow flex flex-col justify-between">
+          <div>
+            <span class="text-xs font-bold uppercase tracking-wider text-walnut-500">Widok porcji i składników</span>
+            <h2 class="font-display font-bold text-base text-walnut-800 mt-0.5 mb-3">Wybierz perspektywę gotowania</h2>
+          </div>
+          <div class="flex flex-col gap-2" id="person-filter-group">
+            <button onclick="setPersonFilter('all')" data-filter="all" class="filter-btn w-full text-left px-3.5 py-2.5 rounded-2xl text-sm font-semibold border transition-all flex items-center justify-between bg-sage-600 text-white border-sage-600 shadow-sm">
+              <span>Wszyscy (Wspólna baza + podział)</span>
+              <span class="text-xs px-2 py-0.5 rounded-full bg-white/20">Domyślny</span>
+            </button>
+            <button onclick="setPersonFilter('p1')" data-filter="p1" class="filter-btn w-full text-left px-3.5 py-2.5 rounded-2xl text-sm font-semibold border border-cream-200 bg-cream-50 text-walnut-700 hover:bg-sage-50 transition-all flex items-center justify-between">
+              <span>Tylko Osoba 1 (Wege • ~1700 kcal)</span>
+              <span class="w-2.5 h-2.5 rounded-full bg-sage-500"></span>
+            </button>
+            <button onclick="setPersonFilter('p2')" data-filter="p2" class="filter-btn w-full text-left px-3.5 py-2.5 rounded-2xl text-sm font-semibold border border-cream-200 bg-cream-50 text-walnut-700 hover:bg-walnut-50 transition-all flex items-center justify-between">
+              <span>Tylko Osoba 2 (Mięso • ~3100 kcal)</span>
+              <span class="w-2.5 h-2.5 rounded-full bg-walnut-500"></span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Podsumowanie dnia i postęp dla Osoby 1 i Osoby 2 -->
+        <div class="lg:col-span-8 bg-white rounded-3xl p-5 border border-cream-200 card-shadow flex flex-col justify-between">
+          <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+            <div>
+              <span class="text-xs font-bold uppercase tracking-wider text-sage-600" id="current-day-subtitle">Podsumowanie dnia</span>
+              <h2 class="font-display font-bold text-lg text-walnut-800" id="current-day-title">Dzień 1 — Poniedziałek</h2>
+            </div>
+            <button onclick="resetDayProgress()" class="text-xs font-medium text-walnut-500 hover:text-walnut-800 underline underline-offset-2 px-2 py-1 rounded-lg">
+              Wyczyść odhaczone posiłki
+            </button>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4" id="daily-summary-cards">
+            <!-- Renderowane dynamicznie dla Osoby 1 i Osoby 2 -->
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Lista 3 posiłków na wybrany dzień -->
+      <div id="meals-container" class="space-y-6">
+        <!-- Renderowane dynamicznie w JS -->
+      </div>
+
+    </div>
+
+    <!-- ==================== WIDOK 2: INTERAKTYWNA LISTA ZAKUPÓW ==================== -->
+    <div id="view-shopping" class="hidden space-y-6">
+      <div class="bg-white rounded-3xl p-5 sm:p-6 border border-cream-200 card-shadow">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-5 border-b border-cream-200">
+          <div>
+            <span class="text-xs font-bold uppercase tracking-wider text-sage-600">Automatyczny generator</span>
+            <h2 class="font-display font-bold text-xl text-walnut-800 mt-0.5">Lista zakupów dla 2 osób</h2>
+            <p class="text-sm text-walnut-600 mt-1">Wybierz zakres dni, aby zsumować wszystkie gramatury (wspólna baza + porcje dla obu osób).</p>
+          </div>
+
+          <div class="flex flex-wrap items-center gap-2">
+            <select id="shopping-range" onchange="renderShoppingList()" class="px-4 py-2.5 rounded-2xl bg-cream-50 border border-cream-300 text-sm font-semibold text-walnut-800 focus:outline-none focus:ring-2 focus:ring-sage-500">
+              <option value="all">Cały tydzień (Dni 1–7)</option>
+              <option value="1-3">Pierwsza połowa (Dni 1–3)</option>
+              <option value="4-7">Druga połowa (Dni 4–7)</option>
+              <option value="current">Tylko aktualnie wybrany dzień</option>
+            </select>
+
+            <button onclick="clearCheckedShopping()" class="px-4 py-2.5 rounded-2xl bg-cream-100 hover:bg-cream-200 text-walnut-700 text-sm font-semibold transition-colors">
+              Odznacz wszystko
+            </button>
+          </div>
+        </div>
+
+        <!-- Pasek postępu zakupów -->
+        <div class="mt-4 flex items-center justify-between text-xs font-semibold text-walnut-600 mb-1.5">
+          <span>Postęp zakupów</span>
+          <span id="shopping-progress-text">0 / 0 produktów w koszyku</span>
+        </div>
+        <div class="w-full h-2.5 bg-cream-100 rounded-full overflow-hidden">
+          <div id="shopping-progress-bar" class="h-full bg-sage-600 rounded-full transition-all duration-300" style="width: 0%"></div>
+        </div>
+      </div>
+
+      <!-- Kategorie listy zakupów -->
+      <div id="shopping-categories-grid" class="grid grid-cols-1 md:grid-cols-2 gap-5">
+        <!-- Renderowane dynamicznie -->
+      </div>
+    </div>
+
+    <!-- ==================== WIDOK 3: NASZE SMAKI I OCENY ==================== -->
+    <div id="view-tastes" class="hidden space-y-6">
+      <!-- Nagłówek i inteligentne dopasowanie -->
+      <div class="bg-white rounded-3xl p-5 sm:p-6 border border-cream-200 card-shadow">
+        <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-5 border-b border-cream-200">
+          <div>
+            <span class="text-xs font-bold uppercase tracking-wider text-sage-600">Personalizacja pod Wasze gusta</span>
+            <h2 class="font-display font-bold text-xl text-walnut-800 mt-0.5">Nasze smaki, oceny i historia modyfikacji</h2>
+            <p class="text-sm text-walnut-600 mt-1">Oceniajcie posiłki gwiazdkami i tagami w widoku planu. Jednym kliknięciem zamienicie nisko ocenione dania (1–2 ★) na Wasze ulubione (4–5 ★).</p>
+          </div>
+          <div class="flex flex-wrap items-center gap-2.5">
+            <button onclick="autoOptimizePlanByRatings()" class="px-4 py-2.5 rounded-2xl bg-sage-600 hover:bg-sage-700 text-white text-sm font-semibold shadow-sm transition-all flex items-center gap-2">
+              <span>✨ Dopasuj plan pod nasze oceny</span>
+            </button>
+            <button onclick="openResetConfirmModal()" class="px-4 py-2.5 rounded-2xl bg-cream-100 hover:bg-cream-200 text-walnut-700 text-sm font-semibold transition-colors">
+              Przywróć plan bazowy
+            </button>
+          </div>
+        </div>
+
+        <!-- Komunikat zwrotny po automatycznym dopasowaniu -->
+        <div id="tastes-feedback-banner" class="hidden mt-4 p-3.5 rounded-2xl bg-sage-50 border border-sage-200 text-sm text-sage-800 font-medium"></div>
+
+        <!-- Statystyki -->
+        <div id="tastes-stats-grid" class="grid grid-cols-2 sm:grid-cols-4 gap-3.5 mt-5">
+          <!-- Renderowane dynamicznie -->
+        </div>
+      </div>
+
+      <!-- Ranking ocenionych posiłków + Ulubione składniki -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-5">
+        <div class="lg:col-span-8 bg-white rounded-3xl p-5 sm:p-6 border border-cream-200 card-shadow">
+          <h3 class="font-display font-bold text-lg text-walnut-800 mb-1">Ranking ocenionych dań</h3>
+          <p class="text-xs text-walnut-500 mb-4">Posortowane od najwyżej ocenionych (w tym dania z dodatkowej puli przepisów).</p>
+          <div id="tastes-ranking-list" class="space-y-3">
+            <!-- Renderowane dynamicznie -->
+          </div>
+        </div>
+
+        <div class="lg:col-span-4 space-y-5">
+          <div class="bg-white rounded-3xl p-5 sm:p-6 border border-cream-200 card-shadow">
+            <h3 class="font-display font-bold text-base text-walnut-800 mb-1">Preferowane składniki i tagi</h3>
+            <p class="text-xs text-walnut-500 mb-3">Wykryte na podstawie Waszych ocen (4–5 ★) oraz zamian składników.</p>
+            <div id="tastes-preferences-box" class="space-y-3">
+              <!-- Renderowane dynamicznie -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- ==================== MODAL WYMIANY SKŁADNIKA ==================== -->
+  <div id="modal-ingredient-swap" class="fixed inset-0 z-50 hidden items-center justify-center bg-walnut-800/50 backdrop-blur-xs p-4">
+    <div class="bg-white rounded-3xl max-w-lg w-full border border-cream-200 shadow-2xl overflow-hidden animate-fade-in">
+      <div class="p-5 bg-cream-50 border-b border-cream-200 flex items-center justify-between">
+        <div>
+          <span class="text-[11px] font-bold uppercase tracking-wider text-sage-600">Wymiana składnika (Makro-ekwiwalent)</span>
+          <h3 class="font-display font-bold text-lg text-walnut-800" id="ing-modal-title">Zamień składnik</h3>
+        </div>
+        <button onclick="closeIngredientModal()" class="w-9 h-9 rounded-xl bg-white border border-cream-200 text-walnut-600 hover:text-walnut-900 flex items-center justify-center font-bold">✕</button>
+      </div>
+      <div class="p-5 space-y-3 max-h-[70vh] overflow-y-auto" id="ing-modal-options">
+        <!-- Opcje zamienników renderowane dynamicznie -->
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== MODAL WYMIANY CAŁEGO POSIŁKU ==================== -->
+  <div id="modal-meal-swap" class="fixed inset-0 z-50 hidden items-center justify-center bg-walnut-800/50 backdrop-blur-xs p-4">
+    <div class="bg-white rounded-3xl max-w-2xl w-full border border-cream-200 shadow-2xl overflow-hidden flex flex-col max-h-[85vh]">
+      <div class="p-5 bg-cream-50 border-b border-cream-200 flex items-center justify-between shrink-0">
+        <div>
+          <span class="text-[11px] font-bold uppercase tracking-wider text-sage-600" id="meal-modal-subtitle">Wymiana posiłku</span>
+          <h3 class="font-display font-bold text-lg text-walnut-800" id="meal-modal-title">Wybierz inny posiłek</h3>
+        </div>
+        <div class="flex items-center gap-2">
+          <button onclick="pickRandomMealReplacement()" class="px-3 py-1.5 rounded-xl bg-sage-600 hover:bg-sage-700 text-white text-xs font-semibold transition-colors">
+            🎲 Losuj inny
+          </button>
+          <button onclick="closeMealModal()" class="w-9 h-9 rounded-xl bg-white border border-cream-200 text-walnut-600 hover:text-walnut-900 flex items-center justify-center font-bold">✕</button>
+        </div>
+      </div>
+      <div class="p-5 space-y-3 overflow-y-auto" id="meal-modal-options">
+        <!-- Lista alternatywnych posiłków -->
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== MODAL POTWIERDZENIA RESETU ==================== -->
+  <div id="modal-reset-confirm" class="fixed inset-0 z-50 hidden items-center justify-center bg-walnut-800/50 backdrop-blur-xs p-4">
+    <div class="bg-white rounded-3xl max-w-md w-full border border-cream-200 shadow-2xl p-6 space-y-4">
+      <h3 class="font-display font-bold text-lg text-walnut-800">Przywrócić plan bazowy?</h3>
+      <p class="text-sm text-walnut-600">Spowoduje to cofnięcie wszystkich wymienionych posiłków oraz zamienionych składników do ustawień początkowych. Twoje oceny gwiazdkowe i notatki mogą zostać zachowane lub wyczyszczone.</p>
+      <div class="flex flex-col sm:flex-row justify-end gap-2 pt-2">
+        <button onclick="closeResetConfirmModal()" class="px-4 py-2 rounded-xl bg-cream-100 text-walnut-700 text-sm font-semibold">Anuluj</button>
+        <button onclick="resetSwapsOnly()" class="px-4 py-2 rounded-xl bg-sage-600 text-white text-sm font-semibold">Cofnij tylko zamiany</button>
+        <button onclick="resetEverything()" class="px-4 py-2 rounded-xl bg-walnut-700 text-white text-sm font-semibold">Wyczyść wszystko</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- STOPKA -->
+  <footer class="max-w-6xl w-full mx-auto px-4 sm:px-6 py-6 text-center text-xs text-walnut-500 border-t border-cream-200 mt-8">
+    Wspólny Plan Żywieniowy • Osoba 1: wegetariańska bez ryb i jajek w bezpośredniej postaci (~1700 kcal) • Osoba 2: z mięsem (~3100 kcal). Wszystkie wagi produktów podano przed obróbką termiczną (na sucho / na surowo), o ile nie zaznaczono inaczej.
+  </footer>
+
+  <!-- SKRYPT Z DANYMI I LOGIKĄ APLIKACJI -->
+  <script>
+    /**
+     * PEŁNA BAZA DANYCH 7 DNI (21 POSIŁKÓW)
+     * Każdy posiłek posiada:
+     * - typ (Śniadanie, Obiad, Kolacja), czas, sprzęt
+     * - składniki z podziałem na:
+     *   - base (wspólna baza z informacją ile bierze P1, a ile P2)
+     *   - p1 (dodatki tylko dla Osoby 1)
+     *   - p2 (dodatki tylko dla Osoby 2)
+     * - dokładny przepis krok po kroku
+     * - makroskładniki dla P1 i P2 (zsumowane na cały dzień dają ~1700 kcal dla P1 i ~3100 kcal dla P2)
+     * - ustrukturyzowaną listę pozycji do automatycznej listy zakupów (items)
+     */
+    const DIET_PLAN = [
+      // ==================== DZIEŃ 1: PONIEDZIAŁEK ====================
+      {
+        day: 1,
+        name: "Poniedziałek",
+        shortName: "Pon",
+        meals: [
+          {
+            id: "d1-m1",
+            type: "Śniadanie",
+            time: "15 min",
+            equipment: ["Garnek / Mikrofala", "Blender"],
+            title: "Kremowa owsianka twarogowa z bananem, owocami i masłem orzechowym",
+            summary: "Aksamitna owsianka ze zblendowanym twarogiem dającym wysoką sytość bez jajek. Osoba 2 wzbogaca swoją porcję masłem orzechowym i słonecznikiem.",
+            baseIngredients: [
+              { name: "Płatki owsiane górskie", total: "140 g", p1: "50 g", p2: "90 g" },
+              { name: "Mleko 2% lub napój sojowy wzbogacany w wapń", total: "500 ml", p1: "200 ml", p2: "300 ml" },
+              { name: "Twaróg półtłusty", total: "250 g", p1: "110 g", p2: "140 g" },
+              { name: "Banan (dojrzały)", total: "180 g (1.5 szt.)", p1: "60 g (0.5 szt.)", p2: "120 g (1 szt.)" },
+              { name: "Owoce leśne / truskawki (mrożone lub świeże)", total: "200 g", p1: "80 g", p2: "120 g" },
+              { name: "Cynamon mielony", total: "1 łyżeczka", p1: "szczypta", p2: "szczypta" }
+            ],
+            p1Ingredients: [
+              { name: "Pestki dyni lub orzechy włoskie (posiekane)", amount: "10 g" }
+            ],
+            p2Ingredients: [
+              { name: "Masło orzechowe 100%", amount: "30 g (2 łyżki)" },
+              { name: "Pestki słonecznika", amount: "15 g" }
+            ],
+            steps: [
+              "Wsyp 140 g płatków owsianych do garnka, zalej 500 ml mleka (lub ugotuj w mikrofali przez 3–4 minuty w dużym naczyniu) i gotuj na małym ogniu ok. 5–7 minut do miękkości.",
+              "W międzyczasie w kielichu blendera umieść 250 g twarogu, 180 g banana, cynamon oraz 3–4 łyżki ciepłego płynu z owsianki. Zblenduj na gładki, puszysty krem.",
+              "Połącz krem twarogowy z ugotowanymi płatkami owsianymi i wymieszaj do uzyskania jednolitej konsystencji.",
+              "Podziel owsiankę do dwóch misek w proporcji ok. 1/3 dla Osoby 1 oraz 2/3 dla Osoby 2.",
+              "Na wierzch wyłóż podgrzane lub świeże owoce. Porcję Osoby 1 posyp 10 g pestek dyni, a porcję Osoby 2 polej 30 g masła orzechowego i posyp 15 g słonecznika."
+            ],
+            macros: {
+              p1: { kcal: 515, p: 31, f: 14, c: 66 },
+              p2: { kcal: 1045, p: 47, f: 42, c: 118 }
+            },
+            shopping: [
+              { name: "Płatki owsiane górskie", grams: 140, unit: "g", cat: "Produkty suche" },
+              { name: "Mleko 2% / napój sojowy", grams: 500, unit: "ml", cat: "Nabiał" },
+              { name: "Twaróg półtłusty", grams: 250, unit: "g", cat: "Nabiał" },
+              { name: "Banany", grams: 180, unit: "g", cat: "Warzywa i owoce" },
+              { name: "Owoce leśne / truskawki mrożone", grams: 200, unit: "g", cat: "Warzywa i owoce" },
+              { name: "Pestki dyni", grams: 10, unit: "g", cat: "Strączki i dodatki" },
+              { name: "Masło orzechowe 100%", grams: 30, unit: "g", cat: "Strączki i dodatki" },
+              { name: "Pestki słonecznika", grams: 15, unit: "g", cat: "Strączki i dodatki" }
+            ]
+          },
+          {
+            id: "d1-m2",
+            type: "Obiad",
+            time: "30 min",
+            equipment: ["Air Fryer / Piekarnik"],
+            title: "Złociste łódki ziemniaczane, pieczone warzywa z sosem czosnkowym + ciecierzyca / kurczak",
+            summary: "Wszystko piecze się równocześnie w air fryerze lub na jednej blasze w piekarniku. Osoba 1 dodaje chrupiącą ciecierzycę, Osoba 2 soczystą pierś z kurczaka.",
+            baseIngredients: [
+              { name: "Ziemniaki (waga przed obraniem/pokrojeniem)", total: "680 g", p1: "230 g", p2: "450 g" },
+              { name: "Cukinia + papryka + marchew (mix warzyw)", total: "450 g", p1: "200 g", p2: "250 g" },
+              { name: "Oliwa z oliwek (do skropienia warzyw)", total: "15 g", p1: "5 g", p2: "10 g" },
+              { name: "Jogurt naturalny gęsty 2%", total: "160 g", p1: "80 g", p2: "80 g" },
+              { name: "Czosnek, koperek, sok z cytryny, papryka słodka, zioła prowansalskie", total: "do smaku", p1: "połowa", p2: "połowa" }
+            ],
+            p1Ingredients: [
+              { name: "Ciecierzyca konserwowa (odsączona z zalewy)", amount: "140 g" }
+            ],
+            p2Ingredients: [
+              { name: "Pierś z kurczaka (surowa)", amount: "230 g" },
+              { name: "Oliwa z oliwek (do marynaty mięsa)", amount: "10 g" }
+            ],
+            steps: [
+              "Rozgrzej piekarnik do 200°C (termoobieg) lub przygotuj kosz air fryera (190°C). Ziemniaki dokładnie umyj i pokrój w łódki, warzywa w grubszą kostkę lub plastry.",
+              "Wymieszaj ziemniaki i warzywa z 15 g oliwy, solą, pieprzem, słodką papryką i ziołami. Wstaw do pieczenia na ok. 25 minut (w połowie czasu przemieszaj).",
+              "Dla Osoby 2: pokrój 230 g piersi z kurczaka w większe kawałki, natrzyj 10 g oliwy, czosnkiem granulowanym, solą i papryką. Upiecz w air fryerze (ok. 14–16 min w 185°C) lub obok warzyw na blasze.",
+              "Dla Osoby 1: na ostatnie 8–10 minut pieczenia dorzuć do warzyw odsączoną ciecierzycę (140 g), aby stała się lekko chrupiąca.",
+              "Wymieszaj 160 g jogurtu z przeciśniętym ząbkiem czosnku, posiekanym koperkiem, szczyptą soli i kilkoma kroplami soku z cytryny. Wyłóż porcje na talerze i polej sosem."
+            ],
+            macros: {
+              p1: { kcal: 595, p: 24, f: 12, c: 96 },
+              p2: { kcal: 1035, p: 65, f: 28, c: 126 }
+            },
+            shopping: [
+              { name: "Ziemniaki", grams: 680, unit: "g", cat: "Warzywa i owoce" },
+              { name: "Cukinia, papryka, marchew", grams: 450, unit: "g", cat: "Warzywa i owoce" },
+              { name: "Jogurt naturalny gęsty 2%", grams: 160, unit: "g", cat: "Nabiał" },
+              { name: "Oliwa z oliwek", grams: 25, unit: "g", cat: "Strączki i dodatki" },
+              { name: "Ciecierzyca konserwowa (waga po odsączeniu)", grams: 140, unit: "g", cat: "Strączki i dodatki" },
+              { name: "Pierś z kurczaka", grams: 230, unit: "g", cat: "Mięso dla Osoby 2" }
+            ]
+          },
+          {
+            id: "d1-m3",
+            type: "Kolacja",
+            time: "25 min",
+            equipment: ["Garnek", "Piekarnik / Mikrofala"],
+            title: "Zapiekanka makaronowa ze szpinakiem, suszonymi pomidorami i mozzarellą",
+            summary: "Szybka, rozgrzewająca kolacja z jednego naczynia żaroodpornego (z wydzieloną połówką z mięsem dla Osoby 2).",
+            baseIngredients: [
+              { name: "Makaron pełnoziarnisty lub klasyczny (penne / świderki, suchy)", total: "210 g", p1: "70 g", p2: "140 g" },
+              { name: "Szpinak (świeży lub mrożony rozdrobniony)", total: "250 g", p1: "100 g", p2: "150 g" },
+              { name: "Passata pomidorowa", total: "300 g", p1: "120 g", p2: "180 g" },
+              { name: "Serek śmietankowy naturalny (np. Twój Smak / Philadelphia)", total: "60 g", p1: "25 g", p2: "35 g" },
+              { name: "Ser mozzarella tarty lub w kulce", total: "90 g", p1: "35 g", p2: "55 g" },
+              { name: "Czosnek, bazylia, oregano, pieprz", total: "do smaku", p1: "połowa", p2: "połowa" }
+            ],
+            p1Ingredients: [
+              { name: "Biała fasola z puszki (odsączona, dla podbicia białka)", amount: "80 g" }
+            ],
+            p2Ingredients: [
+              { name: "Szynka drobiowa dobrej jakości lub upieczony kurczak w kostkę", amount: "140 g" },
+              { name: "Oliwa z oliwek", amount: "10 g" }
+            ],
+            steps: [
+              "Ugotuj 210 g makaronu al dente w osolonej wodzie (o 2 minuty krócej niż na opakowaniu).",
+              "Na patelni lub w garnku podduś 250 g szpinaku z przeciśniętym czosnkiem (jeśli mrożony – odparuj nadmiar wody), dodaj 300 g passaty pomidorowej, 60 g serka śmietankowego oraz zioła. Wymieszaj na kremowy sos.",
+              "Połącz ugotowany makaron z sosem i przełóż do naczynia żaroodpornego, dzieląc wizualnie na 1/3 (Osoba 1) i 2/3 (Osoba 2).",
+              "Do części Osoby 1 wmieszaj 80 g białej fasoli. Do części Osoby 2 wmieszaj 140 g pokrojonej w kostkę szynki/kurczaka i skrop 10 g oliwy.",
+              "Posyp całość startą mozzarellą (35 g na część O1, 55 g na część O2). Zapiekaj w piekarniku (190°C, 12–15 min) lub podgrzej w mikrofali do rozpuszczenia sera."
+            ],
+            macros: {
+              p1: { kcal: 590, p: 28, f: 16, c: 82 },
+              p2: { kcal: 1030, p: 63, f: 34, c: 116 }
+            },
+            shopping: [
+              { name: "Makaron penne / świderki", grams: 210, unit: "g", cat: "Produkty suche" },
+              { name: "Szpinak świeży lub mrożony", grams: 250, unit: "g", cat: "Warzywa i owoce" },
+              { name: "Passata pomidorowa", grams: 300, unit: "g", cat: "Strączki i dodatki" },
+              { name: "Serek śmietankowy naturalny", grams: 60, unit: "g", cat: "Nabiał" },
+              { name: "Ser mozzarella", grams: 90, unit: "g", cat: "Nabiał" },
+              { name: "Biała fasola konserwowa", grams: 80, unit: "g", cat: "Strączki i dodatki" },
+              { name: "Szynka drobiowa / filet z kurczaka", grams: 140, unit: "g", cat: "Mięso dla Osoby 2" },
+              { name: "Oliwa z oliwek", grams: 10, unit: "g", cat: "Strączki i dodatki" }
+            ]
+          }
+        ]
+      },
+
+      // ==================== DZIEŃ 2: WTOREK ====================
+      {
+        day: 2,
+        name: "Wtorek",
+        shortName: "Wt",
+        meals: [
+          {
+            id: "d2-m1",
+            type: "Śniadanie",
+            time: "10 min",
+            equipment: ["Blender", "Air Fryer / Opiekacz"],
+            title: "Gęsty koktajl twarogowo-truskawkowy z chrupiącymi grzankami",
+            summary: "Błyskawiczne śniadanie z blendera o konsystencji shake'a + ciepłe grzanki z air fryera.",
+            baseIngredients: [
+              { name: "Twaróg półtłusty lub serek wiejski", total: "260 g", p1: "110 g", p2: "150 g" },
+              { name: "Mrożone truskawki lub maliny", total: "240 g", p1: "100 g", p2: "140 g" },
+              { name: "Banan", total: "150 g", p1: "60 g", p2: "90 g" },
+              { name: "Płatki owsiane błyskawiczne", total: "90 g", p1: "35 g", p2: "55 g" },
+              { name: "Mleko 2% lub napój roślinny", total: "350 ml", p1: "150 ml", p2: "200 ml" }
+            ],
+            p1Ingredients: [
+              { name: "Chleb żytni / pełnoziarnisty (na grzankę)", amount: "45 g (1.5 kromki)" },
+              { name: "Masło orzechowe (do posmarowania grzanki)", amount: "10 g" }
+            ],
+            p2Ingredients: [
+              { name: "Chleb pełnoziarnisty lub bułki (na grzanki)", amount: "120 g (3–4 kromki)" },
+              { name: "Masło extra (do posmarowania)", amount: "20 g" },
+              { name: "Miód lub dżem 100% owoców", amount: "25 g" }
+            ],
+            steps: [
+              "Włóż do blendera 260 g twarogu, 240 g mrożonych owoców, 150 g banana, 90 g płatków owsianych oraz 350 ml mleka.",
+              "Zblenduj całość na wysokich obrotach przez 45–60 sekund, aż powstanie gładki, gęsty koktajl (w razie potrzeby dolej odrobinę wody).",
+              "Przelej do dwóch szklanek lub misek w proporcji ok. 40% dla Osoby 1 i 60% dla Osoby 2.",
+              "Pieczywo podpiecz w air fryerze przez 3–4 minuty w 180°C, aby było chrupiące. Grzankę Osoby 1 posmaruj 10 g masła orzechowego, a grzanki Osoby 2 – 20 g masła i miodem/dżemem."
+            ],
+            macros: {
+              p1: { kcal: 540, p: 31, f: 14, c: 72 },
+              p2: { kcal: 1030, p: 48, f: 34, c: 132 }
+            },
+            shopping: [
+              { name: "Twaróg półtłusty", grams: 260, unit: "g", cat: "Nabiał" },
+              { name: "Truskawki / maliny mrożone", grams: 240, unit: "g", cat: "Warzywa i owoce" },
+              { name: "Banany", grams: 150, unit: "g", cat: "Warzywa i owoce" },
+              { name: "Płatki owsiane", grams: 90, unit: "g", cat: "Produkty suche" },
+              { name: "Mleko 2% / napój sojowy", grams: 350, unit: "ml", cat: "Nabiał" },
+              { name: "Chleb żytni / pełnoziarnisty", grams: 165, unit: "g", cat: "Produkty suche" },
+              { name: "Masło orzechowe 100%", grams: 10, unit: "g", cat: "Strączki i dodatki" },
+              { name: "Masło extra", grams: 20, unit: "g", cat: "Nabiał" },
+              { name: "Miód / dżem owocowy", grams: 25, unit: "g", cat: "Strączki i dodatki" }
+            ]
+          },
+          {
+            id: "d2-m2",
+            type: "Obiad",
+            time: "30 min",
+            equipment: ["Garnek", "Patelnia / Air Fryer"],
+            title: "Kasza gryczana z aromatycznym leczem warzywnym + soczewica / schab",
+            summary: "Klasyczny polski obiad w nowoczesnej odsłonie: wspólny garnek warzywnego leczo oraz kasza, do której każdy dodaje swoje źródło białka.",
+            baseIngredients: [
+              { name: "Kasza gryczana palona lub niepalona (sucha)", total: "210 g", p1: "70 g", p2: "140 g" },
+              { name: "Cukinia", total: "300 g", p1: "130 g", p2: "170 g" },
+              { name: "Papryka czerwona lub żółta", total: "240 g", p1: "100 g", p2: "140 g" },
+              { name: "Cebula", total: "120 g", p1: "50 g", p2: "70 g" },
+              { name: "Pomidory krojone z puszki", total: "400 g (1 puszka)", p1: "160 g", p2: "240 g" },
+              { name: "Oliwa z oliwek (do duszenia warzyw)", total: "15 g", p1: "5 g", p2: "10 g" },
+              { name: "Papryka wędzona, słodka, majeranek, czosnek, sól, pieprz", total: "do smaku", p1: "połowa", p2: "połowa" }
+            ],
+            p1Ingredients: [
+              { name: "Soczewica zielona lub brązowa z puszki (odsączona)", amount: "150 g" }
+            ],
+            p2Ingredients: [
+              { name: "Schab wieprzowy bez kości (surowy)", amount: "220 g" },
+              { name: "Oliwa z oliwek (do obsmażenia/pieczenia mięsa)", amount: "10 g" }
+            ],
+            steps: [
+              "Ugotuj 210 g kaszy gryczanej na sypko w lekko osolonej wodzie (ok. 13–15 minut).",
+              "W głębokiej patelni lub garnku rozgrzej 15 g oliwy, zeszklij posiekaną cebulę i czosnek, a następnie dorzuć pokrojoną w kostkę cukinię i paprykę. Duś pod przykryciem 8 minut.",
+              "Wlej 400 g pomidorów z puszki, wsyp paprykę wędzoną, słodką i majeranek. Gotuj bez przykrycia kolejne 8–10 minut, aż sos zgęstnieje.",
+              "W tym czasie 220 g schabu pokrój w paski lub plastry, przypraw solą, pieprzem i majerankiem, skrop 10 g oliwy i upiecz w air fryerze (12 min w 190°C) lub obsmaż na patelni.",
+              "Na talerz Osoby 1 wyłóż 1/3 kaszy, 40% leczo i 150 g soczewicy (możesz ją podgrzać w porcji leczo). Na talerz Osoby 2 wyłóż 2/3 kaszy, resztę leczo i upieczony schab."
+            ],
+            macros: {
+              p1: { kcal: 580, p: 25, f: 11, c: 94 },
+              p2: { kcal: 1055, p: 68, f: 34, c: 116 }
+            },
+            shopping: [
+              { name: "Kasza gryczana", grams: 210, unit: "g", cat: "Produkty suche" },
+              { name: "Cukinia", grams: 300, unit: "g", cat: "Warzywa i owoce" },
+              { name: "Papryka czerwona", grams: 240, unit: "g", cat: "Warzywa i owoce" },
+              { name: "Cebula", grams: 120, unit: "g", cat: "Warzywa i owoce" },
+              { name: "Pomidory krojone w puszce", grams: 400, unit: "g", cat: "Strączki i dodatki" },
+              { name: "Oliwa z oliwek", grams: 25, unit: "g", cat: "Strączki i dodatki" },
+              { name: "Soczewica konserwowa", grams: 150, unit: "g", cat: "Strączki i dodatki" },
+              { name: "Schab wieprzowy bez kości", grams: 220, unit: "g", cat: "Mięso dla Osoby 2" }
+            ]
+          },
+          {
+            id: "d2-m3",
+            type: "Kolacja",
+            time: "15 min",
+            equipment: ["Air Fryer / Piekarnik"],
+            title: "Chrupiące zapiekane kanapki z mozzarellą, pomidorem i rukolą",
+            summary: "Ciepła, chrupiąca kolacja gotowa w 8 minut w air fryerze z dużą porcją świeżych warzyw obok.",
+            baseIngredients: [
+              { name: "Chleb pełnoziarnisty lub bułki grahamki", total: "230 g", p1: "80 g (2 kromki)", p2: "150 g (4 kromki / 2 bułki)" },
+              { name: "Ser żółty gouda lub mozzarella w plastrach", total: "90 g", p1: "30 g", p2: "60 g" },
+              { name: "Pomidor malinowy", total: "250 g", p1: "110 g", p2: "140 g" },
+              { name: "Ogórek zielony + garść rukoli/sałaty", total: "200 g", p1: "100 g", p2: "100 g" },
+              { name: "Oregano suszone, pieprz", total: "szczypta", p1: "szczypta", p2: "szczypta" }
+            ],
+            p1Ingredients: [
+              { name: "Serek wiejski lekki lub naturalny (podany obok jako sałatka/dodatek)", amount: "150 g" },
+              { name: "Oliwa z oliwek (do sałatki z pomidora i ogórka)", amount: "5 g" }
+            ],
+            p2Ingredients: [
+              { name: "Szynka z indyka / kurczaka lub pieczona wędlina", amount: "120 g" },
+              { name: "Masło lub majonez lekki (do posmarowania pieczywa)", amount: "20 g" }
+            ],
+            steps: [
+              "Przygotuj kromki pieczywa: na kanapki Osoby 1 połóż 30 g sera i plastry pomidora, posyp oregano.",
+              "Kanapki Osoby 2 posmaruj 20 g masła/majonezu, ułóż 120 g wędliny, plastry pomidora oraz 60 g sera.",
+              "Włóż kanapki do air fryera na 5–6 minut w temperaturze 180°C (lub do piekarnika z funkcją grilla), aż ser się rozpuści, a spód zarumieni.",
+              "W tym czasie pokrój resztę pomidora i ogórka, wymieszaj z rukolą. Porcję warzyw Osoby 1 skrop 5 g oliwy i podaj obok serek wiejski (150 g) dla pełnej sytości białkowej."
+            ],
+            macros: {
+              p1: { kcal: 560, p: 32, f: 18, c: 66 },
+              p2: { kcal: 1015, p: 56, f: 42, c: 102 }
+            },
+            shopping: [
+              { name: "Chleb pełnoziarnisty / grahamki", grams: 230, unit: "g", cat: "Produkty suche" },
+              { name: "Ser żółty gouda / mozzarella w plastrach", grams: 90, unit: "g", cat: "Nabiał" },
+              { name: "Pomidory", grams: 250, unit: "g", cat: "Warzywa i owoce" },
+              { name: "Ogórek zielony", grams: 150, unit: "g", cat: "Warzywa i owoce" },
+              { name: "Rukola / sałata", grams: 50, unit: "g", cat: "Warzywa i owoce" },
+              { name: "Serek wiejski naturalny", grams: 150, unit: "g", cat: "Nabiał" },
+              { name: "Oliwa z oliwek", grams: 5, unit: "g", cat: "Strączki i dodatki" },
+              { name: "Szynka drobiowa / pieczona wędlina", grams: 120, unit: "g", cat: "Mięso dla Osoby 2" },
+              { name: "Masło extra", grams: 20, unit: "g", cat: "Nabiał" }
+            ]
+          }
+        ]
+      },
+
+      // ==================== DZIEŃ 3: ŚRODA ====================
+      {
+        day: 3,
+        name: "Środa",
+        shortName: "Śr",
+        meals: [
+          {
+            id: "d3-m1",
+            type: "Śniadanie",
+            time: "25 min",
+            equipment: ["Mikser / Blender", "Patelnia"],
+            title: "Domowe naleśniki z waniliowym twarożkiem i owocami",
+            summary: "Jajko występuje wyłącznie jako spoiwo w wspólnym cieście naleśnikowym. Słodki, kremowy farsz twarogowy syci na wiele godzin.",
+            baseIngredients: [
+              { name: "Mąka pszenna typ 500 lub orkiszowa jasna", total: "220 g", p1: "65 g", p2: "155 g" },
+              { name: "Mleko 2% lub napój roślinny", total: "380 ml", p1: "110 ml", p2: "270 ml" },
+              { name: "Woda gazowana (do ciasta)", total: "100 ml", p1: "30 ml", p2: "70 ml" },
+              { name: "Jajko kurze (1 szt. jako składnik ciasta)", total: "55 g (1 szt.)", p1: "15 g (w cieście)", p2: "40 g (w cieście)" },
+              { name: "Olej rzepakowy / oliwa (do ciasta i smażenia)", total: "15 g", p1: "5 g", p2: "10 g" },
+              { name: "Twaróg półtłusty (na farsz)", total: "280 g", p1: "110 g", p2: "170 g" },
+              { name: "Jogurt naturalny gęsty + aromat waniliowy", total: "100 g", p1: "40 g", p2: "60 g" },
+              { name: "Owoce świeże lub rozmrożone (np. borówki, truskawki)", total: "220 g", p1: "90 g", p2: "130 g" }
+            ],
+            p1Ingredients: [
+              { name: "Erytrytol lub 1 łyżeczka miodu do farszu", amount: "5 g" }
+            ],
+            p2Ingredients: [
+              { name: "Orzechy włoskie lub laskowe (posiekane)", amount: "20 g" },
+              { name: "Miód lub dżem owocowy (do polania)", amount: "20 g" }
+            ],
+            steps: [
+              "Wsyp 220 g mąki do miski, wlej 380 ml mleka, 100 ml wody gazowanej, wbij 1 jajko, dodaj szczyptę soli oraz 10 g oleju. Zmiksuj mikserem na gładkie, lejące ciasto i odstaw na 5 minut.",
+              "W drugiej misce rozgnieć widelcem lub zmiksuj 280 g twarogu ze 100 g jogurtu naturalnego i ekstraktem waniliowym (opcjonalnie odrobiną słodzika/miodu).",
+              "Na lekko natłuszczonej patelni (pozostałe 5 g oleju) usmaż ok. 6–7 cienkich naleśników.",
+              "Rozdziel naleśniki: 2 sztuki dla Osoby 1 (posmarowane 1/3 farszu i podane z 90 g owoców) oraz 4–5 sztuk dla Osoby 2 (z resztą twarogu, 130 g owoców, 20 g orzechów i 20 g miodu)."
+            ],
+            macros: {
+              p1: { kcal: 545, p: 31, f: 14, c: 73 },
+              p2: { kcal: 1120, p: 54, f: 36, c: 144 }
+            },
+            shopping: [
+              { name: "Mąka pszenna / orkiszowa", grams: 220, unit: "g", cat: "Produkty suche" },
+              { name: "Mleko 2% / napój sojowy", grams: 380, unit: "ml", cat: "Nabiał" },
+              { name: "Jajko (składnik ciasta)", grams: 55, unit: "g", cat: "Nabiał" },
+              { name: "Twaróg półtłusty", grams: 280, unit: "g", cat: "Nabiał" },
+              { name: "Jogurt naturalny gęsty", grams: 100, unit: "g", cat: "Nabiał" },
+              { name: "Borówki / truskawki", grams: 220, unit: "g", cat: "Warzywa i owoce" },
+              { name: "Olej rzepakowy", grams: 15, unit: "g", cat: "Strączki i dodatki" },
+              { name: "Orzechy włoskie / laskowe", grams: 20, unit: "g", cat: "Strączki i dodatki" },
+              { name: "Miód", grams: 25, unit: "g", cat: "Strączki i dodatki" }
+            ]
+          },
+          {
+            id: "d3-m2",
+            type: "Obiad",
+            time: "25 min",
+            equipment: ["Garnek", "Patelnia / Air Fryer"],
+            title: "Ryż basmati z warzywami w sosie pomidorowo-kokosowym + tofu / kurczak",
+            summary: "Aromatyczne danie jednogarnkowe o lekko azjatyckim charakterze, bardzo ekonomiczne (mrożone lub świeże warzywa + mleczko kokosowe).",
+            baseIngredients: [
+              { name: "Ryż basmati lub jaśminowy (suchy)", total: "220 g", p1: "65 g", p2: "155 g" },
+              { name: "Brokuł + marchew + fasolka szparagowa (świeże lub mrożone)", total: "450 g", p1: "200 g", p2: "250 g" },
+              { name: "Passata pomidorowa", total: "200 g", p1: "80 g", p2: "120 g" },
+              { name: "Mleczko kokosowe (z puszki, 17–18% tłuszczu)", total: "120 g", p1: "40 g", p2: "80 g" },
+              { name: "Oliwa z oliwek, curry, imbir, czosnek, sos sojowy", total: "10 g oliwy + przyprawy", p1: "4 g oliwy", p2: "6 g oliwy" }
+            ],
+            p1Ingredients: [
+              { name: "Tofu naturalne lub wędzone (pokrojone w kostkę)", amount: "140 g" }
+            ],
+            p2Ingredients: [
+              { name: "Pierś z kurczaka (surowa)", amount: "220 g" },
+              { name: "Oliwa z oliwek (do kurczaka)", amount: "10 g" }
+            ],
+            steps: [
+              "Ugotuj 220 g ryżu basmati w osolonej wodzie według instrukcji na opakowaniu (ok. 12–14 minut).",
+              "Na dużej patelni rozgrzej 10 g oliwy, wrzuć pokrojony czosnek, przyprawę curry i imbir, a następnie dodaj 450 g warzyw (brokuł, marchew, fasolkę). Podlej 4 łyżkami wody i duś pod przykryciem ok. 7 minut.",
+              "Wlej 200 g passaty pomidorowej, 120 g mleczka kokosowego i 1 łyżkę sosu sojowego. Gotuj 5 minut do połączenia smaków.",
+              "Równolegle w air fryerze (190°C, 12–14 min) lub na drugiej patelni upiecz/usmaż: pokrojone w kostkę 140 g tofu dla Osoby 1 oraz 220 g kurczaka w kostce skropionego 10 g oliwy i przyprawionego curry dla Osoby 2.",
+              "Nałóż ryż oraz sos warzywny na talerze, a na wierzch wyłóż chrupiące tofu dla Osoby 1 i soczystego kurczaka dla Osoby 2."
+            ],
+            macros: {
+              p1: { kcal: 585, p: 26, f: 16, c: 82 },
+              p2: { kcal: 1090, p: 66, f: 34, c: 128 }
+            },
+            shopping: [
+              { name: "Ryż basmati / jaśminowy", grams: 220, unit: "g", cat: "Produkty suche" },
+              { name: "Mieszanka warzyw (brokuł, marchew, fasolka)", grams: 450, unit: "g", cat: "Warzywa i owoce" },
+              { name: "Passata pomidorowa", grams: 200, unit: "g", cat: "Strączki i dodatki" },
+              { name: "Mleczko kokosowe", grams: 120, unit: "g", cat: "Strączki i dodatki" },
+              { name: "Oliwa z oliwek", grams: 20, unit: "g", cat: "Strączki i dodatki" },
+              { name: "Tofu naturalne / wędzone", grams: 140, unit: "g", cat: "Strączki i dodatki" },
+              { name: "Pierś z kurczaka", grams: 220, unit: "g", cat: "Mięso dla Osoby 2" }
+            ]
+          },
+          {
+            id: "d3-m3",
+            type: "Kolacja",
+            time: "25 min",
+            equipment: ["Garnek", "Blender", "Air Fryer"],
+            title: "Aksamitny krem z pomidorów i pieczonej papryki z grzankami serowymi",
+            summary: "Rozgrzewająca zupa krem z blendera. Osoba 1 dodaje białą fasolę zblendowaną w swojej porcji dla kremowości i białka, Osoba 2 je grzanki z szynką i serem.",
+            baseIngredients: [
+              { name: "Pomidory krojone z puszki lub świeże", total: "500 g", p1: "220 g", p2: "280 g" },
+              { name: "Marchew + ziemniak + cebula (baza warzywna)", total: "300 g", p1: "130 g", p2: "170 g" },
+              { name: "Bulion warzywny (lub woda + przyprawy)", total: "450 ml", p1: "200 ml", p2: "250 ml" },
+              { name: "Jogurt grecki lub śmietanka 12%", total: "80 g", p1: "30 g", p2: "50 g" },
+              { name: "Pieczywo pełnoziarniste (na grzanki)", total: "145 g", p1: "45 g (1.5 kromki)", p2: "100 g (3 kromki)" },
+              { name: "Ser żółty tarty", total: "75 g", p1: "25 g", p2: "50 g" }
+            ],
+            p1Ingredients: [
+              { name: "Ciecierzyca lub biała fasola konserwowa (zblendowana z zupą)", amount: "100 g" },
+              { name: "Pestki dyni (do posypania)", amount: "10 g" }
+            ],
+            p2Ingredients: [
+              { name: "Szynka drobiowa lub polędwica sopocka (na grzanki)", amount: "100 g" },
+              { name: "Oliwa z oliwek (do skropienia zupy)", amount: "10 g" }
+            ],
+            steps: [
+              "Pokrój marchew, ziemniaka i cebulę w kostkę, wrzuć do garnka, zalej 450 ml bulionu oraz 500 g pomidorów z puszki. Gotuj pod przykryciem ok. 15 minut do miękkości warzyw.",
+              "Zblenduj zupę na gładki krem z dodatkiem 80 g jogurtu/śmietanki, bazylii, czosnku, soli i pieprzu.",
+              "Odlej porcję zupy dla Osoby 1 (ok. 40% całości) i zblenduj ją z 100 g białej fasoli/ciecierzycy – zupa stanie się jeszcze bardziej sycąca i aksamitna.",
+              "Pieczywo posyp startym serem (na grzanki Osoby 2 połóż wcześniej 100 g wędliny) i zapiecz w air fryerze przez 4 minuty w 185°C. Podawaj z gorącą zupą."
+            ],
+            macros: {
+              p1: { kcal: 565, p: 28, f: 16, c: 76 },
+              p2: { kcal: 910, p: 50, f: 36, c: 94 }
+            },
+            shopping: [
+              { name: "Pomidory krojone w puszce", grams: 500, unit: "g", cat: "Strączki i dodatki" },
+              { name: "Marchew, ziemniaki, cebula", grams: 300, unit: "g", cat: "Warzywa i owoce" },
+              { name: "Jogurt grecki / śmietanka 12%", grams: 80, unit: "g", cat: "Nabiał" },
+              { name: "Chleb pełnoziarnisty", grams: 145, unit: "g", cat: "Produkty suche" },
+              { name: "Ser żółty", grams: 75, unit: "g", cat: "Nabiał" },
+              { name: "Biała fasola / ciecierzyca konserwowa", grams: 100, unit: "g", cat: "Strączki i dodatki" },
+              { name: "Pestki dyni", grams: 10, unit: "g", cat: "Strączki i dodatki" },
+              { name: "Szynka drobiowa / polędwica", grams: 100, unit: "g", cat: "Mięso dla Osoby 2" },
+              { name: "Oliwa z oliwek", grams: 10, unit: "g", cat: "Strączki i dodatki" }
+            ]
+          }
+        ]
+      },
+
+      // ==================== DZIEŃ 4: CZWARTEK ====================
+      {
+        day: 4,
+        name: "Czwartek",
+        shortName: "Czw",
+        meals: [
+          {
+            id: "d4-m1",
+            type: "Śniadanie",
+            time: "15 min",
+            equipment: ["Garnek"],
+            title: "Kremowa kasza manna na mleku z duszoną szarlotką i skyrem",
+            summary: "Szybkie, ciepłe śniadanie o smaku szarlotki. Skyr podbija białko bez konieczności używania jajek.",
+            baseIngredients: [
+              { name: "Kasza manna (sucha)", total: "145 g", p1: "45 g", p2: "100 g" },
+              { name: "Mleko 2% lub napój sojowy", total: "650 ml", p1: "250 ml", p2: "400 ml" },
+              { name: "Jabłko (starte na grubych oczkach)", total: "260 g (2 małe szt.)", p1: "110 g", p2: "150 g" },
+              { name: "Cynamon mielony", total: "1.5 łyżeczki", p1: "pół łyżeczki", p2: "1 łyżeczka" }
+            ],
+            p1Ingredients: [
+              { name: "Jogurt islandzki Skyr naturalny (wmieszany lub obok)", amount: "150 g" },
+              { name: "Orzechy włoskie (posiekane)", amount: "10 g" }
+            ],
+            p2Ingredients: [
+              { name: "Jogurt islandzki Skyr naturalny", amount: "150 g" },
+              { name: "Masło orzechowe 100%", amount: "25 g" },
+              { name: "Rodzynki lub orzechy", amount: "20 g" }
+            ],
+            steps: [
+              "Zagotuj 650 ml mleka w garnku. Gdy zacznie wrzeć, zmniejsz ogień i powoli wsypuj 145 g kaszy manny, energicznie mieszając trzepaczką, aby nie powstały grudki.",
+              "Gotuj przez ok. 3–4 minuty do zgęstnienia. Pod koniec dodaj starte jabłko (260 g) oraz cynamon, wymieszaj i przykryj na 2 minuty.",
+              "Nałóż kaszę do dwóch misek (ok. 1/3 dla Osoby 1, 2/3 dla Osoby 2).",
+              "Do obu porcji dodaj po 150 g skyru (można lekko wymieszać dla kremowości). Porcję Osoby 1 posyp 10 g orzechów, a porcję Osoby 2 wzbogać 25 g masła orzechowego i 20 g rodzynek/orzechów."
+            ],
+            macros: {
+              p1: { kcal: 515, p: 32, f: 13, c: 68 },
+              p2: { kcal: 1030, p: 49, f: 30, c: 140 }
+            },
+            shopping: [
+              { name: "Kasza manna", grams: 145, unit: "g", cat: "Produkty suche" },
+              { name: "Mleko 2% / napój sojowy", grams: 650, unit: "ml", cat: "Nabiał" },
+              { name: "Jabłka", grams: 260, unit: "g", cat: "Warzywa i owoce" },
+              { name: "Jogurt Skyr naturalny", grams: 300, unit: "g", cat: "Nabiał" },
+              { name: "Orzechy włoskie", grams: 10, unit: "g", cat: "Strączki i dodatki" },
+              { name: "Masło orzechowe 100%", grams: 25, unit: "g", cat: "Strączki i dodatki" },
+              { name: "Rodzynki / orzechy", grams: 20, unit: "g", cat: "Strączki i dodatki" }
+            ]
+          },
+          {
+            id: "d4-m2",
+            type: "Obiad",
+            time: "30 min",
+            equipment: ["Garnek", "Patelnia"],
+            title: "Spaghetti Bolognese na dwa sposoby: soczewicowe (O1) i mięsne (O2)",
+            summary: "Wspólna baza pomidorowo-warzywna dzielona na końcu na dwa rondelki: z czerwoną soczewicą dla Osoby 1 i chudym mięsem mielonym dla Osoby 2.",
+            baseIngredients: [
+              { name: "Makaron spaghetti lub tagliatelle (suchy)", total: "215 g", p1: "65 g", p2: "150 g" },
+              { name: "Passata pomidorowa + pomidory krojone", total: "550 g", p1: "220 g", p2: "330 g" },
+              { name: "Marchew (starta) + cebula + seler naciowy lub cukinia", total: "260 g", p1: "110 g", p2: "150 g" },
+              { name: "Oliwa z oliwek (do podsmażenia bazy warzywnej)", total: "15 g", p1: "5 g", p2: "10 g" },
+              { name: "Ser parmezan lub grana padano tarty", total: "45 g", p1: "15 g", p2: "30 g" },
+              { name: "Czosnek, oregano, bazylia, sól, pieprz", total: "do smaku", p1: "połowa", p2: "połowa" }
+            ],
+            p1Ingredients: [
+              { name: "Soczewica czerwona sucha (lub 140 g ugotowanej)", amount: "55 g suchej" }
+            ],
+            p2Ingredients: [
+              { name: "Mięso mielone wołowe lub z indyka (surowe)", amount: "220 g" }
+            ],
+            steps: [
+              "Wstaw wodę na makaron i ugotuj 215 g spaghetti al dente.",
+              "W dużym garnku rozgrzej 15 g oliwy, zeszklij posiekaną cebulę i czosnek, dodaj startą marchew i drobno pokrojoną cukinię/seler. Duś 5 minut.",
+              "Wlej 550 g pomidorów/passaty, wsyp zioła i gotuj 5 minut. Następnie podziel sos na dwa mniejsze garnki (40% dla Osoby 1, 60% dla Osoby 2).",
+              "Do garnka Osoby 1 wsyp wypłukaną suchą czerwoną soczewicę (55 g) i dolej ok. 120 ml wody – gotuj 12 minut, aż soczewica wchłonie płyn i zagęści sos.",
+              "W tym czasie na patelni obsmaż 220 g mięsa mielonego (bez dodatkowego tłuszczu, jeśli mięso ma ok. 7–10% tłuszczu) i przełóż je do sosu Osoby 2 na 5 minut. Podawaj z makaronem i startym serem."
+            ],
+            macros: {
+              p1: { kcal: 615, p: 29, f: 12, c: 96 },
+              p2: { kcal: 1125, p: 72, f: 34, c: 132 }
+            },
+            shopping: [
+              { name: "Makaron spaghetti", grams: 215, unit: "g", cat: "Produkty suche" },
+              { name: "Passata pomidorowa / pomidory", grams: 550, unit: "g", cat: "Strączki i dodatki" },
+              { name: "Marchew, cebula, cukinia", grams: 260, unit: "g", cat: "Warzywa i owoce" },
+              { name: "Oliwa z oliwek", grams: 15, unit: "g", cat: "Strączki i dodatki" },
+              { name: "Ser parmezan / grana padano", grams: 45, unit: "g", cat: "Nabiał" },
+              { name: "Soczewica czerwona sucha", grams: 55, unit: "g", cat: "Strączki i dodatki" },
+              { name: "Mięso mielone wołowe lub z indyka", grams: 220, unit: "g", cat: "Mięso dla Osoby 2" }
+            ]
+          },
+          {
+            id: "d4-m3",
+            type: "Kolacja",
+            time: "20 min",
+            equipment: ["Garnek"],
+            title: "Sałatka ziemniaczano-fasolowa z ogórkiem kiszonym i sosem musztardowo-jogurtowym",
+            summary: "Syta, tradycyjna w smaku sałatka bez majonezu (zamiast jajka jest biała/czerwona fasola). Świetnie smakuje również na drugi dzień.",
+            baseIngredients: [
+              { name: "Ziemniaki (ugotowane w mundurkach lub w kostkę)", total: "550 g", p1: "200 g", p2: "350 g" },
+              { name: "Fasola czerwona lub biała z puszki (odsączona)", total: "240 g (1 puszka)", p1: "120 g", p2: "120 g" },
+              { name: "Ogórki kiszone", total: "180 g (3 szt.)", p1: "80 g", p2: "100 g" },
+              { name: "Szczypiorek i czerwona cebula", total: "50 g", p1: "20 g", p2: "30 g" },
+              { name: "Jogurt naturalny gęsty 2% + 2 łyżeczki musztardy", total: "140 g", p1: "60 g", p2: "80 g" },
+              { name: "Pieczywo pełnoziarniste (podane obok)", total: "155 g", p1: "45 g (1.5 kromki)", p2: "110 g (3 kromki)" }
+            ],
+            p1Ingredients: [
+              { name: "Oliwa z oliwek lub olej lniany (do sosu)", amount: "5 g" }
+            ],
+            p2Ingredients: [
+              { name: "Upieczona pierś z kurczaka lub szynka w grubszą kostkę", amount: "130 g" },
+              { name: "Oliwa z oliwek (do sosu)", amount: "10 g" }
+            ],
+            steps: [
+              "Obierz 550 g ziemniaków, pokrój w kostkę i ugotuj w osolonej wodzie (ok. 15 min), po czym ostudź przez kilka minut.",
+              "Pokrój 180 g ogórków kiszonych i cebulę w drobną kostkę, posiekaj szczypiorek, a 240 g fasoli przepłucz na sitku.",
+              "Wymieszaj 140 g jogurtu naturalnego z musztardą, solą i pieprzem.",
+              "Podziel składniki do dwóch misek (ok. 40% dla Osoby 1 + 5 g oliwy, 60% dla Osoby 2 + 130 g pokrojonego kurczaka/szynki + 10 g oliwy). Wymieszaj z sosem i podaj z pieczywem."
+            ],
+            macros: {
+              p1: { kcal: 560, p: 24, f: 11, c: 88 },
+              p2: { kcal: 965, p: 56, f: 24, c: 128 }
+            },
+            shopping: [
+              { name: "Ziemniaki", grams: 550, unit: "g", cat: "Warzywa i owoce" },
+              { name: "Fasola czerwona / biała konserwowa", grams: 240, unit: "g", cat: "Strączki i dodatki" },
+              { name: "Ogórki kiszone", grams: 180, unit: "g", cat: "Warzywa i owoce" },
+              { name: "Szczypiorek i cebula czerwona", grams: 50, unit: "g", cat: "Warzywa i owoce" },
+              { name: "Jogurt naturalny gęsty 2%", grams: 140, unit: "g", cat: "Nabiał" },
+              { name: "Chleb pełnoziarnisty", grams: 155, unit: "g", cat: "Produkty suche" },
+              { name: "Oliwa z oliwek", grams: 15, unit: "g", cat: "Strączki i dodatki" },
+              { name: "Pierś z kurczaka / szynka drobiowa", grams: 130, unit: "g", cat: "Mięso dla Osoby 2" }
+            ]
+          }
+        ]
+      },
+
+      // ==================== DZIEŃ 5: PIĄTEK ====================
+      {
+        day: 5,
+        name: "Piątek",
+        shortName: "Pt",
+        meals: [
+          {
+            id: "d5-m1",
+            type: "Śniadanie",
+            time: "20 min",
+            equipment: ["Blender", "Patelnia / Air Fryer"],
+            title: "Puszyste placuszki twarogowo-owsiane z bananem i owocami",
+            summary: "Wszystko wrzucasz do blendera i smażysz lub pieczesz w air fryerze na papierze do pieczenia. Jajko jest tylko składnikiem masy.",
+            baseIngredients: [
+              { name: "Twaróg półtłusty", total: "250 g", p1: "100 g", p2: "150 g" },
+              { name: "Płatki owsiane", total: "130 g", p1: "45 g", p2: "85 g" },
+              { name: "Banan (dojrzały)", total: "180 g (1.5 szt.)", p1: "60 g", p2: "120 g" },
+              { name: "Jajko (1 szt. jako spoiwo ciasta) + 1/2 łyżeczki proszku do pieczenia", total: "55 g (1 szt.)", p1: "15 g (w cieście)", p2: "40 g (w cieście)" },
+              { name: "Mleko 2% (jeśli ciasto jest zbyt gęste)", total: "60 ml", p1: "20 ml", p2: "40 ml" },
+              { name: "Olej rzepakowy (do smażenia)", total: "10 g", p1: "3 g", p2: "7 g" },
+              { name: "Owoce (np. maliny, borówki, jabłko)", total: "200 g", p1: "80 g", p2: "120 g" }
+            ],
+            p1Ingredients: [
+              { name: "Jogurt naturalny gęsty (na wierzch)", amount: "60 g" }
+            ],
+            p2Ingredients: [
+              { name: "Masło orzechowe 100%", amount: "25 g" },
+              { name: "Miód lub syrop klonowy", amount: "15 g" }
+            ],
+            steps: [
+              "W kielichu blendera umieść 250 g twarogu, 130 g płatków owsianych, 180 g banana, 1 jajko, proszek do pieczenia oraz 60 ml mleka.",
+              "Zblenduj na gęste, gładkie ciasto (konsystencja gęstej śmietany).",
+              "Smaż niewielkie placuszki na lekko natłuszczonej patelni (ok. 2–3 min z każdej strony na małym ogniu) lub upiecz w air fryerze wyłożonym papierem do pieczenia (180°C przez 8–10 min).",
+              "Podziel placuszki: ok. 4 sztuki dla Osoby 1 (z 60 g jogurtu i 80 g owoców) oraz ok. 7–8 sztuk dla Osoby 2 (z 120 g owoców, 25 g masła orzechowego i 15 g miodu)."
+            ],
+            macros: {
+              p1: { kcal: 520, p: 29, f: 13, c: 70 },
+              p2: { kcal: 1050, p: 50, f: 34, c: 134 }
+            },
+            shopping: [
+              { name: "Twaróg półtłusty", grams: 250, unit: "g", cat: "Nabiał" },
+              { name: "Płatki owsiane", grams: 130, unit: "g", cat: "Produkty suche" },
+              { name: "Banany", grams: 180, unit: "g", cat: "Warzywa i owoce" },
+              { name: "Jajko (składnik ciasta)", grams: 55, unit: "g", cat: "Nabiał" },
+              { name: "Mleko 2%", grams: 60, unit: "ml", cat: "Nabiał" },
+              { name: "Olej rzepakowy", grams: 10, unit: "g", cat: "Strączki i dodatki" },
+              { name: "Owoce (maliny / borówki)", grams: 200, unit: "g", cat: "Warzywa i owoce" },
+              { name: "Jogurt naturalny gęsty", grams: 60, unit: "g", cat: "Nabiał" },
+              { name: "Masło orzechowe 100%", grams: 25, unit: "g", cat: "Strączki i dodatki" },
+              { name: "Miód", grams: 15, unit: "g", cat: "Strączki i dodatki" }
+            ]
+          },
+          {
+            id: "d5-m2",
+            type: "Obiad",
+            time: "30 min",
+            equipment: ["Air Fryer / Piekarnik"],
+            title: "Domowe frytki z air fryera, surówka z białej kapusty + kotlet warzywny / filet z kurczaka",
+            summary: "Piątkowy comfort food w lekkiej wersji z air fryera, bez głębokiego smażenia.",
+            baseIngredients: [
+              { name: "Ziemniaki lub bataty (pokrojone w słupki na frytki)", total: "680 g", p1: "230 g", p2: "450 g" },
+              { name: "Oliwa z oliwek (do frytek i surówki)", total: "20 g", p1: "7 g", p2: "13 g" },
+              { name: "Kapusta biała lub pekińska + marchew + ogórek (na surówkę)", total: "360 g", p1: "160 g", p2: "200 g" },
+              { name: "Sok z cytryny, szczypta cukru/ksylitolu, sól, pieprz", total: "do smaku", p1: "połowa", p2: "połowa" }
+            ],
+            p1Ingredients: [
+              { name: "Gotowy kotlet warzywny / sojowy ze sklepu (lub 140 g fasoli/ciecierzycy)", amount: "150 g (2 szt.)" },
+              { name: "Sos jogurtowy lub ketchup bez cukru", amount: "40 g" }
+            ],
+            p2Ingredients: [
+              { name: "Filet z piersi kurczaka lub indyka (surowy)", amount: "230 g" },
+              { name: "Bułka tarta lub płatki kukurydziane pokruszone (opcjonalna panierka)", amount: "20 g" }
+            ],
+            steps: [
+              "Pokrój 680 g ziemniaków w słupki, opłucz w zimnej wodzie i dokładnie osusz ręcznikiem papierowym. Wymieszaj z 12 g oliwy i solą.",
+              "Wstaw frytki do air fryera na 20–22 minuty w 195°C (potrząsaj koszem co 7 minut) lub upiecz w piekarniku (210°C, 25 min).",
+              "W tym czasie poszatkuj kapustę, zetrzyj marchew, pokrój ogórka i wymieszaj z pozostałą oliwą (8 g), sokiem z cytryny, solą i pieprzem.",
+              "Na ostatnich 12 minut pieczenia dorzuć do air fryera/piekarnika kotlety warzywne dla Osoby 1 oraz przyprawiony (i opcjonalnie obtoczony w panierce) filet z kurczaka dla Osoby 2. Podawaj z frytkami i surówką."
+            ],
+            macros: {
+              p1: { kcal: 585, p: 24, f: 16, c: 84 },
+              p2: { kcal: 1065, p: 64, f: 26, c: 138 }
+            },
+            shopping: [
+              { name: "Ziemniaki / bataty", grams: 680, unit: "g", cat: "Warzywa i owoce" },
+              { name: "Oliwa z oliwek", grams: 20, unit: "g", cat: "Strączki i dodatki" },
+              { name: "Kapusta biała/pekińska, marchew, ogórek", grams: 360, unit: "g", cat: "Warzywa i owoce" },
+              { name: "Kotlety warzywne / sojowe", grams: 150, unit: "g", cat: "Strączki i dodatki" },
+              { name: "Filet z piersi kurczaka / indyka", grams: 230, unit: "g", cat: "Mięso dla Osoby 2" },
+              { name: "Bułka tarta / płatki kukurydziane", grams: 20, unit: "g", cat: "Produkty suche" }
+            ]
+          },
+          {
+            id: "d5-m3",
+            type: "Kolacja",
+            time: "20 min",
+            equipment: ["Patelnia", "Air Fryer / Piekarnik"],
+            title: "Domowe zapiekanki z pieczarkami, cebulką i ciągnącym serem",
+            summary: "Klasyczne polskie zapiekanki z domowego piekarnika lub air fryera, przygotowane na bazie duszonych pieczarek.",
+            baseIngredients: [
+              { name: "Bagietka pełnoziarnista lub bułki paryskie/grahamki", total: "230 g", p1: "80 g", p2: "150 g" },
+              { name: "Pieczarki świeże (starte lub pokrojone)", total: "300 g", p1: "130 g", p2: "170 g" },
+              { name: "Cebula", total: "100 g", p1: "40 g", p2: "60 g" },
+              { name: "Masło lub oliwa (do podduszenia pieczarek)", total: "10 g", p1: "4 g", p2: "6 g" },
+              { name: "Ser żółty gouda lub mozzarella tarty", total: "90 g", p1: "30 g", p2: "60 g" },
+              { name: "Pomidor i ogórek (podane jako świeży dodatek)", total: "220 g", p1: "110 g", p2: "110 g" }
+            ],
+            p1Ingredients: [
+              { name: "Serek wiejski lub jogurt skyr (do zjedzenia obok dla podbicia białka)", amount: "150 g" }
+            ],
+            p2Ingredients: [
+              { name: "Szynka drobiowa lub pokrojony pieczony kurczak", amount: "110 g" },
+              { name: "Ketchup / sos czosnkowy na bazie jogurtu", amount: "30 g" }
+            ],
+            steps: [
+              "Pieczarki (300 g) oczyść i zetrzyj na grubych oczkach lub pokrój w plasterki, a cebulę (100 g) posiekaj w drobną kostkę.",
+              "Na patelni rozgrzej 10 g masła/oliwy, wrzuć cebulę i pieczarki, dopraw solą i pieprzem. Smaż ok. 7–8 minut, aż woda całkowicie odparuje.",
+              "Przekrój pieczywo wzdłuż. Na część Osoby 1 (80 g) wyłóż 40% farszu pieczarkowego i 30 g sera. Na część Osoby 2 (150 g) wyłóż 110 g wędliny/kurczaka, resztę pieczarek i 60 g sera.",
+              "Zapiekaj w air fryerze (185°C, 5–6 min) lub piekarniku (200°C, 8 min). Podawaj ze świeżym pomidorem i ogórkiem (oraz serkiem wiejskim dla Osoby 1)."
+            ],
+            macros: {
+              p1: { kcal: 580, p: 32, f: 18, c: 70 },
+              p2: { kcal: 1005, p: 56, f: 34, c: 114 }
+            },
+            shopping: [
+              { name: "Bagietka pełnoziarnista / grahamki", grams: 230, unit: "g", cat: "Produkty suche" },
+              { name: "Pieczarki", grams: 300, unit: "g", cat: "Warzywa i owoce" },
+              { name: "Cebula", grams: 100, unit: "g", cat: "Warzywa i owoce" },
+              { name: "Masło extra", grams: 10, unit: "g", cat: "Nabiał" },
+              { name: "Ser żółty / mozzarella", grams: 90, unit: "g", cat: "Nabiał" },
+              { name: "Pomidor i ogórek", grams: 220, unit: "g", cat: "Warzywa i owoce" },
+              { name: "Serek wiejski / Skyr", grams: 150, unit: "g", cat: "Nabiał" },
+              { name: "Szynka drobiowa / filet z kurczaka", grams: 110, unit: "g", cat: "Mięso dla Osoby 2" }
+            ]
+          }
+        ]
+      },
+
+      // ==================== DZIEŃ 6: SOBOTA ====================
+      {
+        day: 6,
+        name: "Sobota",
+        shortName: "Sob",
+        meals: [
+          {
+            id: "d6-m1",
+            type: "Śniadanie",
+            time: "20 min",
+            equipment: ["Garnek", "Blender"],
+            title: "Kremowy budyń jaglany z wanilią, owocami i chrupiącymi orzechami",
+            summary: "Zblendowana kasza jaglana tworzy aksamitny deserowy budyń bez cukru i bez jajek.",
+            baseIngredients: [
+              { name: "Kasza jaglana (sucha)", total: "145 g", p1: "45 g", p2: "100 g" },
+              { name: "Mleko 2% lub napój sojowy", total: "600 ml", p1: "220 ml", p2: "380 ml" },
+              { name: "Banan", total: "150 g", p1: "60 g", p2: "90 g" },
+              { name: "Owoce (np. maliny, borówki lub kiwi)", total: "200 g", p1: "80 g", p2: "120 g" },
+              { name: "Ekstrakt waniliowy lub cukier wanilinowy", total: "1 łyżeczka", p1: "połowa", p2: "połowa" }
+            ],
+            p1Ingredients: [
+              { name: "Jogurt Skyr naturalny (do wymieszania lub obok)", amount: "150 g" },
+              { name: "Migdały w płatkach lub orzechy", amount: "10 g" }
+            ],
+            p2Ingredients: [
+              { name: "Jogurt Skyr naturalny", amount: "150 g" },
+              { name: "Masło orzechowe 100%", amount: "25 g" },
+              { name: "Orzechy nerkowca lub włoskie", amount: "20 g" }
+            ],
+            steps: [
+              "Przepłucz 145 g kaszy jaglanej wrzątkiem na sitku (pozbędziesz się goryczki).",
+              "Przełóż kaszę do garnka, zalej 600 ml mleka i gotuj pod przykryciem na małym ogniu ok. 15 minut, aż kasza wchłonie płyn i będzie miękka.",
+              "Dodaj 150 g banana oraz wanilię i zblenduj całość na gładki budyń (jeśli trzeba, dolej 2–3 łyżki mleka).",
+              "Rozłóż do dwóch misek (ok. 1/3 dla Osoby 1, 2/3 dla Osoby 2), dodaj po 150 g skyru, owoce oraz odpowiednie porcje orzechów i masła orzechowego."
+            ],
+            macros: {
+              p1: { kcal: 525, p: 28, f: 11, c: 76 },
+              p2: { kcal: 1065, p: 46, f: 34, c: 142 }
+            },
+            shopping: [
+              { name: "Kasza jaglana", grams: 145, unit: "g", cat: "Produkty suche" },
+              { name: "Mleko 2% / napój sojowy", grams: 600, unit: "ml", cat: "Nabiał" },
+              { name: "Banany", grams: 150, unit: "g", cat: "Warzywa i owoce" },
+              { name: "Maliny / borówki / kiwi", grams: 200, unit: "g", cat: "Warzywa i owoce" },
+              { name: "Jogurt Skyr naturalny", grams: 300, unit: "g", cat: "Nabiał" },
+              { name: "Migdały / orzechy", grams: 30, unit: "g", cat: "Strączki i dodatki" },
+              { name: "Masło orzechowe 100%", grams: 25, unit: "g", cat: "Strączki i dodatki" }
+            ]
+          },
+          {
+            id: "d6-m2",
+            type: "Obiad",
+            time: "25 min",
+            equipment: ["Piekarnik / Air Fryer"],
+            title: "Sobotnia domowa pizza na chlebkach naan / tortilli (Wege vs. z Kurczakiem)",
+            summary: "Szybka, chrupiąca pizza bez wyrabiania drożdżowego ciasta – gotowa w 10 minut w piekarniku lub air fryerze.",
+            baseIngredients: [
+              { name: "Spody do pizzy / chlebki naan / duże tortille pszenne", total: "260 g", p1: "80 g (1 szt.)", p2: "180 g (2 szt.)" },
+              { name: "Passata pomidorowa z oregano i czosnkiem", total: "180 g", p1: "60 g", p2: "120 g" },
+              { name: "Ser mozzarella tarty lub w kulce", total: "130 g", p1: "45 g", p2: "85 g" },
+              { name: "Pieczarki + papryka + kukurydza + czerwona cebula", total: "260 g", p1: "110 g", p2: "150 g" },
+              { name: "Rukola lub miks sałat (podane obok / na wierzch)", total: "80 g", p1: "40 g", p2: "40 g" }
+            ],
+            p1Ingredients: [
+              { name: "Czerwona fasola lub ciecierzyca (posypana na pizzę)", amount: "60 g" },
+              { name: "Oliwa z oliwek (do skropienia sałatki)", amount: "5 g" }
+            ],
+            p2Ingredients: [
+              { name: "Pierś z kurczaka (pokrojona w paski, lekko podsmażona) lub szynka parmeńska/drobiowa", amount: "180 g" },
+              { name: "Oliwa z oliwek", amount: "10 g" }
+            ],
+            steps: [
+              "Rozgrzej piekarnik do 210°C (lub air fryer do 195°C). Jeśli używasz surowego kurczaka dla Osoby 2, pokrój go w paski, przypraw i podsmaż przez 5 minut na patelni.",
+              "Posmaruj spody (1 dla Osoby 1, 2 dla Osoby 2) passatą pomidorową wymieszaną z oregano i czosnkiem.",
+              "Rozłóż tartą mozzarellę oraz pokrojone warzywa (pieczarki, paprykę, kukurydzę, cebulę).",
+              "Na pizzę Osoby 1 dorzuć 60 g fasoli/ciecierzycy, a na pizze Osoby 2 – 180 g kurczaka/szynki.",
+              "Piecz ok. 8–10 minut, aż brzegi będą chrupiące, a ser lekko się zarumieni. Podawaj z rukolą."
+            ],
+            macros: {
+              p1: { kcal: 590, p: 28, f: 18, c: 76 },
+              p2: { kcal: 1120, p: 68, f: 36, c: 126 }
+            },
+            shopping: [
+              { name: "Chlebki naan / duże tortille pszenne", grams: 260, unit: "g", cat: "Produkty suche" },
+              { name: "Passata pomidorowa", grams: 180, unit: "g", cat: "Strączki i dodatki" },
+              { name: "Ser mozzarella", grams: 130, unit: "g", cat: "Nabiał" },
+              { name: "Pieczarki, papryka, kukurydza, cebula", grams: 260, unit: "g", cat: "Warzywa i owoce" },
+              { name: "Rukola / miks sałat", grams: 80, unit: "g", cat: "Warzywa i owoce" },
+              { name: "Fasola czerwona / ciecierzyca konserwowa", grams: 60, unit: "g", cat: "Strączki i dodatki" },
+              { name: "Pierś z kurczaka / szynka", grams: 180, unit: "g", cat: "Mięso dla Osoby 2" },
+              { name: "Oliwa z oliwek", grams: 15, unit: "g", cat: "Strączki i dodatki" }
+            ]
+          },
+          {
+            id: "d6-m3",
+            type: "Kolacja",
+            time: "15 min",
+            equipment: ["Miska i widelec / Mikser"],
+            title: "Wiosenny twarożek ze szczypiorkiem, rzodkiewką i pieczywem",
+            summary: "Lekka, świeża kolacja po bardziej wyrazistym obiedzie. Bogata w białko i chrupiące warzywa.",
+            baseIngredients: [
+              { name: "Twaróg półtłusty", total: "300 g", p1: "130 g", p2: "170 g" },
+              { name: "Jogurt naturalny gęsty 2%", total: "120 g", p1: "50 g", p2: "70 g" },
+              { name: "Rzodkiewka + ogórek zielony + szczypiorek", total: "260 g", p1: "120 g", p2: "140 g" },
+              { name: "Chleb żytni lub pełnoziarnisty", total: "215 g", p1: "75 g (2 kromki)", p2: "140 g (4 kromki)" },
+              { name: "Sól, świeżo mielony pieprz", total: "do smaku", p1: "połowa", p2: "połowa" }
+            ],
+            p1Ingredients: [
+              { name: "Pestki słonecznika lub dyni (posypane na twarożek)", amount: "10 g" }
+            ],
+            p2Ingredients: [
+              { name: "Wędlina drobiowa lub pieczony schab/polędwica", amount: "120 g" },
+              { name: "Masło extra (do posmarowania chleba)", amount: "15 g" }
+            ],
+            steps: [
+              "W misce rozgnieć widelcem 300 g twarogu ze 120 g jogurtu naturalnego na kremową masę.",
+              "Pokrój rzodkiewkę i ogórka w drobną kosteczkę, posiekaj szczypiorek. Wymieszaj wszystko z twarożkiem, dopraw solą i pieprzem.",
+              "Podziel twarożek na dwie porcje (ok. 45% dla Osoby 1 + 10 g pestek, 55% dla Osoby 2).",
+              "Podaj z chlebem (dla Osoby 2 dodatkowo z masłem i plastrami wędliny/pieczonego mięsa)."
+            ],
+            macros: {
+              p1: { kcal: 565, p: 34, f: 16, c: 68 },
+              p2: { kcal: 940, p: 58, f: 30, c: 106 }
+            },
+            shopping: [
+              { name: "Twaróg półtłusty", grams: 300, unit: "g", cat: "Nabiał" },
+              { name: "Jogurt naturalny gęsty 2%", grams: 120, unit: "g", cat: "Nabiał" },
+              { name: "Rzodkiewka, ogórek, szczypiorek", grams: 260, unit: "g", cat: "Warzywa i owoce" },
+              { name: "Chleb żytni / pełnoziarnisty", grams: 215, unit: "g", cat: "Produkty suche" },
+              { name: "Pestki słonecznika / dyni", grams: 10, unit: "g", cat: "Strączki i dodatki" },
+              { name: "Wędlina drobiowa / pieczony schab", grams: 120, unit: "g", cat: "Mięso dla Osoby 2" },
+              { name: "Masło extra", grams: 15, unit: "g", cat: "Nabiał" }
+            ]
+          }
+        ]
+      },
+
+      // ==================== DZIEŃ 7: NIEDZIELA ====================
+      {
+        day: 7,
+        name: "Niedziela",
+        shortName: "Nd",
+        meals: [
+          {
+            id: "d7-m1",
+            type: "Śniadanie",
+            time: "15 min",
+            equipment: ["Garnek / Mikrofala"],
+            title: "Niedzielna owsianka piernikowa z jabłkiem, twarogiem i orzechami",
+            summary: "Aromatyczne, spokojne śniadanie na koniec tygodnia z korzenną nutą cynamonu i przyprawy do piernika.",
+            baseIngredients: [
+              { name: "Płatki owsiane górskie", total: "145 g", p1: "50 g", p2: "95 g" },
+              { name: "Mleko 2% lub napój roślinny", total: "500 ml", p1: "200 ml", p2: "300 ml" },
+              { name: "Jabłko (pokrojone w kostkę)", total: "250 g", p1: "100 g", p2: "150 g" },
+              { name: "Twaróg półtłusty (pokruszony lub wymieszany)", total: "260 g", p1: "110 g", p2: "150 g" },
+              { name: "Przyprawa do piernika lub cynamon", total: "1 łyżeczka", p1: "pół łyżeczki", p2: "pół łyżeczki" }
+            ],
+            p1Ingredients: [
+              { name: "Orzechy włoskie (posiekane)", amount: "10 g" }
+            ],
+            p2Ingredients: [
+              { name: "Orzechy włoskie lub laskowe", amount: "25 g" },
+              { name: "Masło orzechowe lub miód", amount: "25 g" }
+            ],
+            steps: [
+              "Wsyp 145 g płatków owsianych do garnka, dodaj pokrojone w kostkę jabłko (250 g), przyprawę korzenną oraz 500 ml mleka.",
+              "Gotuj na wolnym ogniu ok. 6–8 minut, aż jabłka zmiękną, a płatki wchłoną płyn.",
+              "Rozłóż owsiankę do dwóch misek (ok. 1/3 dla Osoby 1, 2/3 dla Osoby 2).",
+              "Dodaj pokruszony twaróg (110 g dla Osoby 1, 150 g dla Osoby 2) oraz orzechy i masło orzechowe/miód dla Osoby 2."
+            ],
+            macros: {
+              p1: { kcal: 525, p: 30, f: 14, c: 68 },
+              p2: { kcal: 1055, p: 48, f: 38, c: 126 }
+            },
+            shopping: [
+              { name: "Płatki owsiane górskie", grams: 145, unit: "g", cat: "Produkty suche" },
+              { name: "Mleko 2% / napój sojowy", grams: 500, unit: "ml", cat: "Nabiał" },
+              { name: "Jabłka", grams: 250, unit: "g", cat: "Warzywa i owoce" },
+              { name: "Twaróg półtłusty", grams: 260, unit: "g", cat: "Nabiał" },
+              { name: "Orzechy włoskie", grams: 35, unit: "g", cat: "Strączki i dodatki" },
+              { name: "Masło orzechowe / miód", grams: 25, unit: "g", cat: "Strączki i dodatki" }
+            ]
+          },
+          {
+            id: "d7-m2",
+            type: "Obiad",
+            time: "35 min",
+            equipment: ["Garnek", "Air Fryer / Piekarnik"],
+            title: "Niedzielny obiad: ziemniaki z koperkiem, surówka z buraczków + gulasz z ciecierzycy / udko z kurczaka",
+            summary: "Tradycyjny polski zestaw obiadowy z pieczonym udkiem z kurczaka bez kości dla Osoby 2 oraz bogatym w białko sosem z ciecierzycy dla Osoby 1.",
+            baseIngredients: [
+              { name: "Ziemniaki (obrane)", total: "680 g", p1: "230 g", p2: "450 g" },
+              { name: "Buraczki gotowane tarte (gotowe w słoiku/paczkowane)", total: "300 g", p1: "130 g", p2: "170 g" },
+              { name: "Cebula + pieczarki (baza pod sos)", total: "200 g", p1: "80 g", p2: "120 g" },
+              { name: "Bulion warzywny + 2 łyżki jogurtu/śmietanki + mąka do zagęszczenia", total: "250 ml", p1: "100 ml", p2: "150 ml" },
+              { name: "Oliwa z oliwek + koperek świeży", total: "15 g oliwy", p1: "5 g oliwy", p2: "10 g oliwy" }
+            ],
+            p1Ingredients: [
+              { name: "Ciecierzyca lub soczewica konserwowa (do sosu pieczarkowego)", amount: "150 g" }
+            ],
+            p2Ingredients: [
+              { name: "Udko z kurczaka bez kości i skóry (surowe)", amount: "230 g" },
+              { name: "Oliwa z oliwek (do natarcia mięsa)", amount: "10 g" }
+            ],
+            steps: [
+              "Ugotuj 680 g ziemniaków w osolonej wodzie (ok. 20 min), odcedź i posyp posiekanym koperkiem.",
+              "W tym czasie 230 g udka z kurczaka bez kości natrzyj 10 g oliwy, czosnkiem, papryką słodką i majerankiem. Upiecz w air fryerze (18 min w 190°C) lub w piekarniku.",
+              "Na patelni na 10 g oliwy podsmaż posiekaną cebulę i pieczarki (200 g), podlej bulionem warzywnym i duś 8 minut. Zagęść łyżeczką mąki wymieszaną z 2 łyżkami jogurtu.",
+              "Do 40% sosu pieczarkowego dodaj 150 g ciecierzycy dla Osoby 1. Podgrzej buraczki (lub podaj na zimno z odrobiną soku z cytryny). Wyłóż całość na talerze."
+            ],
+            macros: {
+              p1: { kcal: 590, p: 24, f: 11, c: 96 },
+              p2: { kcal: 1085, p: 64, f: 34, c: 126 }
+            },
+            shopping: [
+              { name: "Ziemniaki", grams: 680, unit: "g", cat: "Warzywa i owoce" },
+              { name: "Buraczki gotowane tarte", grams: 300, unit: "g", cat: "Warzywa i owoce" },
+              { name: "Cebula i pieczarki", grams: 200, unit: "g", cat: "Warzywa i owoce" },
+              { name: "Oliwa z oliwek", grams: 25, unit: "g", cat: "Strączki i dodatki" },
+              { name: "Ciecierzyca konserwowa", grams: 150, unit: "g", cat: "Strączki i dodatki" },
+              { name: "Udko z kurczaka bez kości i skóry", grams: 230, unit: "g", cat: "Mięso dla Osoby 2" }
+            ]
+          },
+          {
+            id: "d7-m3",
+            type: "Kolacja",
+            time: "20 min",
+            equipment: ["Patelnia / Garnek"],
+            title: "Szybki makaron stir-fry z warzywami, sosem sojowym i sezamem",
+            summary: "Kolacja czyszcząca lodówkę na koniec tygodnia – makaron z chrupiącymi warzywami w prostym sosie sojowo-czosnkowym.",
+            baseIngredients: [
+              { name: "Makaron (świderki, penne lub spaghetti, suchy)", total: "210 g", p1: "65 g", p2: "145 g" },
+              { name: "Warzywa na patelnię (mrożone lub świeże: papryka, marchew, brokuł, cukinia)", total: "400 g", p1: "180 g", p2: "220 g" },
+              { name: "Sos sojowy jasny", total: "30 ml (2 łyżki)", p1: "12 ml", p2: "18 ml" },
+              { name: "Oliwa z oliwek lub olej sezamowy", total: "15 g", p1: "5 g", p2: "10 g" },
+              { name: "Sezam biały lub czarny + czosnek + imbir", total: "10 g sezamu", p1: "4 g", p2: "6 g" }
+            ],
+            p1Ingredients: [
+              { name: "Tofu wędzone lub ciecierzyca z puszki", amount: "130 g" }
+            ],
+            p2Ingredients: [
+              { name: "Pierś z kurczaka lub polędwiczka wieprzowa (surowa)", amount: "160 g" },
+              { name: "Oliwa z oliwek", amount: "5 g" }
+            ],
+            steps: [
+              "Ugotuj 210 g makaronu al dente w osolonej wodzie.",
+              "Na dużej patelni rozgrzej 15 g oliwy, wrzuć czosnek, imbir oraz pokrojone w kostkę 130 g tofu (dla O1) oraz 160 g kurczaka/polędwiczki (dla O2) – możesz je podsmażyć po dwóch stronach patelni lub w air fryerze.",
+              "Dorzuć 400 g warzyw i smaż na większym ogniu przez 6–7 minut, aby warzywa pozostały lekko chrupiące.",
+              "Wrzuć ugotowany makaron na patelnię, wlej 30 ml sosu sojowego, wymieszaj przez minutę i posyp sezamem przed podaniem."
+            ],
+            macros: {
+              p1: { kcal: 565, p: 27, f: 16, c: 76 },
+              p2: { kcal: 970, p: 58, f: 26, c: 122 }
+            },
+            shopping: [
+              { name: "Makaron penne / świderki", grams: 210, unit: "g", cat: "Produkty suche" },
+              { name: "Mieszanka warzyw na patelnię", grams: 400, unit: "g", cat: "Warzywa i owoce" },
+              { name: "Sos sojowy", grams: 30, unit: "ml", cat: "Strączki i dodatki" },
+              { name: "Oliwa z oliwek", grams: 20, unit: "g", cat: "Strączki i dodatki" },
+              { name: "Sezam", grams: 10, unit: "g", cat: "Strączki i dodatki" },
+              { name: "Tofu wędzone / ciecierzyca", grams: 130, unit: "g", cat: "Strączki i dodatki" },
+              { name: "Pierś z kurczaka / polędwiczka", grams: 160, unit: "g", cat: "Mięso dla Osoby 2" }
+            ]
+          }
+        ]
+      }
+    ];
+
+    /**
+     * DODATKOWA PULA REZERWOWYCH POSIŁKÓW (po 4 alternatywy dla Śniadań, Obiadów i Kolacji)
+     * Zachowują założenia: Osoba 1 wege bez ryb i jajek w bezpośredniej postaci (~520–600 kcal/posiłek),
+     * Osoba 2 z mięsem (~950–1100 kcal/posiłek), zwykłe budżetowe składniki, piekarnik/air fryer/blender/mikser/mikrofala.
+     */
+    const EXTRA_MEALS = [
+      // --- REZERWOWE ŚNIADANIA ---
+      {
+        id: "alt-b1",
+        type: "Śniadanie",
+        time: "15 min",
+        equipment: ["Garnek / Mikrofala"],
+        title: "Czekoladowa owsianka bananowa z kakao, skyrem i masłem orzechowym",
+        summary: "Szybka, słodka owsianka o smaku deseru czekoladowego z wysoką porcją białka ze skyru.",
+        baseIngredients: [
+          { name: "Płatki owsiane górskie", total: "145 g", p1: "50 g", p2: "95 g" },
+          { name: "Mleko 2% lub napój sojowy", total: "520 ml", p1: "200 ml", p2: "320 ml" },
+          { name: "Banan (rozgnieciony widelcem do osłodzenia)", total: "180 g", p1: "60 g", p2: "120 g" },
+          { name: "Kakao naturalne ciemne", total: "15 g (1.5 łyżki)", p1: "5 g", p2: "10 g" }
+        ],
+        p1Ingredients: [
+          { name: "Jogurt Skyr naturalny (wmieszany lub na wierzch)", amount: "150 g" },
+          { name: "Pestki dyni lub słonecznika", amount: "10 g" }
+        ],
+        p2Ingredients: [
+          { name: "Jogurt Skyr naturalny", amount: "150 g" },
+          { name: "Masło orzechowe 100%", amount: "30 g" },
+          { name: "Orzechy włoskie lub laskowe", amount: "15 g" }
+        ],
+        steps: [
+          "Wsyp 145 g płatków owsianych i 15 g kakao do garnka, zalej 520 ml mleka i gotuj ok. 6 minut mieszając (lub podgrzej w mikrofali przez 3.5 minuty).",
+          "Pod koniec gotowania wmieszaj rozgniecionego widelcem banana (180 g) – naturalnie osłodzi owsiankę.",
+          "Przełóż do dwóch misek (1/3 Osoba 1, 2/3 Osoba 2), dodaj po 150 g skyru oraz odpowiednie porcje pestek, orzechów i masła orzechowego."
+        ],
+        macros: {
+          p1: { kcal: 520, p: 30, f: 13, c: 70 },
+          p2: { kcal: 1050, p: 48, f: 38, c: 128 }
+        },
+        shopping: [
+          { name: "Płatki owsiane górskie", grams: 145, unit: "g", cat: "Produkty suche" },
+          { name: "Mleko 2% / napój sojowy", grams: 520, unit: "ml", cat: "Nabiał" },
+          { name: "Banany", grams: 180, unit: "g", cat: "Warzywa i owoce" },
+          { name: "Kakao naturalne", grams: 15, unit: "g", cat: "Produkty suche" },
+          { name: "Jogurt Skyr naturalny", grams: 300, unit: "g", cat: "Nabiał" },
+          { name: "Pestki dyni / słonecznika", grams: 10, unit: "g", cat: "Strączki i dodatki" },
+          { name: "Masło orzechowe 100%", grams: 30, unit: "g", cat: "Strączki i dodatki" },
+          { name: "Orzechy włoskie / laskowe", grams: 15, unit: "g", cat: "Strączki i dodatki" }
+        ]
+      },
+      {
+        id: "alt-b2",
+        type: "Śniadanie",
+        time: "15 min",
+        equipment: ["Air Fryer / Opiekacz", "Miska"],
+        title: "Chrupiące grzanki z pastą z twarogu i suszonych pomidorów + warzywa",
+        summary: "Wytrawne śniadanie na ciepło bez jajek – kremowa pasta twarogowo-pomidorowa na chrupiącym pieczywie.",
+        baseIngredients: [
+          { name: "Chleb żytni lub grahamki", total: "235 g", p1: "85 g (2 kromki)", p2: "150 g (4 kromki)" },
+          { name: "Twaróg półtłusty", total: "280 g", p1: "120 g", p2: "160 g" },
+          { name: "Jogurt naturalny gęsty + suszone pomidory z zalewy (odsączone)", total: "120 g (80g jogurt + 40g pomidory)", p1: "50 g", p2: "70 g" },
+          { name: "Ogórek zielony + papryka + szczypiorek", total: "240 g", p1: "110 g", p2: "130 g" }
+        ],
+        p1Ingredients: [
+          { name: "Pestki słonecznika (do posypania kanapek)", amount: "10 g" }
+        ],
+        p2Ingredients: [
+          { name: "Szynka drobiowa lub pieczony filet z indyka", amount: "130 g" },
+          { name: "Masło extra lub oliwa z zalewy pomidorów", amount: "15 g" }
+        ],
+        steps: [
+          "Podpiecz pieczywo w air fryerze (3 min w 185°C) lub w piekarniku/opiekaczu.",
+          "Rozgnieć twaróg (280 g) z jogurtem naturalnym i drobno posiekanymi suszonymi pomidorami, dopraw pieprzem i bazylią.",
+          "Posmaruj grzanki pastą twarogową (Osobie 2 dołóż na wierzch plastry szynki/indyka i odrobinę masła/oliwy). Podawaj z pokrojonym ogórkiem i papryką."
+        ],
+        macros: {
+          p1: { kcal: 535, p: 31, f: 14, c: 70 },
+          p2: { kcal: 995, p: 60, f: 32, c: 114 }
+        },
+        shopping: [
+          { name: "Chleb żytni / grahamki", grams: 235, unit: "g", cat: "Produkty suche" },
+          { name: "Twaróg półtłusty", grams: 280, unit: "g", cat: "Nabiał" },
+          { name: "Jogurt naturalny gęsty", grams: 80, unit: "g", cat: "Nabiał" },
+          { name: "Suszone pomidory w oleju", grams: 40, unit: "g", cat: "Strączki i dodatki" },
+          { name: "Ogórek zielony i papryka", grams: 240, unit: "g", cat: "Warzywa i owoce" },
+          { name: "Pestki słonecznika", grams: 10, unit: "g", cat: "Strączki i dodatki" },
+          { name: "Szynka drobiowa / filet z indyka", grams: 130, unit: "g", cat: "Mięso dla Osoby 2" },
+          { name: "Masło extra", grams: 15, unit: "g", cat: "Nabiał" }
+        ]
+      },
+      {
+        id: "alt-b3",
+        type: "Śniadanie",
+        time: "20 min",
+        equipment: ["Blender", "Patelnia / Air Fryer"],
+        title: "Gofry lub placki gryczano-bananowe z twarożkiem i owocami (bez jajek)",
+        summary: "W 100% roślinne ciasto z płatków owsianych, kaszy/mąki i banana – świetnie się trzyma bez dodawania jajka.",
+        baseIngredients: [
+          { name: "Płatki owsiane lub mąka owsiana", total: "190 g", p1: "60 g", p2: "130 g" },
+          { name: "Banan (bardzo dojrzały – zastępuje jajko w cieście)", total: "220 g (2 szt.)", p1: "80 g", p2: "140 g" },
+          { name: "Mleko 2% lub napój roślinny + 1 łyżeczka proszku do pieczenia", total: "260 ml", p1: "90 ml", p2: "170 ml" },
+          { name: "Twaróg półtłusty lub serek homogenizowany naturalny", total: "260 g", p1: "110 g", p2: "150 g" },
+          { name: "Owoce leśne / truskawki", total: "200 g", p1: "80 g", p2: "120 g" }
+        ],
+        p1Ingredients: [
+          { name: "Olej rzepakowy (do smażenia)", amount: "4 g" }
+        ],
+        p2Ingredients: [
+          { name: "Olej rzepakowy (do smażenia)", amount: "8 g" },
+          { name: "Masło orzechowe lub miód", amount: "25 g" }
+        ],
+        steps: [
+          "Zblenduj płatki owsiane (190 g), banany (220 g), mleko (260 ml) i proszek do pieczenia na gęste, jednolite ciasto.",
+          "Smaż niewielkie placuszki na lekko natłuszczonej patelni na średnim ogniu (ok. 2.5 min z każdej strony) lub upiecz w air fryerze na papierze do pieczenia (180°C, 9 min).",
+          "Podaj z twarożkiem i owocami (oraz masłem orzechowym/miodem dla Osoby 2)."
+        ],
+        macros: {
+          p1: { kcal: 530, p: 28, f: 12, c: 76 },
+          p2: { kcal: 1060, p: 48, f: 32, c: 144 }
+        },
+        shopping: [
+          { name: "Płatki owsiane", grams: 190, unit: "g", cat: "Produkty suche" },
+          { name: "Banany", grams: 220, unit: "g", cat: "Warzywa i owoce" },
+          { name: "Mleko 2% / napój sojowy", grams: 260, unit: "ml", cat: "Nabiał" },
+          { name: "Twaróg półtłusty", grams: 260, unit: "g", cat: "Nabiał" },
+          { name: "Owoce leśne / truskawki", grams: 200, unit: "g", cat: "Warzywa i owoce" },
+          { name: "Olej rzepakowy", grams: 12, unit: "g", cat: "Strączki i dodatki" },
+          { name: "Masło orzechowe / miód", grams: 25, unit: "g", cat: "Strączki i dodatki" }
+        ]
+      },
+
+      // --- REZERWOWE OBIADY ---
+      {
+        id: "alt-l1",
+        type: "Obiad",
+        time: "25 min",
+        equipment: ["Garnek", "Patelnia"],
+        title: "Chili sin carne (O1) i Chili con carne (O2) z ryżem i kukurydzą",
+        summary: "Jedna aromatyczna baza pomidorowo-fasolowa z kukurydzą i papryką. Do części Osoby 2 dodajesz podsmażone mięso mielone.",
+        baseIngredients: [
+          { name: "Ryż biały lub parboiled (suchy)", total: "215 g", p1: "65 g", p2: "150 g" },
+          { name: "Czerwona fasola z puszki (odsączona)", total: "240 g (1 puszka)", p1: "140 g", p2: "100 g" },
+          { name: "Kukurydza konserwowa + papryka + cebula", total: "300 g", p1: "130 g", p2: "170 g" },
+          { name: "Pomidory krojone z puszki", total: "400 g", p1: "170 g", p2: "230 g" },
+          { name: "Oliwa z oliwek, kmin rzymski, papryka wędzona, czosnek", total: "15 g oliwy", p1: "5 g", p2: "10 g" }
+        ],
+        p1Ingredients: [
+          { name: "Jogurt naturalny gęsty 2% (kleks na wierzch do złagodzenia ostrości)", amount: "50 g" }
+        ],
+        p2Ingredients: [
+          { name: "Mięso mielone wołowe lub z indyka (surowe)", amount: "210 g" },
+          { name: "Ser żółty tarty (na wierzch)", amount: "30 g" }
+        ],
+        steps: [
+          "Ugotuj 215 g ryżu w osolonej wodzie.",
+          "Na patelni na 15 g oliwy zeszklij cebulę, czosnek i pokrojoną paprykę, dodaj kmin rzymski i paprykę wędzoną. Wlej 400 g pomidorów z puszki oraz kukurydzę i gotuj 8 minut.",
+          "Przełóż 45% sosu do miseczki/rondelka dla Osoby 1 i wmieszaj 140 g czerwonej fasoli – podgrzej 3 minuty.",
+          "Na głównej patelni podsmaż 210 g mięsa mielonego, połącz z pozostałym sosem pomidorowym i 100 g fasoli. Podawaj z ryżem (O1 z kleksem jogurtu, O2 ze startym serem)."
+        ],
+        macros: {
+          p1: { kcal: 580, p: 24, f: 11, c: 96 },
+          p2: { kcal: 1110, p: 68, f: 34, c: 132 }
+        },
+        shopping: [
+          { name: "Ryż biały / parboiled", grams: 215, unit: "g", cat: "Produkty suche" },
+          { name: "Fasola czerwona konserwowa", grams: 240, unit: "g", cat: "Strączki i dodatki" },
+          { name: "Kukurydza, papryka, cebula", grams: 300, unit: "g", cat: "Warzywa i owoce" },
+          { name: "Pomidory krojone w puszce", grams: 400, unit: "g", cat: "Strączki i dodatki" },
+          { name: "Oliwa z oliwek", grams: 15, unit: "g", cat: "Strączki i dodatki" },
+          { name: "Jogurt naturalny gęsty", grams: 50, unit: "g", cat: "Nabiał" },
+          { name: "Mięso mielone wołowe lub z indyka", grams: 210, unit: "g", cat: "Mięso dla Osoby 2" },
+          { name: "Ser żółty", grams: 30, unit: "g", cat: "Nabiał" }
+        ]
+      },
+      {
+        id: "alt-l2",
+        type: "Obiad",
+        time: "25 min",
+        equipment: ["Garnek", "Air Fryer"],
+        title: "Kasza pęczak z pieczonym brokułem, sosem serowo-jogurtowym + ciecierzyca / indyk",
+        summary: "Sycący pęczak z warzywami z air fryera oraz kremowym sosem na bazie jogurtu i mozzarelli.",
+        baseIngredients: [
+          { name: "Kasza pęczak (sucha)", total: "210 g", p1: "65 g", p2: "145 g" },
+          { name: "Brokuł świeży lub mrożony + marchewka", total: "450 g", p1: "200 g", p2: "250 g" },
+          { name: "Jogurt naturalny gęsty 2% + ser mozzarella/cheddar tarty", total: "180 g (120g jogurt + 60g ser)", p1: "75 g", p2: "105 g" },
+          { name: "Oliwa z oliwek, czosnek, gałka muszkatołowa, pieprz", total: "15 g oliwy", p1: "5 g", p2: "10 g" }
+        ],
+        p1Ingredients: [
+          { name: "Ciecierzyca konserwowa (upieczona razem z brokułem)", amount: "145 g" }
+        ],
+        p2Ingredients: [
+          { name: "Pierś z indyka lub kurczaka (surowa)", amount: "230 g" },
+          { name: "Oliwa z oliwek (do mięsa)", amount: "10 g" }
+        ],
+        steps: [
+          "Ugotuj 210 g kaszy pęczak w osolonej wodzie (ok. 15–18 min).",
+          "Różyczki brokuła i plastry marchewki skrop 15 g oliwy, posól i upiecz w air fryerze (185°C, 12–14 min) – dla Osoby 1 dorzuć 145 g ciecierzycy, a obok upiecz 230 g przyprawionego indyka dla Osoby 2.",
+          "W małym rondelku podgrzej na małym ogniu 120 g jogurtu ze startym serem (60 g) i czosnkiem do uzyskania gładkiego sosu. Polej kaszę, warzywa i dodatki."
+        ],
+        macros: {
+          p1: { kcal: 590, p: 27, f: 15, c: 86 },
+          p2: { kcal: 1065, p: 70, f: 30, c: 124 }
+        },
+        shopping: [
+          { name: "Kasza pęczak", grams: 210, unit: "g", cat: "Produkty suche" },
+          { name: "Brokuł i marchew", grams: 450, unit: "g", cat: "Warzywa i owoce" },
+          { name: "Jogurt naturalny gęsty", grams: 120, unit: "g", cat: "Nabiał" },
+          { name: "Ser mozzarella / cheddar", grams: 60, unit: "g", cat: "Nabiał" },
+          { name: "Oliwa z oliwek", grams: 25, unit: "g", cat: "Strączki i dodatki" },
+          { name: "Ciecierzyca konserwowa", grams: 145, unit: "g", cat: "Strączki i dodatki" },
+          { name: "Pierś z indyka / kurczaka", grams: 230, unit: "g", cat: "Mięso dla Osoby 2" }
+        ]
+      },
+      {
+        id: "alt-l3",
+        type: "Obiad",
+        time: "25 min",
+        equipment: ["Patelnia / Garnek"],
+        title: "Makaron z kremowym sosem pieczarkowo-śmietankowym + tofu / kurczak",
+        summary: "Klasyczny, tani i błyskawiczny makaron z pieczarkami i natką pietruszki – gotowy w 20 minut.",
+        baseIngredients: [
+          { name: "Makaron tagliatelle lub świderki (suchy)", total: "215 g", p1: "65 g", p2: "150 g" },
+          { name: "Pieczarki świeże + cebula", total: "380 g (300g pieczarki + 80g cebula)", p1: "160 g", p2: "220 g" },
+          { name: "Śmietanka 12% lub jogurt grecki + 100 ml wody z makaronu", total: "140 g", p1: "55 g", p2: "85 g" },
+          { name: "Oliwa z oliwek lub masło, natka pietruszki, czosnek, pieprz", total: "15 g tłuszczu", p1: "5 g", p2: "10 g" }
+        ],
+        p1Ingredients: [
+          { name: "Tofu wędzone (pokrojone w kostkę i podsmażone z pieczarkami)", amount: "140 g" }
+        ],
+        p2Ingredients: [
+          { name: "Pierś z kurczaka (pokrojona w paski, surowa)", amount: "220 g" },
+          { name: "Ser parmezan lub żółty tarty", amount: "25 g" }
+        ],
+        steps: [
+          "Ugotuj 215 g makaronu al dente (zostaw pół szklanki wody z gotowania).",
+          "Na patelni na 15 g oliwy/masła zeszklij cebulę, dorzuć pokrojone pieczarki oraz (po dwóch stronach patelni) pokrojone tofu dla Osoby 1 i paski kurczaka dla Osoby 2. Smaż ok. 8 minut.",
+          "Wlej wodę z makaronu oraz śmietankę/jogurt, dodaj posiekaną natkę pietruszki, wymieszaj z makaronem i rozłóż porcje na talerze."
+        ],
+        macros: {
+          p1: { kcal: 580, p: 27, f: 18, c: 78 },
+          p2: { kcal: 1090, p: 68, f: 34, c: 124 }
+        },
+        shopping: [
+          { name: "Makaron tagliatelle / świderki", grams: 215, unit: "g", cat: "Produkty suche" },
+          { name: "Pieczarki", grams: 300, unit: "g", cat: "Warzywa i owoce" },
+          { name: "Cebula", grams: 80, unit: "g", cat: "Warzywa i owoce" },
+          { name: "Śmietanka 12% / jogurt grecki", grams: 140, unit: "g", cat: "Nabiał" },
+          { name: "Oliwa z oliwek", grams: 15, unit: "g", cat: "Strączki i dodatki" },
+          { name: "Tofu wędzone", grams: 140, unit: "g", cat: "Strączki i dodatki" },
+          { name: "Pierś z kurczaka", grams: 220, unit: "g", cat: "Mięso dla Osoby 2" },
+          { name: "Ser parmezan / żółty", grams: 25, unit: "g", cat: "Nabiał" }
+        ]
+      },
+
+      // --- REZERWOWE KOLACJE ---
+      {
+        id: "alt-d1",
+        type: "Kolacja",
+        time: "15 min",
+        equipment: ["Air Fryer / Patelnia"],
+        title: "Chrupiące tortille (quesadilla) z serem, fasolą i warzywami + kurczak dla O2",
+        summary: "Szybkie placki pszenne zapiekane na złoto z ciągnącym serem, kukurydzą, papryką i sosem jogurtowym.",
+        baseIngredients: [
+          { name: "Placki tortilla pszenna lub pełnoziarnista (duże)", total: "185 g (3 szt.)", p1: "62 g (1 szt.)", p2: "123 g (2 szt.)" },
+          { name: "Ser żółty gouda lub mozzarella tarty", total: "95 g", p1: "35 g", p2: "60 g" },
+          { name: "Czerwona fasola + kukurydza + papryka", total: "240 g", p1: "120 g", p2: "120 g" },
+          { name: "Jogurt naturalny gęsty (jako dip obok)", total: "100 g", p1: "45 g", p2: "55 g" }
+        ],
+        p1Ingredients: [
+          { name: "Serek wiejski lub dodatkowa fasola do nadzienia", amount: "80 g" }
+        ],
+        p2Ingredients: [
+          { name: "Pieczony kurczak w paski lub szynka drobiowa", amount: "130 g" },
+          { name: "Oliwa z oliwek / masło orzechowe lub awokado (opcjonalnie)", amount: "10 g" }
+        ],
+        steps: [
+          "Na połówce tortilli Osoby 1 ułóż 35 g sera, 120 g mieszanki warzywno-fasolowej oraz 80 g serka/fasoli. Złóż na pół.",
+          "Na dwóch tortillach Osoby 2 rozłóż 60 g sera, resztę warzyw i 130 g kurczaka/szynki. Złóż na pół.",
+          "Podpiecz na suchej patelni (po 2–3 min z każdej strony) lub w air fryerze (185°C, 5 min). Pokrój w trójkąty i podaj z dipem jogurtowym."
+        ],
+        macros: {
+          p1: { kcal: 545, p: 28, f: 16, c: 70 },
+          p2: { kcal: 990, p: 58, f: 34, c: 108 }
+        },
+        shopping: [
+          { name: "Tortille pszenne / pełnoziarniste", grams: 185, unit: "g", cat: "Produkty suche" },
+          { name: "Ser żółty / mozzarella", grams: 95, unit: "g", cat: "Nabiał" },
+          { name: "Fasola czerwona, kukurydza, papryka", grams: 240, unit: "g", cat: "Warzywa i owoce" },
+          { name: "Jogurt naturalny gęsty", grams: 100, unit: "g", cat: "Nabiał" },
+          { name: "Serek wiejski", grams: 80, unit: "g", cat: "Nabiał" },
+          { name: "Pierś z kurczaka / szynka drobiowa", grams: 130, unit: "g", cat: "Mięso dla Osoby 2" }
+        ]
+      },
+      {
+        id: "alt-d2",
+        type: "Kolacja",
+        time: "20 min",
+        equipment: ["Garnek", "Blender"],
+        title: "Krem z cukinii i groszku z grzankami czosnkowymi i serem",
+        summary: "Lekka, zielona zupa krem z blendera. Sycąca dzięki groszkowi zielonemu i chrupiącym grzankom z serem.",
+        baseIngredients: [
+          { name: "Cukinia + ziemniak + cebula", total: "520 g (350g cukinia + 120g ziemniak + 50g cebula)", p1: "230 g", p2: "290 g" },
+          { name: "Groszek zielony mrożony lub z puszki", total: "200 g", p1: "90 g", p2: "110 g" },
+          { name: "Bulion warzywny + jogurt grecki / śmietanka 12%", total: "480 ml (400ml bulion + 80g jogurt)", p1: "210 ml", p2: "270 ml" },
+          { name: "Chleb pełnoziarnisty (na grzanki)", total: "155 g", p1: "50 g (1.5 kromki)", p2: "105 g (3 kromki)" },
+          { name: "Ser żółty tarty + czosnek", total: "75 g", p1: "25 g", p2: "50 g" }
+        ],
+        p1Ingredients: [
+          { name: "Pestki dyni (do posypania zupy)", amount: "15 g" }
+        ],
+        p2Ingredients: [
+          { name: "Szynka drobiowa lub pieczony kurczak (na grzanki)", amount: "110 g" },
+          { name: "Oliwa z oliwek (do skropienia zupy)", amount: "10 g" }
+        ],
+        steps: [
+          "Pokrój cukinię, ziemniaka i cebulę w kostkę, wrzuć do garnka z bulionem i gotuj 12 minut. Na ostatnie 4 minuty dorzuć 200 g groszku.",
+          "Zblenduj zupę na aksamitny krem z dodatkiem 80 g jogurtu/śmietanki, czosnku, soli i pieprzu.",
+          "Pieczywo posyp serem (na grzanki Osoby 2 połóż wcześniej 110 g wędliny/kurczaka) i zapiecz w air fryerze przez 4 minuty w 185°C. Podawaj z zupą."
+        ],
+        macros: {
+          p1: { kcal: 540, p: 27, f: 16, c: 72 },
+          p2: { kcal: 930, p: 52, f: 34, c: 102 }
+        },
+        shopping: [
+          { name: "Cukinia, ziemniaki, cebula", grams: 520, unit: "g", cat: "Warzywa i owoce" },
+          { name: "Groszek zielony mrożony / konserwowy", grams: 200, unit: "g", cat: "Warzywa i owoce" },
+          { name: "Jogurt grecki / śmietanka 12%", grams: 80, unit: "g", cat: "Nabiał" },
+          { name: "Chleb pełnoziarnisty", grams: 155, unit: "g", cat: "Produkty suche" },
+          { name: "Ser żółty", grams: 75, unit: "g", cat: "Nabiał" },
+          { name: "Pestki dyni", grams: 15, unit: "g", cat: "Strączki i dodatki" },
+          { name: "Szynka drobiowa / filet z kurczaka", grams: 110, unit: "g", cat: "Mięso dla Osoby 2" },
+          { name: "Oliwa z oliwek", grams: 10, unit: "g", cat: "Strączki i dodatki" }
+        ]
+      },
+      {
+        id: "alt-d3",
+        type: "Kolacja",
+        time: "15 min",
+        equipment: ["Miska"],
+        title: "Sałatka grecka z kaszą kuskus/bulgur, serem feta i warzywami + kurczak dla O2",
+        summary: "Śródziemnomorska, orzeźwiająca sałatka na bazie kaszy bulgur lub kuskusu, którą zalewa się tylko wrzątkiem.",
+        baseIngredients: [
+          { name: "Kasza bulgur lub kuskus (sucha)", total: "145 g", p1: "45 g", p2: "100 g" },
+          { name: "Ser typu feta lub sałatkowy półtłusty", total: "110 g", p1: "50 g", p2: "60 g" },
+          { name: "Pomidor + ogórek + papryka + czerwona cebula", total: "340 g", p1: "160 g", p2: "180 g" },
+          { name: "Oliwa z oliwek, sok z cytryny, oregano", total: "15 g oliwy", p1: "5 g", p2: "10 g" }
+        ],
+        p1Ingredients: [
+          { name: "Ciecierzyca konserwowa (odsączona)", amount: "100 g" }
+        ],
+        p2Ingredients: [
+          { name: "Upieczona pierś z kurczaka lub wędlina drobiowa w kostkę", amount: "150 g" }
+        ],
+        steps: [
+          "Zalej 145 g kaszy bulgur lub kuskusu wrzątkiem (ok. 1 cm ponad poziom kaszy), przykryj na 8–10 minut do wchłonięcia wody.",
+          "Pokrój pomidora, ogórka, paprykę, cebulę oraz ser feta w kostkę.",
+          "Wymieszaj wystudzoną kaszę z warzywami, fetą, oliwą, cytryną i oregano. Do porcji Osoby 1 dodaj 100 g ciecierzycy, a do porcji Osoby 2 – 150 g pokrojonego kurczaka."
+        ],
+        macros: {
+          p1: { kcal: 540, p: 24, f: 18, c: 70 },
+          p2: { kcal: 970, p: 58, f: 32, c: 110 }
+        },
+        shopping: [
+          { name: "Kasza bulgur / kuskus", grams: 145, unit: "g", cat: "Produkty suche" },
+          { name: "Ser typu feta / sałatkowy", grams: 110, unit: "g", cat: "Nabiał" },
+          { name: "Pomidor, ogórek, papryka, cebula", grams: 340, unit: "g", cat: "Warzywa i owoce" },
+          { name: "Oliwa z oliwek", grams: 15, unit: "g", cat: "Strączki i dodatki" },
+          { name: "Ciecierzyca konserwowa", grams: 100, unit: "g", cat: "Strączki i dodatki" },
+          { name: "Pierś z kurczaka / wędlina drobiowa", grams: 150, unit: "g", cat: "Mięso dla Osoby 2" }
+        ]
+      }
+    ];
+
+    /**
+     * REGUŁY WYMIANY SKŁADNIKÓW (Makro-ekwiwalenty z automatycznym przeliczaniem gramatur)
+     * Każda reguła dopasowuje się po słowach kluczowych w nazwie składnika i oferuje listę zamienników
+     * z przelicznikiem wagowym (ratio) zachowującym zbliżoną kaloryczność i makroskładniki.
+     */
+    const SWAP_RULES = [
+      {
+        id: "poultry_meat",
+        label: "Mięso (Osoba 2)",
+        keywords: ["pierś z kurczaka", "filet z piersi kurczaka", "pierś z indyka", "udko z kurczaka", "schab wieprzowy", "mięso mielone"],
+        options: [
+          { name: "Pierś z kurczaka (surowa)", ratio: 1.0, note: "Chude źródło białka (1.0x)", cat: "Mięso dla Osoby 2" },
+          { name: "Pierś z indyka (surowa)", ratio: 1.0, note: "Bardzo zbliżone makro do kurczaka (1.0x)", cat: "Mięso dla Osoby 2" },
+          { name: "Udko z kurczaka bez kości i skóry", ratio: 0.92, note: "Nieco bardziej soczyste i tłustsze (0.92x)", cat: "Mięso dla Osoby 2" },
+          { name: "Schab wieprzowy bez kości", ratio: 0.90, note: "Chuda wieprzowina (0.90x)", cat: "Mięso dla Osoby 2" },
+          { name: "Polędwiczka wieprzowa", ratio: 0.95, note: "Delikatna i chuda (0.95x)", cat: "Mięso dla Osoby 2" },
+          { name: "Chude mięso mielone z indyka/wołowe", ratio: 0.88, note: "Dobre do sosów i patelni (0.88x)", cat: "Mięso dla Osoby 2" }
+        ]
+      },
+      {
+        id: "deli_meat",
+        label: "Wędlina / dodatek mięsny (Osoba 2)",
+        keywords: ["szynka drobiowa", "wędlina drobiowa", "polędwica sopocka", "upieczona pierś"],
+        options: [
+          { name: "Szynka drobiowa dobrej jakości", ratio: 1.0, note: "Klasyczna opcja (1.0x)", cat: "Mięso dla Osoby 2" },
+          { name: "Pieczony filet z indyka w plastrach", ratio: 1.0, note: "Wysoka zawartość białka (1.0x)", cat: "Mięso dla Osoby 2" },
+          { name: "Polędwica sopocka / schab pieczony", ratio: 0.92, note: "Nieco bardziej wyrazista (0.92x)", cat: "Mięso dla Osoby 2" },
+          { name: "Upieczona pierś z kurczaka (resztka z obiadu)", ratio: 0.90, note: "Ekonomicznie i bez konserwantów (0.90x)", cat: "Mięso dla Osoby 2" }
+        ]
+      },
+      {
+        id: "veg_protein",
+        label: "Białko roślinne (Osoba 1)",
+        keywords: ["ciecierzyca konserwowa", "soczewica zielona", "soczewica czerwona", "biała fasola", "fasola czerwona", "tofu naturalne", "tofu wędzone", "kotlet warzywny"],
+        options: [
+          { name: "Ciecierzyca konserwowa (odsączona)", ratio: 1.0, note: "Uniwersalna do pieczenia i sosów (1.0x)", cat: "Strączki i dodatki" },
+          { name: "Soczewica zielona/brązowa z puszki", ratio: 1.05, note: "Delikatna i bogata w błonnik (1.05x)", cat: "Strączki i dodatki" },
+          { name: "Fasola czerwona lub biała z puszki", ratio: 1.05, note: "Świetna do sałatek, sosów i zup (1.05x)", cat: "Strączki i dodatki" },
+          { name: "Tofu naturalne lub wędzone", ratio: 0.90, note: "Wysokobiałkowe, świetne z air fryera (0.90x)", cat: "Strączki i dodatki" },
+          { name: "Gotowy kotlet sojowy / warzywny", ratio: 0.95, note: "Szybka gotowa opcja (0.95x)", cat: "Strączki i dodatki" }
+        ]
+      },
+      {
+        id: "grains_carbs",
+        label: "Węglowodany złożone",
+        keywords: ["ryż basmati", "ryż biały", "kasza gryczana", "kasza pęczak", "kasza jaglana", "kasza bulgur", "makaron pełnoziarnisty", "makaron spaghetti", "makaron tagliatelle", "makaron (świderki"],
+        options: [
+          { name: "Ryż basmati lub jaśminowy (suchy)", ratio: 1.0, note: "Lekki i szybki w gotowaniu (1.0x)", cat: "Produkty suche" },
+          { name: "Kasza gryczana palona/niepalona (sucha)", ratio: 1.0, note: "Więcej błonnika i magnezu (1.0x)", cat: "Produkty suche" },
+          { name: "Kasza pęczak lub jęczmienna (sucha)", ratio: 1.0, note: "Bardzo sycąca (1.0x)", cat: "Produkty suche" },
+          { name: "Makaron pełnoziarnisty lub klasyczny (suchy)", ratio: 0.98, note: "Uniwersalny do sosów i warzyw (0.98x)", cat: "Produkty suche" },
+          { name: "Kasza bulgur lub kuskus (sucha)", ratio: 1.0, note: "Błyskawiczna w przygotowaniu (1.0x)", cat: "Produkty suche" },
+          { name: "Ziemniaki (surowe, obrane)", ratio: 3.8, note: "Większa objętość przy tej samej kaloryczności (3.8x)", cat: "Warzywa i owoce" }
+        ]
+      },
+      {
+        id: "potatoes",
+        label: "Ziemniaki / zamiennik skrobiowy",
+        keywords: ["ziemniaki"],
+        options: [
+          { name: "Ziemniaki klasyczne (surowe)", ratio: 1.0, note: "Niskokaloryczne i bardzo sycące (1.0x)", cat: "Warzywa i owoce" },
+          { name: "Bataty / słodkie ziemniaki (surowe)", ratio: 0.92, note: "Lekko słodkie, świetne z air fryera (0.92x)", cat: "Warzywa i owoce" },
+          { name: "Kasza gryczana lub pęczak (sucha)", ratio: 0.26, note: "Zamiana na kaszę na sypko (0.26x)", cat: "Produkty suche" },
+          { name: "Ryż basmati / jaśminowy (suchy)", ratio: 0.25, note: "Zamiana na ryż (0.25x)", cat: "Produkty suche" }
+        ]
+      },
+      {
+        id: "dairy_protein",
+        label: "Nabiał białkowy",
+        keywords: ["twaróg półtłusty", "serek wiejski", "jogurt islandzki skyr", "jogurt skyr"],
+        options: [
+          { name: "Twaróg półtłusty", ratio: 1.0, note: "Klasyczna, ekonomiczna baza białkowa (1.0x)", cat: "Nabiał" },
+          { name: "Twaróg chudy", ratio: 1.15, note: "Mniej tłuszczu, większa porcja (1.15x)", cat: "Nabiał" },
+          { name: "Serek wiejski naturalny", ratio: 1.25, note: "Gotowy do jedzenia bez rozgniatania (1.25x)", cat: "Nabiał" },
+          { name: "Jogurt islandzki Skyr naturalny", ratio: 1.65, note: "Bardzo kremowy i gęsty (1.65x)", cat: "Nabiał" }
+        ]
+      },
+      {
+        id: "nuts_fats",
+        label: "Zdrowe tłuszcze / orzechy",
+        keywords: ["masło orzechowe", "pestki dyni", "pestki słonecznika", "orzechy włoskie", "migdały"],
+        options: [
+          { name: "Masło orzechowe 100%", ratio: 1.0, note: "Kremowe i kaloryczne (1.0x)", cat: "Strączki i dodatki" },
+          { name: "Orzechy włoskie lub laskowe", ratio: 0.92, note: "Chrupiące, bogate w omega-3 (0.92x)", cat: "Strączki i dodatki" },
+          { name: "Pestki słonecznika łuskane", ratio: 1.02, note: "Bardzo ekonomiczny zamiennik (1.02x)", cat: "Strączki i dodatki" },
+          { name: "Pestki dyni łuskane", ratio: 1.05, note: "Bogate w cynk i magnez (1.05x)", cat: "Strączki i dodatki" },
+          { name: "Migdały w płatkach lub całe", ratio: 0.98, note: "Delikatne w smaku (0.98x)", cat: "Strączki i dodatki" }
+        ]
+      },
+      {
+        id: "veggies",
+        label: "Warzywa",
+        keywords: ["cukinia", "brokuł", "pieczarki", "szpinak", "mieszanka warzyw", "warzywa na patelnię", "kapusta biała"],
+        options: [
+          { name: "Cukinia + papryka + marchew", ratio: 1.0, note: "Uniwersalny zestaw warzyw (1.0x)", cat: "Warzywa i owoce" },
+          { name: "Brokuł + kalafior (świeże lub mrożone)", ratio: 1.0, note: "Świetne na parę i do air fryera (1.0x)", cat: "Warzywa i owoce" },
+          { name: "Fasolka szparagowa + marchewka", ratio: 1.0, note: "Chrupiące i tanie przez cały rok (1.0x)", cat: "Warzywa i owoce" },
+          { name: "Pieczarki + papryka + cebula", ratio: 1.0, note: "Wyrazisty smak umami (1.0x)", cat: "Warzywa i owoce" },
+          { name: "Mrożona mieszanka warzyw na patelnię", ratio: 1.0, note: "Zero krojenia, gotowe w 7 min (1.0x)", cat: "Warzywa i owoce" }
+        ]
+      }
+    ];
+
+    const QUICK_TAGS = [
+      { id: "fav", label: "❤️ Ulubiony", style: "bg-rose-50 text-rose-700 border-rose-200" },
+      { id: "fast", label: "⚡ Szybki w przygotowaniu", style: "bg-amber-50 text-amber-800 border-amber-200" },
+      { id: "filling", label: "💪 Bardzo sycący", style: "bg-sage-50 text-sage-800 border-sage-200" },
+      { id: "improve", label: "🛠 Do poprawy", style: "bg-sky-50 text-sky-800 border-sky-200" },
+      { id: "dislike", label: "👎 Nie podeszło", style: "bg-stone-100 text-stone-700 border-stone-300" }
+    ];
+
+    // ==================== STAN APLIKACJI ====================
+    let state = {
+      activeTab: 'plan',       // 'plan' | 'shopping' | 'tastes'
+      selectedDay: 1,          // 1..7
+      personFilter: 'all',     // 'all' | 'p1' | 'p2'
+      eatenMeals: {},          // { 'd1-m1': true, ... }
+      checkedShopping: {},     // { 'cat|name': true, ... }
+      mealSwaps: {},           // { '1-0': 'd3-m1', ... } -> klucz: `${day}-${mealIndex}`, wartość: mealId
+      ingredientSwaps: {},     // { 'd1-m2|base|0': { name, ratio, cat }, ... }
+      mealReviews: {}          // { 'd1-m1': { rating: 5, tags: ['fav'], note: '...' } }
+    };
+
+    // Tymczasowy kontekst otwartego modala
+    let modalContext = {
+      mealId: null,
+      scope: null,
+      ingIndex: null,
+      dayNum: null,
+      mealSlotIdx: null
+    };
+
+    // Wczytanie zapisanego stanu z localStorage
+    try {
+      const saved = localStorage.getItem('diet2_app_state_v2');
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        state = { ...state, ...parsed };
+      } else {
+        // Migracja ze starszej wersji jeśli istniała
+        const oldEaten = localStorage.getItem('diet2_eaten');
+        const oldShop = localStorage.getItem('diet2_shopping');
+        if (oldEaten) state.eatenMeals = JSON.parse(oldEaten);
+        if (oldShop) state.checkedShopping = JSON.parse(oldShop);
+      }
+    } catch (e) {}
+
+    function saveState() {
+      try {
+        localStorage.setItem('diet2_app_state_v2', JSON.stringify({
+          eatenMeals: state.eatenMeals,
+          checkedShopping: state.checkedShopping,
+          mealSwaps: state.mealSwaps,
+          ingredientSwaps: state.ingredientSwaps,
+          mealReviews: state.mealReviews
+        }));
+      } catch (e) {}
+    }
+
+    // ==================== POMOCNICY POBIERANIA DANYCH ====================
+    function getAllMealsPool() {
+      const baseMeals = [];
+      DIET_PLAN.forEach(d => {
+        d.meals.forEach(m => {
+          baseMeals.push({ ...m, originDay: d.day, originDayName: d.name });
+        });
+      });
+      const extra = EXTRA_MEALS.map(m => ({ ...m, originDay: null, originDayName: "Pula rezerwowa" }));
+      return [...baseMeals, ...extra];
+    }
+
+    function getMealById(mealId) {
+      return getAllMealsPool().find(m => m.id === mealId);
+    }
+
+    function getActiveMealForSlot(dayNum, slotIdx) {
+      const dayObj = DIET_PLAN.find(d => d.day === dayNum);
+      if (!dayObj) return null;
+      const defaultMeal = dayObj.meals[slotIdx];
+      const swapKey = `${dayNum}-${slotIdx}`;
+      const swappedId = state.mealSwaps[swapKey];
+      if (swappedId) {
+        const found = getMealById(swappedId);
+        if (found) return { ...found, isSwapped: true, defaultTitle: defaultMeal.title };
+      }
+      return { ...defaultMeal, isSwapped: false };
+    }
+
+    function findSwapRuleForIngredient(ingName) {
+      const lower = ingName.toLowerCase();
+      return SWAP_RULES.find(rule => rule.keywords.some(kw => lower.includes(kw))) || null;
+    }
+
+    // Skaluje wszystkie liczby gramowe/ml w tekście np. "220 g" -> "200 g", "140 g (1 puszka)" -> "145 g"
+    function scaleGramString(str, ratio) {
+      if (!str || ratio === 1) return str;
+      return str.replace(/(\d+(?:[.,]\d+)?)\s*(g|ml)\b/gi, (match, numStr, unit) => {
+        const val = parseFloat(numStr.replace(',', '.'));
+        if (isNaN(val)) return match;
+        const scaled = Math.max(1, Math.round(val * ratio));
+        return `${scaled} ${unit}`;
+      });
+    }
+
+    // Zwraca składnik po uwzględnieniu ewentualnej zamiany z state.ingredientSwaps
+    function getResolvedIngredient(mealId, scope, idx, originalIng) {
+      const key = `${mealId}|${scope}|${idx}`;
+      const swap = state.ingredientSwaps[key];
+      if (!swap) {
+        return { ...originalIng, isSwapped: false, swapKey: key };
+      }
+      if (scope === 'base') {
+        return {
+          name: swap.name,
+          total: scaleGramString(originalIng.total, swap.ratio),
+          p1: scaleGramString(originalIng.p1, swap.ratio),
+          p2: scaleGramString(originalIng.p2, swap.ratio),
+          isSwapped: true,
+          originalName: originalIng.name,
+          swapKey: key,
+          ratio: swap.ratio,
+          cat: swap.cat
+        };
+      } else {
+        return {
+          name: swap.name,
+          amount: scaleGramString(originalIng.amount, swap.ratio),
+          isSwapped: true,
+          originalName: originalIng.name,
+          swapKey: key,
+          ratio: swap.ratio,
+          cat: swap.cat
+        };
+      }
+    }
+
+    // ==================== NAWIGACJA GŁÓWNA ====================
+    function switchMainTab(tab) {
+      state.activeTab = tab;
+      const views = {
+        plan: document.getElementById('view-plan'),
+        shopping: document.getElementById('view-shopping'),
+        tastes: document.getElementById('view-tastes')
+      };
+      const btns = {
+        plan: document.getElementById('tab-plan'),
+        shopping: document.getElementById('tab-shopping'),
+        tastes: document.getElementById('tab-tastes')
+      };
+
+      Object.keys(views).forEach(k => {
+        if (k === tab) {
+          views[k].classList.remove('hidden');
+          btns[k].className = "px-3.5 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all bg-white text-sage-700 shadow-sm flex items-center gap-1.5";
+        } else {
+          views[k].classList.add('hidden');
+          btns[k].className = "px-3.5 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all text-walnut-600 hover:text-walnut-800 flex items-center gap-1.5";
+        }
+      });
+
+      if (tab === 'shopping') renderShoppingList();
+      if (tab === 'tastes') renderTastesView();
+    }
+
+    // ==================== WYBÓR DNIA I FILTRA OSÓB ====================
+    function selectDay(dayNum) {
+      state.selectedDay = dayNum;
+      renderDaySelector();
+      renderPlanView();
+    }
+
+    function setPersonFilter(filter) {
+      state.personFilter = filter;
+      document.querySelectorAll('.filter-btn').forEach(btn => {
+        const isSelected = btn.getAttribute('data-filter') === filter;
+        if (isSelected) {
+          btn.className = "filter-btn w-full text-left px-3.5 py-2.5 rounded-2xl text-sm font-semibold border transition-all flex items-center justify-between bg-sage-600 text-white border-sage-600 shadow-sm";
+        } else {
+          btn.className = "filter-btn w-full text-left px-3.5 py-2.5 rounded-2xl text-sm font-semibold border border-cream-200 bg-cream-50 text-walnut-700 hover:bg-sage-50 transition-all flex items-center justify-between";
+        }
+      });
+      renderPlanView();
+    }
+
+    function toggleMealEaten(slotKey) {
+      state.eatenMeals[slotKey] = !state.eatenMeals[slotKey];
+      saveState();
+      renderDaySelector();
+      renderPlanView();
+    }
+
+    function resetDayProgress() {
+      for (let i = 0; i < 3; i++) {
+        delete state.eatenMeals[`${state.selectedDay}-${i}`];
+      }
+      saveState();
+      renderDaySelector();
+      renderPlanView();
+    }
+
+    // ==================== MODAL WYMIANY SKŁADNIKA ====================
+    function openIngredientModal(mealId, scope, idx) {
+      const meal = getMealById(mealId);
+      if (!meal) return;
+      const list = scope === 'base' ? meal.baseIngredients : (scope === 'p1' ? meal.p1Ingredients : meal.p2Ingredients);
+      const origIng = list[idx];
+      if (!origIng) return;
+
+      const rule = findSwapRuleForIngredient(origIng.name);
+      if (!rule) return;
+
+      modalContext = { mealId, scope, ingIndex: idx };
+      const currentSwap = state.ingredientSwaps[`${mealId}|${scope}|${idx}`];
+
+      document.getElementById('ing-modal-title').textContent = `Zamień: ${origIng.name}`;
+      const optionsContainer = document.getElementById('ing-modal-options');
+
+      const baseSample = scope === 'base' ? `Razem: ${origIng.total} (O1: ${origIng.p1} / O2: ${origIng.p2})` : origIng.amount;
+
+      optionsContainer.innerHTML = `
+        <div class="p-3 rounded-2xl bg-cream-50 border border-cream-200 text-xs text-walnut-700 flex items-center justify-between">
+          <span>Oryginał: <strong>${origIng.name}</strong></span>
+          <span class="font-semibold">${baseSample}</span>
+        </div>
+        ${currentSwap ? `
+          <button onclick="applyIngredientSwap(null)" class="w-full text-left p-3.5 rounded-2xl border border-sage-300 bg-sage-50 hover:bg-sage-100 transition-colors flex items-center justify-between">
+            <div>
+              <div class="text-sm font-bold text-sage-800">↩ Przywróć oryginalny składnik</div>
+              <div class="text-xs text-sage-600">${origIng.name}</div>
+            </div>
+            <span class="text-xs font-bold px-2.5 py-1 rounded-xl bg-white text-sage-700">Domyślny</span>
+          </button>
+        ` : ''}
+        <div class="space-y-2 pt-1">
+          ${rule.options.map((opt, oIdx) => {
+            const previewQty = scope === 'base'
+              ? `${scaleGramString(origIng.total, opt.ratio)} (O1: ${scaleGramString(origIng.p1, opt.ratio)} / O2: ${scaleGramString(origIng.p2, opt.ratio)})`
+              : scaleGramString(origIng.amount, opt.ratio);
+            const isSelected = currentSwap && currentSwap.name === opt.name;
+
+            return `
+              <button onclick="applyIngredientSwap(${oIdx}, '${rule.id}')"
+                class="w-full text-left p-3.5 rounded-2xl border transition-all flex items-center justify-between gap-3 ${
+                  isSelected
+                    ? 'border-sage-600 bg-sage-50 ring-1 ring-sage-500'
+                    : 'border-cream-200 hover:border-sage-400 hover:bg-cream-50'
+                }">
+                <div>
+                  <div class="text-sm font-bold text-walnut-800">${opt.name}</div>
+                  <div class="text-xs text-walnut-500 mt-0.5">${opt.note}</div>
+                </div>
+                <span class="shrink-0 text-xs font-bold px-2.5 py-1 rounded-xl bg-cream-100 text-walnut-800">
+                  ${previewQty}
+                </span>
+              </button>
+            `;
+          }).join('')}
+        </div>
+      `;
+
+      const modal = document.getElementById('modal-ingredient-swap');
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+    }
+
+    function applyIngredientSwap(optionIndex, ruleId) {
+      const { mealId, scope, ingIndex } = modalContext;
+      const key = `${mealId}|${scope}|${ingIndex}`;
+      if (optionIndex === null) {
+        delete state.ingredientSwaps[key];
+      } else {
+        const rule = SWAP_RULES.find(r => r.id === ruleId);
+        if (rule && rule.options[optionIndex]) {
+          state.ingredientSwaps[key] = { ...rule.options[optionIndex] };
+        }
+      }
+      saveState();
+      closeIngredientModal();
+      renderPlanView();
+      if (state.activeTab === 'shopping') renderShoppingList();
+    }
+
+    function closeIngredientModal() {
+      const modal = document.getElementById('modal-ingredient-swap');
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+    }
+
+    // ==================== MODAL WYMIANY CAŁEGO POSIŁKU ====================
+    function openMealModal(dayNum, slotIdx) {
+      const currentMeal = getActiveMealForSlot(dayNum, slotIdx);
+      if (!currentMeal) return;
+
+      modalContext = { dayNum, mealSlotIdx: slotIdx };
+      document.getElementById('meal-modal-subtitle').textContent = `Dzień ${dayNum} • ${currentMeal.type}`;
+      document.getElementById('meal-modal-title').textContent = `Wymień: ${currentMeal.title}`;
+
+      const sameCategoryMeals = getAllMealsPool().filter(m => m.type === currentMeal.type);
+      const container = document.getElementById('meal-modal-options');
+
+      container.innerHTML = sameCategoryMeals.map(m => {
+        const isCurrent = m.id === currentMeal.id;
+        const rev = state.mealReviews[m.id];
+        const ratingBadge = rev && rev.rating ? `<span class="text-xs font-bold text-amber-600 bg-amber-50 border border-amber-200 px-2 py-0.5 rounded-lg">★ ${rev.rating}/5</span>` : '';
+        const sourceBadge = m.originDay
+          ? `<span class="text-[11px] font-semibold text-walnut-600 bg-cream-100 px-2 py-0.5 rounded-lg">Dzień ${m.originDay} (${m.originDayName})</span>`
+          : `<span class="text-[11px] font-bold text-sage-700 bg-sage-50 border border-sage-200 px-2 py-0.5 rounded-lg">✨ Dodatkowy przepis</span>`;
+
+        return `
+          <div class="p-4 rounded-2xl border transition-all ${isCurrent ? 'border-sage-500 bg-sage-50/60' : 'border-cream-200 hover:border-sage-400 bg-white'}">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <div class="space-y-1">
+                <div class="flex flex-wrap items-center gap-1.5">
+                  ${sourceBadge}
+                  <span class="text-[11px] text-walnut-500">⏱ ${m.time}</span>
+                  ${ratingBadge}
+                </div>
+                <h4 class="font-display font-bold text-sm sm:text-base text-walnut-800">${m.title}</h4>
+                <p class="text-xs text-walnut-600">${m.summary}</p>
+                <div class="text-[11px] text-walnut-500 pt-0.5">
+                  O1: <strong>${m.macros.p1.kcal} kcal</strong> (B:${m.macros.p1.p}g) &nbsp;|&nbsp; O2: <strong>${m.macros.p2.kcal} kcal</strong> (B:${m.macros.p2.p}g)
+                </div>
+              </div>
+              <button onclick="applyMealSwap('${m.id}')"
+                class="shrink-0 self-start sm:self-center px-3.5 py-2 rounded-xl text-xs font-bold transition-colors ${
+                  isCurrent
+                    ? 'bg-sage-600 text-white cursor-default'
+                    : 'bg-walnut-800 hover:bg-walnut-700 text-white'
+                }">
+                ${isCurrent ? 'Aktualnie wybrany' : 'Wybierz ten posiłek'}
+              </button>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      const modal = document.getElementById('modal-meal-swap');
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+    }
+
+    function applyMealSwap(newMealId) {
+      const { dayNum, mealSlotIdx } = modalContext;
+      const dayObj = DIET_PLAN.find(d => d.day === dayNum);
+      if (!dayObj) return;
+      const defaultMealId = dayObj.meals[mealSlotIdx].id;
+      const swapKey = `${dayNum}-${mealSlotIdx}`;
+
+      if (newMealId === defaultMealId) {
+        delete state.mealSwaps[swapKey];
+      } else {
+        state.mealSwaps[swapKey] = newMealId;
+      }
+      saveState();
+      closeMealModal();
+      renderPlanView();
+      if (state.activeTab === 'shopping') renderShoppingList();
+    }
+
+    function pickRandomMealReplacement() {
+      const { dayNum, mealSlotIdx } = modalContext;
+      const currentMeal = getActiveMealForSlot(dayNum, slotIdxSafe(mealSlotIdx));
+      if (!currentMeal) return;
+      const candidates = getAllMealsPool().filter(m => m.type === currentMeal.type && m.id !== currentMeal.id);
+      if (candidates.length === 0) return;
+      const randomMeal = candidates[Math.floor(Math.random() * candidates.length)];
+      applyMealSwap(randomMeal.id);
+    }
+
+    function slotIdxSafe(idx) {
+      return typeof idx === 'number' ? idx : 0;
+    }
+
+    function closeMealModal() {
+      const modal = document.getElementById('modal-meal-swap');
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+    }
+
+    // ==================== SYSTEM OCEN, TAGÓW I NOTATEK ====================
+    function setMealRating(mealId, rating) {
+      if (!state.mealReviews[mealId]) state.mealReviews[mealId] = { rating: 0, tags: [], note: '' };
+      state.mealReviews[mealId].rating = state.mealReviews[mealId].rating === rating ? 0 : rating;
+      saveState();
+      renderPlanView();
+      if (state.activeTab === 'tastes') renderTastesView();
+    }
+
+    function toggleMealTag(mealId, tagId) {
+      if (!state.mealReviews[mealId]) state.mealReviews[mealId] = { rating: 0, tags: [], note: '' };
+      const tags = state.mealReviews[mealId].tags || [];
+      if (tags.includes(tagId)) {
+        state.mealReviews[mealId].tags = tags.filter(t => t !== tagId);
+      } else {
+        state.mealReviews[mealId].tags = [...tags, tagId];
+      }
+      saveState();
+      renderPlanView();
+      if (state.activeTab === 'tastes') renderTastesView();
+    }
+
+    function updateMealNote(mealId, noteText) {
+      if (!state.mealReviews[mealId]) state.mealReviews[mealId] = { rating: 0, tags: [], note: '' };
+      state.mealReviews[mealId].note = noteText;
+      saveState();
+    }
+
+    // ==================== RENDEROWANIE PASKA DNI ====================
+    function renderDaySelector() {
+      const container = document.getElementById('day-selector');
+      container.innerHTML = DIET_PLAN.map(d => {
+        const isActive = d.day === state.selectedDay;
+        let completedCount = 0;
+        for (let i = 0; i < 3; i++) {
+          if (state.eatenMeals[`${d.day}-${i}`]) completedCount++;
+        }
+        return `
+          <button onclick="selectDay(${d.day})"
+            class="flex-1 min-w-[105px] px-3 py-2.5 rounded-2xl text-left transition-all border ${
+              isActive
+                ? 'bg-sage-600 text-white border-sage-600 shadow-sm'
+                : 'bg-cream-50/70 hover:bg-cream-100 text-walnut-800 border-transparent'
+            }">
+            <div class="flex items-center justify-between">
+              <span class="text-[11px] font-bold uppercase tracking-wider ${isActive ? 'text-sage-100' : 'text-walnut-500'}">Dzień ${d.day}</span>
+              ${completedCount > 0 ? `<span class="text-[10px] font-bold px-1.5 py-0.5 rounded-full ${isActive ? 'bg-white/20 text-white' : 'bg-sage-100 text-sage-700'}">${completedCount}/3</span>` : ''}
+            </div>
+            <div class="font-display font-bold text-sm mt-0.5">${d.name}</div>
+          </button>
+        `;
+      }).join('');
+    }
+
+    // ==================== RENDEROWANIE WIDOKU DNIA ====================
+    function renderPlanView() {
+      const dayObj = DIET_PLAN.find(d => d.day === state.selectedDay);
+      if (!dayObj) return;
+
+      document.getElementById('current-day-title').textContent = `Dzień ${dayObj.day} — ${dayObj.name}`;
+
+      // Pobieramy aktywne posiłki na dany dzień (uwzględniając Meal Swaps)
+      const activeMeals = [0, 1, 2].map(idx => getActiveMealForSlot(dayObj.day, idx));
+
+      let totalP1 = { kcal: 0, p: 0, f: 0, c: 0 };
+      let totalP2 = { kcal: 0, p: 0, f: 0, c: 0 };
+      let eatenP1 = { kcal: 0, p: 0, f: 0, c: 0 };
+      let eatenP2 = { kcal: 0, p: 0, f: 0, c: 0 };
+
+      activeMeals.forEach((m, idx) => {
+        totalP1.kcal += m.macros.p1.kcal;
+        totalP1.p += m.macros.p1.p;
+        totalP1.f += m.macros.p1.f;
+        totalP1.c += m.macros.p1.c;
+
+        totalP2.kcal += m.macros.p2.kcal;
+        totalP2.p += m.macros.p2.p;
+        totalP2.f += m.macros.p2.f;
+        totalP2.c += m.macros.p2.c;
+
+        if (state.eatenMeals[`${dayObj.day}-${idx}`]) {
+          eatenP1.kcal += m.macros.p1.kcal;
+          eatenP1.p += m.macros.p1.p;
+          eatenP1.f += m.macros.p1.f;
+          eatenP1.c += m.macros.p1.c;
+
+          eatenP2.kcal += m.macros.p2.kcal;
+          eatenP2.p += m.macros.p2.p;
+          eatenP2.f += m.macros.p2.f;
+          eatenP2.c += m.macros.p2.c;
+        }
+      });
+
+      const pctP1 = Math.min(100, Math.round((eatenP1.kcal / totalP1.kcal) * 100));
+      const pctP2 = Math.min(100, Math.round((eatenP2.kcal / totalP2.kcal) * 100));
+
+      const summaryContainer = document.getElementById('daily-summary-cards');
+      let summaryHTML = '';
+
+      if (state.personFilter === 'all' || state.personFilter === 'p1') {
+        summaryHTML += `
+          <div class="rounded-2xl bg-sage-50/80 border border-sage-200 p-4 flex flex-col justify-between">
+            <div class="flex items-center justify-between gap-2">
+              <div>
+                <span class="inline-flex items-center gap-1.5 text-xs font-bold text-sage-700">
+                  <span class="w-2 h-2 rounded-full bg-sage-600"></span> Osoba 1 (Wege • Redukcja)
+                </span>
+                <div class="font-display font-extrabold text-xl text-sage-800 mt-0.5">
+                  ${eatenP1.kcal} <span class="text-sm font-semibold text-sage-600">/ ${totalP1.kcal} kcal</span>
+                </div>
+              </div>
+              <span class="text-xs font-bold px-2.5 py-1 rounded-xl bg-white text-sage-700 border border-sage-200">${pctP1}%</span>
+            </div>
+            <div class="w-full h-2 bg-sage-200/70 rounded-full overflow-hidden my-2.5">
+              <div class="h-full bg-sage-600 rounded-full transition-all duration-300" style="width: ${pctP1}%"></div>
+            </div>
+            <div class="flex items-center justify-between text-xs text-sage-800 font-medium">
+              <span>B: <strong>${eatenP1.p}</strong>/${totalP1.p}g</span>
+              <span>T: <strong>${eatenP1.f}</strong>/${totalP1.f}g</span>
+              <span>W: <strong>${eatenP1.c}</strong>/${totalP1.c}g</span>
+            </div>
+          </div>
+        `;
+      }
+
+      if (state.personFilter === 'all' || state.personFilter === 'p2') {
+        summaryHTML += `
+          <div class="rounded-2xl bg-walnut-50/80 border border-walnut-100 p-4 flex flex-col justify-between">
+            <div class="flex items-center justify-between gap-2">
+              <div>
+                <span class="inline-flex items-center gap-1.5 text-xs font-bold text-walnut-700">
+                  <span class="w-2 h-2 rounded-full bg-walnut-600"></span> Osoba 2 (Z mięsem • Masa)
+                </span>
+                <div class="font-display font-extrabold text-xl text-walnut-800 mt-0.5">
+                  ${eatenP2.kcal} <span class="text-sm font-semibold text-walnut-600">/ ${totalP2.kcal} kcal</span>
+                </div>
+              </div>
+              <span class="text-xs font-bold px-2.5 py-1 rounded-xl bg-white text-walnut-700 border border-walnut-100">${pctP2}%</span>
+            </div>
+            <div class="w-full h-2 bg-walnut-100 rounded-full overflow-hidden my-2.5">
+              <div class="h-full bg-walnut-600 rounded-full transition-all duration-300" style="width: ${pctP2}%"></div>
+            </div>
+            <div class="flex items-center justify-between text-xs text-walnut-800 font-medium">
+              <span>B: <strong>${eatenP2.p}</strong>/${totalP2.p}g</span>
+              <span>T: <strong>${eatenP2.f}</strong>/${totalP2.f}g</span>
+              <span>W: <strong>${eatenP2.c}</strong>/${totalP2.c}g</span>
+            </div>
+          </div>
+        `;
+      }
+
+      summaryContainer.innerHTML = summaryHTML;
+
+      // Renderowanie kart 3 posiłków
+      const mealsContainer = document.getElementById('meals-container');
+      mealsContainer.innerHTML = activeMeals.map((meal, index) => {
+        const slotKey = `${dayObj.day}-${index}`;
+        const isEaten = !!state.eatenMeals[slotKey];
+        const review = state.mealReviews[meal.id] || { rating: 0, tags: [], note: '' };
+
+        // Składniki bazy wspólnej z przyciskiem "⇄ Zamień"
+        const baseRows = meal.baseIngredients.map((origIng, idx) => {
+          const ing = getResolvedIngredient(meal.id, 'base', idx, origIng);
+          const hasSwapRule = !!findSwapRuleForIngredient(origIng.name);
+
+          let qtyBadge = '';
+          if (state.personFilter === 'all') {
+            qtyBadge = `
+              <div class="flex flex-wrap items-center gap-1.5 justify-end">
+                <span class="font-bold text-walnut-800 bg-cream-100 px-2 py-0.5 rounded-lg text-xs">${ing.total}</span>
+                <span class="text-[11px] text-sage-700 bg-sage-50 border border-sage-200 px-1.5 py-0.5 rounded-md">O1: ${ing.p1}</span>
+                <span class="text-[11px] text-walnut-700 bg-walnut-50 border border-walnut-100 px-1.5 py-0.5 rounded-md">O2: ${ing.p2}</span>
+              </div>
+            `;
+          } else if (state.personFilter === 'p1') {
+            qtyBadge = `<span class="font-bold text-sage-800 bg-sage-100 px-2.5 py-0.5 rounded-lg text-xs">${ing.p1}</span>`;
+          } else {
+            qtyBadge = `<span class="font-bold text-walnut-800 bg-walnut-100 px-2.5 py-0.5 rounded-lg text-xs">${ing.p2}</span>`;
+          }
+
+          return `
+            <li class="py-2.5 border-b border-cream-100 last:border-none flex flex-col sm:flex-row sm:items-center justify-between gap-1.5 text-sm">
+              <div class="flex items-center gap-2 flex-wrap">
+                <span class="${ing.isSwapped ? 'font-semibold text-sage-800' : 'text-walnut-800'}">${ing.name}</span>
+                ${ing.isSwapped ? `<span class="text-[10px] font-bold px-1.5 py-0.5 rounded-md bg-sage-100 text-sage-700">Zamiennik</span>` : ''}
+                ${hasSwapRule ? `
+                  <button onclick="openIngredientModal('${meal.id}', 'base', ${idx})" title="Zamień ten składnik na inny o podobnym makro"
+                    class="inline-flex items-center gap-1 text-[11px] font-semibold px-2 py-0.5 rounded-lg bg-white hover:bg-sage-50 text-sage-700 border border-cream-300 hover:border-sage-400 transition-colors">
+                    ⇄ Zamień
+                  </button>
+                ` : ''}
+              </div>
+              ${qtyBadge}
+            </li>
+          `;
+        }).join('');
+
+        // Dodatki Osoby 1
+        const p1Block = (state.personFilter === 'all' || state.personFilter === 'p1') ? `
+          <div class="rounded-2xl bg-sage-50/70 border border-sage-200 p-4">
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-xs font-bold uppercase tracking-wider text-sage-700">Dodatki Osoba 1 (Wege)</span>
+              <span class="text-xs font-bold text-sage-800 bg-white px-2 py-0.5 rounded-lg border border-sage-200">
+                ${meal.macros.p1.kcal} kcal • B:${meal.macros.p1.p}g T:${meal.macros.p1.f}g W:${meal.macros.p1.c}g
+              </span>
+            </div>
+            <ul class="space-y-2">
+              ${meal.p1Ingredients.map((origIng, idx) => {
+                const ing = getResolvedIngredient(meal.id, 'p1', idx, origIng);
+                const hasSwapRule = !!findSwapRuleForIngredient(origIng.name);
+                return `
+                  <li class="flex items-center justify-between gap-2 text-sm text-sage-900">
+                    <div class="flex items-center gap-1.5 flex-wrap">
+                      <span>+ ${ing.name}</span>
+                      ${ing.isSwapped ? `<span class="text-[10px] font-bold px-1.5 py-0.5 rounded-md bg-sage-200 text-sage-800">Zamiennik</span>` : ''}
+                      ${hasSwapRule ? `
+                        <button onclick="openIngredientModal('${meal.id}', 'p1', ${idx})"
+                          class="text-[11px] font-semibold px-1.5 py-0.5 rounded-lg bg-white hover:bg-sage-100 text-sage-700 border border-sage-200 transition-colors">
+                          ⇄
+                        </button>
+                      ` : ''}
+                    </div>
+                    <span class="shrink-0 font-bold bg-white px-2 py-0.5 rounded-lg text-xs border border-sage-200">${ing.amount}</span>
+                  </li>
+                `;
+              }).join('')}
+            </ul>
+          </div>
+        ` : '';
+
+        // Dodatki Osoby 2
+        const p2Block = (state.personFilter === 'all' || state.personFilter === 'p2') ? `
+          <div class="rounded-2xl bg-walnut-50/70 border border-walnut-100 p-4">
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-xs font-bold uppercase tracking-wider text-walnut-700">Dodatki Osoba 2 (Mięso / Masa)</span>
+              <span class="text-xs font-bold text-walnut-800 bg-white px-2 py-0.5 rounded-lg border border-walnut-100">
+                ${meal.macros.p2.kcal} kcal • B:${meal.macros.p2.p}g T:${meal.macros.p2.f}g W:${meal.macros.p2.c}g
+              </span>
+            </div>
+            <ul class="space-y-2">
+              ${meal.p2Ingredients.map((origIng, idx) => {
+                const ing = getResolvedIngredient(meal.id, 'p2', idx, origIng);
+                const hasSwapRule = !!findSwapRuleForIngredient(origIng.name);
+                return `
+                  <li class="flex items-center justify-between gap-2 text-sm text-walnut-900">
+                    <div class="flex items-center gap-1.5 flex-wrap">
+                      <span>+ ${ing.name}</span>
+                      ${ing.isSwapped ? `<span class="text-[10px] font-bold px-1.5 py-0.5 rounded-md bg-walnut-200 text-walnut-900">Zamiennik</span>` : ''}
+                      ${hasSwapRule ? `
+                        <button onclick="openIngredientModal('${meal.id}', 'p2', ${idx})"
+                          class="text-[11px] font-semibold px-1.5 py-0.5 rounded-lg bg-white hover:bg-walnut-100 text-walnut-700 border border-walnut-200 transition-colors">
+                          ⇄
+                        </button>
+                      ` : ''}
+                    </div>
+                    <span class="shrink-0 font-bold bg-white px-2 py-0.5 rounded-lg text-xs border border-walnut-100">${ing.amount}</span>
+                  </li>
+                `;
+              }).join('')}
+            </ul>
+          </div>
+        ` : '';
+
+        return `
+          <article class="bg-white rounded-3xl border transition-all card-shadow overflow-hidden ${isEaten ? 'border-sage-400 ring-2 ring-sage-200/60' : 'border-cream-200'}">
+            <!-- Nagłówek karty posiłku -->
+            <div class="p-5 sm:p-6 bg-cream-50/60 border-b border-cream-200 flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+              <div class="space-y-1.5">
+                <div class="flex flex-wrap items-center gap-2">
+                  <span class="px-3 py-1 rounded-xl text-xs font-bold uppercase tracking-wider bg-walnut-800 text-white">
+                    ${index + 1}. ${meal.type}
+                  </span>
+                  <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-xl text-xs font-semibold bg-white text-walnut-700 border border-cream-200">
+                    ⏱ ${meal.time}
+                  </span>
+                  ${meal.equipment.map(eq => `
+                    <span class="px-2.5 py-1 rounded-xl text-xs font-medium bg-sage-50 text-sage-700 border border-sage-200">
+                      ${eq}
+                    </span>
+                  `).join('')}
+                  ${meal.isSwapped ? `
+                    <span class="px-2.5 py-1 rounded-xl text-xs font-bold bg-amber-100 text-amber-800 border border-amber-200">
+                      🔄 Wymieniony posiłek
+                    </span>
+                  ` : ''}
+                </div>
+                <h3 class="font-display font-bold text-lg sm:text-xl text-walnut-800 leading-snug">
+                  ${meal.title}
+                </h3>
+                <p class="text-sm text-walnut-600">${meal.summary}</p>
+              </div>
+
+              <!-- Przyciski akcji: Wymień posiłek + Oznacz jako zjedzone -->
+              <div class="flex flex-wrap items-center gap-2 shrink-0 self-start lg:self-center">
+                <button onclick="openMealModal(${dayObj.day}, ${index})"
+                  class="px-3.5 py-2.5 rounded-2xl text-xs sm:text-sm font-semibold bg-white hover:bg-cream-100 text-walnut-800 border border-cream-300 transition-all flex items-center gap-1.5">
+                  <span>🔄 Wymień posiłek</span>
+                </button>
+
+                <button onclick="toggleMealEaten('${slotKey}')"
+                  class="px-4 py-2.5 rounded-2xl text-xs sm:text-sm font-semibold transition-all flex items-center gap-2 border ${
+                    isEaten
+                      ? 'bg-sage-600 text-white border-sage-600 shadow-sm'
+                      : 'bg-white hover:bg-sage-50 text-walnut-700 border-cream-300'
+                  }">
+                  <span class="w-5 h-5 rounded-full flex items-center justify-center border ${isEaten ? 'bg-white text-sage-600 border-white' : 'border-walnut-400'}">
+                    ${isEaten ? '✓' : ''}
+                  </span>
+                  <span>${isEaten ? 'Zjedzone' : 'Zjedzone'}</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Treść przepisu: Gramatury + Instrukcja krok po kroku -->
+            <div class="p-5 sm:p-6 grid grid-cols-1 lg:grid-cols-12 gap-6">
+
+              <!-- Kolumna lewa: Składniki i gramatury -->
+              <div class="lg:col-span-6 space-y-4">
+                <div>
+                  <div class="flex items-center justify-between mb-2">
+                    <h4 class="text-xs font-bold uppercase tracking-wider text-walnut-500">
+                      ${state.personFilter === 'all' ? 'Wspólna baza (przed obróbką)' : 'Składniki bazowe dla wybranej osoby'}
+                    </h4>
+                    <span class="text-[11px] text-sage-700 font-medium">Kliknij ⇄ aby podmienić składnik</span>
+                  </div>
+                  <ul class="bg-cream-50/50 rounded-2xl px-4 py-1 border border-cream-200">
+                    ${baseRows}
+                  </ul>
+                </div>
+
+                <!-- Dodatki indywidualne + Makro -->
+                <div class="space-y-3">
+                  ${p1Block}
+                  ${p2Block}
+                </div>
+              </div>
+
+              <!-- Kolumna prawa: Dokładny przepis krok po kroku + Ocena i notatki -->
+              <div class="lg:col-span-6 flex flex-col justify-between space-y-4">
+                <div class="bg-cream-50/40 rounded-2xl p-4 sm:p-5 border border-cream-200">
+                  <h4 class="text-xs font-bold uppercase tracking-wider text-walnut-500 mb-3 flex items-center gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-sage-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+                    Przygotowanie krok po kroku
+                  </h4>
+                  <ol class="space-y-3">
+                    ${meal.steps.map((step, sIdx) => `
+                      <li class="flex items-start gap-3 text-sm text-walnut-800 leading-relaxed">
+                        <span class="shrink-0 w-6 h-6 rounded-full bg-sage-100 text-sage-800 font-bold text-xs flex items-center justify-center mt-0.5">
+                          ${sIdx + 1}
+                        </span>
+                        <span>${step}</span>
+                      </li>
+                    `).join('')}
+                  </ol>
+                </div>
+
+                <!-- PANEL OCENY SMAKU I NOTATEK -->
+                <div class="bg-white rounded-2xl p-4 border border-cream-200 space-y-3">
+                  <div class="flex flex-wrap items-center justify-between gap-2">
+                    <span class="text-xs font-bold uppercase tracking-wider text-walnut-500">Ocena posiłku i smak</span>
+                    <div class="flex items-center gap-1" role="group" aria-label="Ocena gwiazdkowa">
+                      ${[1, 2, 3, 4, 5].map(star => {
+                        const active = review.rating >= star;
+                        return `
+                          <button onclick="setMealRating('${meal.id}', ${star})"
+                            class="w-7 h-7 rounded-lg flex items-center justify-center text-base transition-transform hover:scale-110 ${
+                              active ? 'text-amber-500 bg-amber-50' : 'text-cream-300 hover:text-amber-400'
+                            }" title="${star} / 5">
+                            ★
+                          </button>
+                        `;
+                      }).join('')}
+                    </div>
+                  </div>
+
+                  <!-- Szybkie tagi -->
+                  <div class="flex flex-wrap gap-1.5">
+                    ${QUICK_TAGS.map(t => {
+                      const isTagged = (review.tags || []).includes(t.id);
+                      return `
+                        <button onclick="toggleMealTag('${meal.id}', '${t.id}')"
+                          class="px-2.5 py-1 rounded-xl text-[11px] font-semibold border transition-all ${
+                            isTagged ? t.style + ' ring-1 ring-current' : 'bg-cream-50 text-walnut-600 border-cream-200 hover:bg-cream-100'
+                          }">
+                          ${t.label}
+                        </button>
+                      `;
+                    }).join('')}
+                  </div>
+
+                  <!-- Własna notatka -->
+                  <div>
+                    <input type="text" value="${(review.note || '').replace(/"/g, '&quot;')}"
+                      onchange="updateMealNote('${meal.id}', this.value)"
+                      placeholder="Notatka smakowa (np. dodać więcej czosnku, mniej ostre)..."
+                      class="w-full px-3 py-2 rounded-xl bg-cream-50 border border-cream-200 text-xs text-walnut-800 placeholder-walnut-400 focus:outline-none focus:ring-2 focus:ring-sage-500" />
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </article>
+        `;
+      }).join('');
+    }
+
+    // ==================== GENERATOR LISTY ZAKUPÓW (UWZGLĘDNIA WYMIANY!) ====================
+    function renderShoppingList() {
+      const range = document.getElementById('shopping-range').value;
+      let targetDays = [1, 2, 3, 4, 5, 6, 7];
+
+      if (range === '1-3') targetDays = [1, 2, 3];
+      else if (range === '4-7') targetDays = [4, 5, 6, 7];
+      else if (range === 'current') targetDays = [state.selectedDay];
+
+      const grouped = {};
+      const categoryOrder = [
+        "Nabiał",
+        "Warzywa i owoce",
+        "Produkty suche",
+        "Strączki i dodatki",
+        "Mięso dla Osoby 2"
+      ];
+
+      categoryOrder.forEach(cat => { grouped[cat] = {}; });
+
+      // Iterujemy po aktywnych (uwzględniających wymiany!) posiłkach dla wybranych dni
+      targetDays.forEach(dayNum => {
+        for (let slotIdx = 0; slotIdx < 3; slotIdx++) {
+          const meal = getActiveMealForSlot(dayNum, slotIdx);
+          if (!meal) continue;
+
+          // Zbieramy wszystkie aktywne zamiany składników w tym posiłku
+          const activeSwapsInMeal = [];
+          meal.baseIngredients.forEach((orig, idx) => {
+            const res = getResolvedIngredient(meal.id, 'base', idx, orig);
+            if (res.isSwapped) activeSwapsInMeal.push(res);
+          });
+          meal.p1Ingredients.forEach((orig, idx) => {
+            const res = getResolvedIngredient(meal.id, 'p1', idx, orig);
+            if (res.isSwapped) activeSwapsInMeal.push(res);
+          });
+          meal.p2Ingredients.forEach((orig, idx) => {
+            const res = getResolvedIngredient(meal.id, 'p2', idx, orig);
+            if (res.isSwapped) activeSwapsInMeal.push(res);
+          });
+
+          meal.shopping.forEach(item => {
+            let finalName = item.name;
+            let finalGrams = item.grams;
+            let finalCat = item.cat;
+
+            // Sprawdzamy, czy ta pozycja zakupowa odpowiada zamienionemu składnikowi w tym posiłku
+            const matchedSwap = activeSwapsInMeal.find(sw => {
+              const origWords = sw.originalName.toLowerCase().split(/[\s,(/]+/).filter(w => w.length > 3);
+              const shopLower = item.name.toLowerCase();
+              return origWords.some(w => shopLower.includes(w));
+            });
+
+            if (matchedSwap) {
+              finalName = matchedSwap.name;
+              finalGrams = Math.max(1, Math.round(item.grams * matchedSwap.ratio));
+              if (matchedSwap.cat) finalCat = matchedSwap.cat;
+            }
+
+            if (!grouped[finalCat]) grouped[finalCat] = {};
+            const key = `${finalName}|${item.unit}`;
+            if (!grouped[finalCat][key]) {
+              grouped[finalCat][key] = {
+                name: finalName,
+                unit: item.unit,
+                amount: 0,
+                cat: finalCat
+              };
+            }
+            grouped[finalCat][key].amount += finalGrams;
+          });
+        }
+      });
+
+      let totalItems = 0;
+      let checkedItems = 0;
+
+      const grid = document.getElementById('shopping-categories-grid');
+      grid.innerHTML = categoryOrder.map(cat => {
+        const items = Object.values(grouped[cat]);
+        if (items.length === 0) return '';
+
+        const isMeatCat = cat === "Mięso dla Osoby 2";
+
+        return `
+          <div class="bg-white rounded-3xl p-5 border ${isMeatCat ? 'border-walnut-200' : 'border-cream-200'} card-shadow">
+            <div class="flex items-center justify-between pb-3 mb-3 border-b border-cream-200">
+              <h3 class="font-display font-bold text-base ${isMeatCat ? 'text-walnut-700' : 'text-sage-800'} flex items-center gap-2">
+                <span class="w-2.5 h-2.5 rounded-full ${isMeatCat ? 'bg-walnut-500' : 'bg-sage-500'}"></span>
+                ${cat}
+              </h3>
+              <span class="text-xs font-semibold text-walnut-500">${items.length} poz.</span>
+            </div>
+
+            <ul class="space-y-2">
+              ${items.map(it => {
+                totalItems++;
+                const checkKey = `${it.cat}|${it.name}`;
+                const isChecked = !!state.checkedShopping[checkKey];
+                if (isChecked) checkedItems++;
+
+                let formattedAmount = `${it.amount} ${it.unit}`;
+                if (it.amount >= 1000 && (it.unit === 'g' || it.unit === 'ml')) {
+                  const bigUnit = it.unit === 'g' ? 'kg' : 'l';
+                  formattedAmount = `${(it.amount / 1000).toFixed(2).replace(/\.00$/, '')} ${bigUnit} (${it.amount} ${it.unit})`;
+                }
+
+                return `
+                  <li>
+                    <label class="flex items-center justify-between gap-3 p-2.5 rounded-2xl cursor-pointer transition-colors ${isChecked ? 'bg-cream-50 text-walnut-400 line-through' : 'hover:bg-cream-50 text-walnut-800'}">
+                      <div class="flex items-center gap-3">
+                        <input type="checkbox" ${isChecked ? 'checked' : ''} onchange="toggleShoppingItem('${checkKey.replace(/'/g, "\\'")}')"
+                          class="w-5 h-5 rounded-lg border-cream-300 text-sage-600 focus:ring-sage-500 cursor-pointer accent-sage-600" />
+                        <span class="text-sm font-medium">${it.name}</span>
+                      </div>
+                      <span class="shrink-0 text-xs font-bold px-2.5 py-1 rounded-xl ${isChecked ? 'bg-cream-100 text-walnut-400' : 'bg-sage-50 text-sage-800 border border-sage-200'}">
+                        ${formattedAmount}
+                      </span>
+                    </label>
+                  </li>
+                `;
+              }).join('')}
+            </ul>
+          </div>
+        `;
+      }).join('');
+
+      const pct = totalItems > 0 ? Math.round((checkedItems / totalItems) * 100) : 0;
+      document.getElementById('shopping-progress-text').textContent = `${checkedItems} / ${totalItems} produktów w koszyku (${pct}%)`;
+      document.getElementById('shopping-progress-bar').style.width = `${pct}%`;
+    }
+
+    function toggleShoppingItem(key) {
+      state.checkedShopping[key] = !state.checkedShopping[key];
+      saveState();
+      renderShoppingList();
+    }
+
+    function clearCheckedShopping() {
+      state.checkedShopping = {};
+      saveState();
+      renderShoppingList();
+    }
+
+    // ==================== WIDOK: NASZE SMAKI I OCENY ====================
+    function renderTastesView() {
+      const pool = getAllMealsPool();
+      const ratedMeals = pool.map(m => ({
+        meal: m,
+        review: state.mealReviews[m.id] || { rating: 0, tags: [], note: '' }
+      }));
+
+      const withRating = ratedMeals.filter(x => x.review.rating > 0);
+      const favorites = ratedMeals.filter(x => x.review.rating >= 4 || (x.review.tags || []).includes('fav'));
+      const lowRated = ratedMeals.filter(x => (x.review.rating > 0 && x.review.rating <= 2) || (x.review.tags || []).includes('dislike'));
+      const activeMealSwapsCount = Object.keys(state.mealSwaps).length;
+      const activeIngSwapsCount = Object.keys(state.ingredientSwaps).length;
+
+      document.getElementById('tastes-stats-grid').innerHTML = `
+        <div class="p-4 rounded-2xl bg-cream-50 border border-cream-200">
+          <div class="text-xs font-semibold text-walnut-500">Ocenione przepisy</div>
+          <div class="font-display font-extrabold text-2xl text-walnut-800 mt-1">${withRating.length} <span class="text-xs font-medium text-walnut-500">/ ${pool.length}</span></div>
+        </div>
+        <div class="p-4 rounded-2xl bg-sage-50 border border-sage-200">
+          <div class="text-xs font-semibold text-sage-700">Ulubione (4–5 ★)</div>
+          <div class="font-display font-extrabold text-2xl text-sage-800 mt-1">${favorites.length}</div>
+        </div>
+        <div class="p-4 rounded-2xl bg-amber-50 border border-amber-200">
+          <div class="text-xs font-semibold text-amber-800">Do podmiany (1–2 ★)</div>
+          <div class="font-display font-extrabold text-2xl text-amber-900 mt-1">${lowRated.length}</div>
+        </div>
+        <div class="p-4 rounded-2xl bg-walnut-50 border border-walnut-100">
+          <div class="text-xs font-semibold text-walnut-700">Aktywne wymiany</div>
+          <div class="font-display font-extrabold text-2xl text-walnut-800 mt-1">${activeMealSwapsCount + activeIngSwapsCount} <span class="text-xs font-medium text-walnut-500">(${activeMealSwapsCount} dań, ${activeIngSwapsCount} skł.)</span></div>
+        </div>
+      `;
+
+      // Ranking posiłków
+      const sorted = [...ratedMeals].sort((a, b) => (b.review.rating || 0) - (a.review.rating || 0));
+      const rankingEl = document.getElementById('tastes-ranking-list');
+
+      rankingEl.innerHTML = sorted.map(({ meal, review }) => {
+        const tagBadges = (review.tags || []).map(tid => {
+          const tObj = QUICK_TAGS.find(x => x.id === tid);
+          return tObj ? `<span class="px-2 py-0.5 rounded-lg text-[10px] font-semibold border ${tObj.style}">${tObj.label}</span>` : '';
+        }).join('');
+
+        return `
+          <div class="p-3.5 rounded-2xl border border-cream-200 bg-cream-50/40 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div class="space-y-1">
+              <div class="flex flex-wrap items-center gap-1.5">
+                <span class="text-[11px] font-bold uppercase px-2 py-0.5 rounded-md bg-walnut-800 text-white">${meal.type}</span>
+                <span class="text-[11px] text-walnut-500">${meal.originDay ? `Dzień ${meal.originDay}` : 'Pula rezerwowa'}</span>
+                ${tagBadges}
+              </div>
+              <div class="font-display font-bold text-sm text-walnut-800">${meal.title}</div>
+              ${review.note ? `<div class="text-xs text-sage-700 italic">„${review.note}”</div>` : ''}
+            </div>
+
+            <div class="flex items-center gap-1 shrink-0">
+              ${[1, 2, 3, 4, 5].map(star => `
+                <button onclick="setMealRating('${meal.id}', ${star})"
+                  class="w-7 h-7 rounded-lg flex items-center justify-center text-base ${
+                    review.rating >= star ? 'text-amber-500 bg-amber-50' : 'text-cream-300 hover:text-amber-400'
+                  }">★</button>
+              `).join('')}
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      // Preferencje składników i tagów
+      const prefBox = document.getElementById('tastes-preferences-box');
+      const swappedIngList = Object.values(state.ingredientSwaps);
+
+      prefBox.innerHTML = `
+        <div class="p-3.5 rounded-2xl bg-sage-50/70 border border-sage-200">
+          <div class="text-xs font-bold text-sage-800 mb-1.5">Chętnie wybierane zamienniki składników:</div>
+          ${swappedIngList.length > 0
+            ? `<div class="flex flex-wrap gap-1.5">${[...new Set(swappedIngList.map(s => s.name))].map(n => `<span class="px-2.5 py-1 rounded-xl bg-white text-xs font-semibold text-sage-800 border border-sage-200">${n}</span>`).join('')}</div>`
+            : `<p class="text-xs text-sage-700">Brak zamienionych składników. Użyj przycisku „⇄ Zamień” w przepisach, aby dopasować składniki.</p>`
+          }
+        </div>
+        <div class="p-3.5 rounded-2xl bg-cream-50 border border-cream-200 text-xs text-walnut-700 space-y-1.5">
+          <div class="font-bold text-walnut-800">Jak działa inteligentne dopasowanie?</div>
+          <p>1. Oznacz dania, które Wam nie podeszły, na <strong>1–2 ★</strong> (lub tagiem <em>Nie podeszło</em>).</p>
+          <p>2. Oceń ulubione dania na <strong>4–5 ★</strong>.</p>
+          <p>3. Kliknij <strong>„✨ Dopasuj plan pod nasze oceny”</strong>, aby automatycznie zastąpić słabsze posiłki w całym tygodniu Waszymi faworytami z zachowaniem kategorii (Śniadanie/Obiad/Kolacja) oraz makroskładników.</p>
+        </div>
+      `;
+    }
+
+    function autoOptimizePlanByRatings() {
+      const pool = getAllMealsPool();
+      const banner = document.getElementById('tastes-feedback-banner');
+      let replacedCount = 0;
+
+      DIET_PLAN.forEach(dayObj => {
+        [0, 1, 2].forEach(slotIdx => {
+          const activeMeal = getActiveMealForSlot(dayObj.day, slotIdx);
+          const rev = state.mealReviews[activeMeal.id];
+          const isLow = rev && ((rev.rating > 0 && rev.rating <= 2) || (rev.tags || []).includes('dislike'));
+
+          if (isLow) {
+            // Szukamy najwyżej ocenionego posiłku tej samej kategorii (nieoznaczonego jako nielubiany)
+            const candidates = pool
+              .filter(m => m.type === activeMeal.type && m.id !== activeMeal.id)
+              .filter(m => {
+                const r = state.mealReviews[m.id];
+                return !r || ((r.rating === 0 || r.rating >= 3) && !(r.tags || []).includes('dislike'));
+              })
+              .sort((a, b) => {
+                const ra = (state.mealReviews[a.id]?.rating || 0);
+                const rb = (state.mealReviews[b.id]?.rating || 0);
+                return rb - ra;
+              });
+
+            if (candidates.length > 0) {
+              // Jeśli są wysoko ocenione (4-5), wybierz losowo spośród topowych; w przeciwnym razie weź najlepszy inny
+              const topRated = candidates.filter(c => (state.mealReviews[c.id]?.rating || 0) >= 4);
+              const chosen = topRated.length > 0
+                ? topRated[Math.floor(Math.random() * topRated.length)]
+                : candidates[0];
+
+              state.mealSwaps[`${dayObj.day}-${slotIdx}`] = chosen.id;
+              replacedCount++;
+            }
+          }
+        });
+      });
+
+      saveState();
+      renderTastesView();
+      banner.classList.remove('hidden');
+      if (replacedCount > 0) {
+        banner.textContent = `✨ Gotowe! Podmieniono ${replacedCount} nisko ocenionych posiłków w planie tygodnia na Wasze wyżej ocenione lub alternatywne propozycje.`;
+      } else {
+        banner.textContent = `ℹ️ Nie znaleziono w bieżącym planie posiłków ocenionych na 1–2 ★ lub oznaczonych jako „Nie podeszło”. Oceń dowolny posiłek niżej, aby funkcja mogła go automatycznie wymienić.`;
+      }
+    }
+
+    // ==================== RESET DO PLANU BAZOWEGO ====================
+    function openResetConfirmModal() {
+      const m = document.getElementById('modal-reset-confirm');
+      m.classList.remove('hidden');
+      m.classList.add('flex');
+    }
+
+    function closeResetConfirmModal() {
+      const m = document.getElementById('modal-reset-confirm');
+      m.classList.add('hidden');
+      m.classList.remove('flex');
+    }
+
+    function resetSwapsOnly() {
+      state.mealSwaps = {};
+      state.ingredientSwaps = {};
+      saveState();
+      closeResetConfirmModal();
+      renderPlanView();
+      if (state.activeTab === 'tastes') renderTastesView();
+      if (state.activeTab === 'shopping') renderShoppingList();
+    }
+
+    function resetEverything() {
+      state.mealSwaps = {};
+      state.ingredientSwaps = {};
+      state.mealReviews = {};
+      state.eatenMeals = {};
+      state.checkedShopping = {};
+      saveState();
+      closeResetConfirmModal();
+      renderDaySelector();
+      renderPlanView();
+      if (state.activeTab === 'tastes') renderTastesView();
+      if (state.activeTab === 'shopping') renderShoppingList();
+    }
+
+    // ==================== INICJALIZACJA ====================
+    window.addEventListener('DOMContentLoaded', () => {
+      renderDaySelector();
+      renderPlanView();
+    });
+  </script>
+</body>
+</html>
