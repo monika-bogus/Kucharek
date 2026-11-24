@@ -1811,25 +1811,22 @@
       }
     } catch (e) {}
 
-    function saveState() {
-      try {
-        localStorage.setItem('diet2_app_state_v2', JSON.stringify({
-          eatenMeals: state.eatenMeals,
-          checkedShopping: state.checkedShopping,
-          mealSwaps: state.mealSwaps,
-          ingredientSwaps: state.ingredientSwaps,
-          mealReviews: state.mealReviews
-        }));if (window.KucharekCloud) {
-      window.KucharekCloud.syncStateToCloud({
-        eatenMeals: state.eatenMeals,
-        checkedShopping: state.checkedShopping,
-        mealSwaps: state.mealSwaps,
-        ingredientSwaps: state.ingredientSwaps,
-        mealReviews: state.mealReviews
-      });
-      } catch (e) {}
-    }
-
+   function saveState() {
+  const payload = {
+    eatenMeals: state.eatenMeals,
+    checkedShopping: state.checkedShopping,
+    mealSwaps: state.mealSwaps,
+    ingredientSwaps: state.ingredientSwaps,
+    mealReviews: state.mealReviews
+  };
+  try {
+    localStorage.setItem('diet2_app_state_v2', JSON.stringify(payload));
+  } catch (e) {}
+  if (window.KucharekCloud) {
+    window.KucharekCloud.syncStateToCloud(payload);
+  }
+}
+```[cite: 12]
     // ==================== POMOCNICY POBIERANIA DANYCH ====================
     function getAllMealsPool() {
       const baseMeals = [];
