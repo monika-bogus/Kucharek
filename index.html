@@ -1819,7 +1819,14 @@
           mealSwaps: state.mealSwaps,
           ingredientSwaps: state.ingredientSwaps,
           mealReviews: state.mealReviews
-        }));
+        }));if (window.KucharekCloud) {
+      window.KucharekCloud.syncStateToCloud({
+        eatenMeals: state.eatenMeals,
+        checkedShopping: state.checkedShopping,
+        mealSwaps: state.mealSwaps,
+        ingredientSwaps: state.ingredientSwaps,
+        mealReviews: state.mealReviews
+      });
       } catch (e) {}
     }
 
@@ -2867,11 +2874,92 @@
       if (state.activeTab === 'shopping') renderShoppingList();
     }
 
-    // ==================== INICJALIZACJA ====================
-    window.addEventListener('DOMContentLoaded', () => {
+   // ============== INICJALIZACJA ==============
+window.addEventListener('DOMContentLoaded', () => {
+  renderDaySelector();
+  renderPlanView();
+
+  if (window.KucharekCloud) {
+    window.KucharekCloud.startRealtimeSync((remoteState) => {
+      if (remoteState.eatenMeals) state.eatenMeals = remoteState.eatenMeals;
+      if (remoteState.checkedShopping) state.checkedShopping = remoteState.checkedShopping;
+      if (remoteState.mealSwaps) state.mealSwaps = remoteState.mealSwaps;
+      if (remoteState.ingredientSwaps) state.ingredientSwaps = remoteState.ingredientSwaps;
+      if (remoteState.mealReviews) state.mealReviews = remoteState.mealReviews;
+
+      try {
+        localStorage.setItem('diet2_app_state_v2', JSON.stringify({
+          eatenMeals: state.eatenMeals,
+          checkedShopping: state.checkedShopping,
+          mealSwaps: state.mealSwaps,
+          ingredientSwaps: state.ingredientSwaps,
+          mealReviews: state.mealReviews
+        }));
+      } catch (e) {}
+
       renderDaySelector();
       renderPlanView();
+      if (state.activeTab === 'tastes' && typeof renderTastesView === 'function') {
+        renderTastesView();
+      }
+      if (state.activeTab === 'shopping' && typeof renderShoppingList === 'function') {
+        renderShoppingList();
+      }
     });
-  </script>
-</body>
-</html>
+  }
+});
+</script>
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
+  import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-database.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyDCSoak1W5d13yAQN87X_agXC0dhWMg0hc",
+    authDomain: "kucharek-sync.firebaseapp.com",
+    databaseURL: "https://kucharek-sync-default-rtdb.europe-west1.firebasedatabase.app",
+    projectId: "kucharek-sync",
+    storageBucket: "kucharek-sync.firebasestorage.app",
+    messagingSenderId: "810209488967",
+    appId: "1:810209488967:web:446d4b4a55dee04ddd4162",
+    measurementId: "G-FZ5060BMS9"
+  };
+
+  const ROOM_KEY = "kucharek-cicia-anielka-bogus";
+
+  const app = initializeApp(firebaseConfig);
+  const db = getDatabase(app);
+  const planRef = ref(db, `plans/${ROOM_KEY}`);
+
+  let isApplyingRemoteState = false;
+
+  export async function syncStateToCloud(appState) {
+    if (isApplyingRemoteState) return;
+    try {
+      await set(planRef, {
+        updatedAt: Date.now(),
+        state: JSON.parse(JSON.stringify(appState))
+      });
+    } catch (err) {
+      console.error("Błąd zapisu do chmury:", err);
+    }
+  }
+
+  export function startRealtimeSync(applyRemoteStateCallback) {
+    onValue(planRef, (snapshot) => {
+      const payload = snapshot.val();
+      if (!payload || !payload.state) return;
+
+      isApplyingRemoteState = true;
+      try {
+        applyRemoteStateCallback(payload.state);
+      } finally {
+        isApplyingRemoteState = false;
+      }
+    });
+  }
+
+  window.KucharekCloud = {
+    syncStateToCloud,
+    startRealtimeSync
+  };
+</script>
