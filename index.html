@@ -81,6 +81,9 @@
               <span id="cloud-sync-badge" class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-amber-50 text-amber-800 border border-amber-200">
                 <span class="w-2 h-2 rounded-full bg-amber-500 animate-pulse"></span> Łączenie z chmurą...
               </span>
+              <button id="account-status-btn" onclick="openAccountModal()" class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-walnut-100 hover:bg-walnut-200 text-walnut-800 border border-walnut-200 transition-colors">
+                🔐 Konto: Gość (lokalnie)
+              </button>
             </div>
             <p id="header-profiles-summary" class="text-xs text-walnut-600">Kalendarz na żywo • Automatyczne wyliczanie makro • Wspólna baza lub osobne gotowanie</p>
           </div>
@@ -300,21 +303,36 @@
 
         <!-- Lista profili + ustawienia wspólnego gotowania + licznik do celu -->
         <div class="lg:col-span-5 space-y-5">
+          <!-- Karta konta i prywatnej kuchni (separacja par) -->
+          <div class="bg-white rounded-3xl p-5 sm:p-6 border border-cream-200 card-shadow space-y-3">
+            <div class="flex items-center justify-between gap-2">
+              <div>
+                <span class="text-xs font-bold uppercase tracking-wider text-sage-600">Prywatność i dostęp</span>
+                <h2 class="font-display font-bold text-lg text-walnut-800">Twoje konto i Wspólna Kuchnia</h2>
+              </div>
+              <button onclick="openAccountModal()" class="px-3 py-1.5 rounded-xl bg-walnut-800 hover:bg-walnut-700 text-white text-xs font-bold transition-colors">
+                🔐 Zmień / Zaloguj
+              </button>
+            </div>
+            <div id="account-household-card" class="p-3.5 rounded-2xl bg-cream-50 border border-cream-200 text-xs text-walnut-700 space-y-1.5"></div>
+          </div>
+
           <div class="bg-white rounded-3xl p-5 sm:p-6 border border-cream-200 card-shadow space-y-4">
             <div class="flex items-center justify-between">
               <div>
-                <span class="text-xs font-bold uppercase tracking-wider text-sage-600">Osoby w planie</span>
-                <h2 class="font-display font-bold text-lg text-walnut-800">Profile użytkowników</h2>
+                <span class="text-xs font-bold uppercase tracking-wider text-sage-600">Osoby współgotujące</span>
+                <h2 class="font-display font-bold text-lg text-walnut-800">Osoby w Twojej kuchni</h2>
               </div>
               <div class="flex items-center gap-1.5">
                 <button onclick="openOnboardingModal()" class="px-3 py-1.5 rounded-xl bg-walnut-100 hover:bg-walnut-200 text-walnut-800 text-xs font-bold">
                   🪄 Kreator startowy
                 </button>
                 <button onclick="startNewProfile()" class="px-3 py-1.5 rounded-xl bg-sage-50 hover:bg-sage-100 text-sage-800 border border-sage-200 text-xs font-bold">
-                  + Nowy
+                  + Dodaj osobę
                 </button>
               </div>
             </div>
+            <p class="text-[11px] text-walnut-500">Dodaj tutaj siebie oraz osoby, z którymi wspólnie gotujesz (np. partnera/partnerkę). Inne pary korzystają z osobnych kont i nie widzą Waszych danych.</p>
             <div id="profiles-cards-list" class="space-y-3"></div>
           </div>
 
@@ -558,6 +576,97 @@
     </div>
 
   </main>
+
+  <!-- ==================== MODAL KONTA I PRYWATNEJ KUCHNI (LOGOWANIE / REJESTRACJA / KOD KUCHNI) ==================== -->
+  <div id="modal-account" class="fixed inset-0 z-50 hidden items-center justify-center bg-walnut-800/60 p-4 backdrop-blur-xs">
+    <div class="bg-white rounded-3xl max-w-xl w-full border border-cream-200 shadow-2xl overflow-hidden flex flex-col max-h-[92vh]">
+      <div class="p-5 bg-cream-50 border-b border-cream-200 flex items-center justify-between">
+        <div>
+          <span class="text-[11px] font-bold uppercase tracking-wider text-sage-600">Prywatne konta użytkowników</span>
+          <h3 class="font-display font-bold text-lg text-walnut-800">Konto i izolowana Wspólna Kuchnia</h3>
+        </div>
+        <button type="button" onclick="closeAccountModal()" class="w-9 h-9 rounded-xl bg-white border border-cream-200 text-walnut-600 font-bold">✕</button>
+      </div>
+
+      <div class="p-5 space-y-5 overflow-y-auto">
+        <div id="account-feedback-msg" class="hidden p-3 rounded-2xl text-xs font-semibold"></div>
+
+        <!-- Widok dla zalogowanego użytkownika -->
+        <div id="account-logged-in-panel" class="hidden space-y-4">
+          <div class="p-4 rounded-2xl bg-sage-50 border border-sage-200 space-y-2">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-bold uppercase text-sage-700">Zalogowano jako</span>
+              <span class="text-[11px] font-bold px-2 py-0.5 rounded-lg bg-white text-sage-800 border border-sage-200">Konto prywatne</span>
+            </div>
+            <div id="account-user-email" class="font-display font-bold text-base text-walnut-800"></div>
+            <div class="text-xs text-walnut-700">
+              Twój prywatny kod kuchni (udostępnij tylko osobie współgotującej):
+              <div class="mt-1.5 flex items-center gap-2">
+                <code id="account-kitchen-code-display" class="px-3 py-1.5 rounded-xl bg-white border border-sage-300 font-mono text-xs font-bold text-sage-900 select-all"></code>
+                <button type="button" onclick="copyKitchenCode()" class="px-3 py-1.5 rounded-xl bg-sage-600 hover:bg-sage-700 text-white text-xs font-bold">Kopiuj kod</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="p-4 rounded-2xl bg-cream-50 border border-cream-200 space-y-2.5">
+            <label class="block text-xs font-bold text-walnut-800">Dołącz do kuchni partnera/partnerki (wpisz otrzymany kod):</label>
+            <div class="flex flex-col sm:flex-row gap-2">
+              <input id="join-kitchen-code-input" type="text" placeholder="Np. kuchnia-a8f3k2" class="flex-1 px-3.5 py-2 rounded-xl bg-white border border-cream-300 text-xs font-mono text-walnut-800" />
+              <button type="button" onclick="joinPartnerKitchen()" class="px-4 py-2 rounded-xl bg-walnut-800 hover:bg-walnut-700 text-white text-xs font-bold shrink-0">
+                Połącz z kuchnią
+              </button>
+            </div>
+            <p class="text-[11px] text-walnut-500">Po wpisaniu kodu kuchni drugiej osoby Wasze profile, jadłospis i lista zakupów będą współdzielone wyłącznie między Wami.</p>
+          </div>
+
+          <div class="flex items-center justify-between pt-2 border-t border-cream-200">
+            <button type="button" onclick="logoutAccount()" class="px-4 py-2 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 text-xs font-bold">
+              Wyloguj się
+            </button>
+            <button type="button" onclick="closeAccountModal()" class="px-5 py-2 rounded-xl bg-sage-600 hover:bg-sage-700 text-white text-xs font-bold">
+              Gotowe
+            </button>
+          </div>
+        </div>
+
+        <!-- Widok logowania / rejestracji -->
+        <div id="account-auth-panel" class="space-y-4">
+          <p class="text-xs text-walnut-600 leading-relaxed">
+            Załóż własne konto (e-mail i hasło) lub zaloguj się. Każde konto tworzy własną, prywatną <strong>Wspólną Kuchnię</strong>, do której możesz dodać osoby współgotujące lub zaprosić partnera kodem kuchni. Inne pary nie mają dostępu do Twoich danych.
+          </p>
+
+          <div class="flex gap-2 bg-cream-100 p-1 rounded-2xl border border-cream-200">
+            <button type="button" id="auth-subtab-login" onclick="switchAuthSubtab('login')" class="flex-1 py-2 rounded-xl text-xs font-bold bg-white text-sage-800 shadow-xs">Logowanie</button>
+            <button type="button" id="auth-subtab-register" onclick="switchAuthSubtab('register')" class="flex-1 py-2 rounded-xl text-xs font-bold text-walnut-600">Rejestracja nowego konta</button>
+          </div>
+
+          <form onsubmit="submitAuthForm(event)" class="space-y-3">
+            <input type="hidden" id="auth-mode" value="login" />
+            <div id="auth-name-wrap" class="hidden">
+              <label class="block text-xs font-bold text-walnut-700 mb-1">Twoje imię *</label>
+              <input id="auth-display-name" type="text" placeholder="Np. Ania" class="w-full px-3.5 py-2.5 rounded-2xl bg-cream-50 border border-cream-300 text-sm" />
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-walnut-700 mb-1">Adres e-mail *</label>
+              <input id="auth-email" type="email" required placeholder="twoj@email.pl" class="w-full px-3.5 py-2.5 rounded-2xl bg-cream-50 border border-cream-300 text-sm" />
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-walnut-700 mb-1">Hasło (min. 6 znaków) *</label>
+              <input id="auth-password" type="password" required minlength="6" placeholder="••••••••" class="w-full px-3.5 py-2.5 rounded-2xl bg-cream-50 border border-cream-300 text-sm" />
+            </div>
+            <div id="auth-invite-code-wrap" class="hidden">
+              <label class="block text-xs font-bold text-walnut-700 mb-1">Kod kuchni partnera (opcjonalnie — zostaw puste, aby utworzyć nową)</label>
+              <input id="auth-invite-code" type="text" placeholder="Np. kuchnia-a8f3k2" class="w-full px-3.5 py-2.5 rounded-2xl bg-cream-50 border border-cream-300 text-xs font-mono" />
+            </div>
+
+            <button type="submit" id="auth-submit-btn" class="w-full py-2.5 rounded-2xl bg-sage-600 hover:bg-sage-700 text-white text-sm font-bold shadow-sm transition-colors">
+              Zaloguj się do swojej kuchni
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <!-- ==================== MODAL STARTOWY (KREATOR PROFILU I TRYBU GOTOWANIA) ==================== -->
   <div id="modal-onboarding" class="fixed inset-0 z-50 hidden items-center justify-center bg-walnut-800/60 p-4 backdrop-blur-xs">
@@ -1848,29 +1957,99 @@
     };
 
     let modalContext = { mealId: null, scope: null, ingIndex: null, dayNum: null, mealSlotIdx: null };
+    let currentAccount = { uid: null, email: null, kitchenId: null };
 
-    try {
-      const saved = localStorage.getItem('kucharek_app_state_v3') || localStorage.getItem('diet2_app_state_v2');
-      if (saved) {
-        const parsed = JSON.parse(saved);
-        state = {
-          ...state,
-          ...parsed,
-          selectedDay: INITIAL_TODAY_DAY,
-          activeWeek: 1,
-          cookingMode: parsed.cookingMode || 'together_split',
-          priceTier: parsed.priceTier || 'economy',
-          shoppingSelectedDays: Array.isArray(parsed.shoppingSelectedDays) && parsed.shoppingSelectedDays.length > 0
-            ? parsed.shoppingSelectedDays
-            : [INITIAL_TODAY_DAY],
-          profiles: Array.isArray(parsed.profiles) && parsed.profiles.length > 0 ? parsed.profiles : state.profiles,
-          measurements: parsed.measurements || {},
-          mealPhotos: parsed.mealPhotos || {},
-          pantryItems: Array.isArray(parsed.pantryItems) ? parsed.pantryItems : [],
-          generatedWeeks: parsed.generatedWeeks || {}
-        };
-      }
-    } catch (e) {}
+    function getStorageKeyForKitchen(kitchenId) {
+      return kitchenId ? `kucharek_kitchen_${kitchenId}` : 'kucharek_app_state_guest';
+    }
+
+    function getDefaultStateTemplate() {
+      const todayIdx = getTodayDayIndex1to7();
+      return {
+        activeTab: 'plan',
+        activeWeek: 1,
+        selectedDay: todayIdx,
+        personFilter: 'all',
+        cookingMode: 'together_split',
+        priceTier: 'economy',
+        shoppingSelectedDays: [todayIdx],
+        onboardingCompleted: false,
+        eatenMeals: {},
+        checkedShopping: {},
+        mealSwaps: {},
+        ingredientSwaps: {},
+        mealReviews: {},
+        mealPhotos: {},
+        pantryItems: [],
+        generatedWeeks: {},
+        profiles: [
+          {
+            id: 'p1',
+            name: 'Osoba 1 (Wege)',
+            sex: 'female',
+            age: '',
+            height: '',
+            weight: '',
+            targetWeight: '',
+            waist: '',
+            hips: '',
+            thigh: '',
+            activity: 1.375,
+            diet: 'wege',
+            mealsPerDay: 3,
+            excluded: '',
+            notes: ''
+          },
+          {
+            id: 'p2',
+            name: 'Osoba 2 (Mięso)',
+            sex: 'male',
+            age: '',
+            height: '',
+            weight: '',
+            targetWeight: '',
+            waist: '',
+            hips: '',
+            thigh: '',
+            activity: 1.55,
+            diet: 'omnivore',
+            mealsPerDay: 3,
+            excluded: '',
+            notes: ''
+          }
+        ],
+        measurements: {}
+      };
+    }
+
+    function loadLocalStateForKitchen(kitchenId) {
+      const base = getDefaultStateTemplate();
+      try {
+        const saved = localStorage.getItem(getStorageKeyForKitchen(kitchenId));
+        if (saved) {
+          const parsed = JSON.parse(saved);
+          return {
+            ...base,
+            ...parsed,
+            selectedDay: INITIAL_TODAY_DAY,
+            activeWeek: 1,
+            cookingMode: parsed.cookingMode || 'together_split',
+            priceTier: parsed.priceTier || 'economy',
+            shoppingSelectedDays: Array.isArray(parsed.shoppingSelectedDays) && parsed.shoppingSelectedDays.length > 0
+              ? parsed.shoppingSelectedDays
+              : [INITIAL_TODAY_DAY],
+            profiles: Array.isArray(parsed.profiles) && parsed.profiles.length > 0 ? parsed.profiles : base.profiles,
+            measurements: parsed.measurements || {},
+            mealPhotos: parsed.mealPhotos || {},
+            pantryItems: Array.isArray(parsed.pantryItems) ? parsed.pantryItems : [],
+            generatedWeeks: parsed.generatedWeeks || {}
+          };
+        }
+      } catch (e) {}
+      return base;
+    }
+
+    state = loadLocalStateForKitchen(null);
 
     function getComparablePayload() {
       return {
@@ -1894,12 +2073,182 @@
     function saveState() {
       const payload = getComparablePayload();
       try {
-        localStorage.setItem('kucharek_app_state_v3', JSON.stringify(payload));
+        localStorage.setItem(getStorageKeyForKitchen(currentAccount.kitchenId), JSON.stringify(payload));
       } catch (e) {}
-      if (window.KucharekCloud && typeof window.KucharekCloud.syncStateToCloud === 'function') {
+      if (currentAccount.kitchenId && window.KucharekCloud && typeof window.KucharekCloud.syncStateToCloud === 'function') {
         window.KucharekCloud.syncStateToCloud(payload);
       }
     }
+
+    // ==================== OBSŁUGA KONT I PRYWATNYCH KUCHNI ====================
+    function updateAccountUI() {
+      const statusBtn = document.getElementById('account-status-btn');
+      const cardEl = document.getElementById('account-household-card');
+      const loggedInPanel = document.getElementById('account-logged-in-panel');
+      const authPanel = document.getElementById('account-auth-panel');
+
+      if (currentAccount.uid && currentAccount.kitchenId) {
+        if (statusBtn) {
+          statusBtn.innerHTML = `🔒 ${currentAccount.email} • Kuchnia: <span class="font-mono">${currentAccount.kitchenId}</span>`;
+        }
+        if (cardEl) {
+          cardEl.innerHTML = `
+            <div><strong>Konto:</strong> ${currentAccount.email}</div>
+            <div><strong>Prywatny kod kuchni:</strong> <code class="px-2 py-0.5 rounded bg-white border border-cream-300 font-mono font-bold text-sage-800">${currentAccount.kitchenId}</code></div>
+            <div class="text-[11px] text-walnut-500 pt-1">Dane są widoczne wyłącznie dla Ciebie oraz osób, którym podasz ten kod kuchni. Inne pary nie mają tu dostępu.</div>
+          `;
+        }
+        if (loggedInPanel) loggedInPanel.classList.remove('hidden');
+        if (authPanel) authPanel.classList.add('hidden');
+        const emailEl = document.getElementById('account-user-email');
+        if (emailEl) emailEl.textContent = currentAccount.email;
+        const codeEl = document.getElementById('account-kitchen-code-display');
+        if (codeEl) codeEl.textContent = currentAccount.kitchenId;
+      } else {
+        if (statusBtn) {
+          statusBtn.innerHTML = `🔐 Zaloguj się / Załóż prywatne konto`;
+        }
+        if (cardEl) {
+          cardEl.innerHTML = `
+            <div><strong>Tryb lokalny (niezalogowany)</strong></div>
+            <div class="text-[11px] text-walnut-600">Zaloguj się lub utwórz własne konto, aby utworzyć prywatną Wspólną Kuchnię odseparowaną od innych par i zsynchronizować ją z osobą współgotującą.</div>
+          `;
+        }
+        if (loggedInPanel) loggedInPanel.classList.add('hidden');
+        if (authPanel) authPanel.classList.remove('hidden');
+      }
+    }
+
+    function openAccountModal() {
+      updateAccountUI();
+      const fb = document.getElementById('account-feedback-msg');
+      if (fb) fb.classList.add('hidden');
+      const m = document.getElementById('modal-account');
+      m.classList.remove('hidden');
+      m.classList.add('flex');
+    }
+
+    function closeAccountModal() {
+      const m = document.getElementById('modal-account');
+      m.classList.add('hidden');
+      m.classList.remove('flex');
+    }
+
+    function switchAuthSubtab(mode) {
+      document.getElementById('auth-mode').value = mode;
+      const isReg = mode === 'register';
+      document.getElementById('auth-subtab-login').className = isReg
+        ? "flex-1 py-2 rounded-xl text-xs font-bold text-walnut-600"
+        : "flex-1 py-2 rounded-xl text-xs font-bold bg-white text-sage-800 shadow-xs";
+      document.getElementById('auth-subtab-register').className = isReg
+        ? "flex-1 py-2 rounded-xl text-xs font-bold bg-white text-sage-800 shadow-xs"
+        : "flex-1 py-2 rounded-xl text-xs font-bold text-walnut-600";
+      document.getElementById('auth-name-wrap').classList.toggle('hidden', !isReg);
+      document.getElementById('auth-invite-code-wrap').classList.toggle('hidden', !isReg);
+      document.getElementById('auth-submit-btn').textContent = isReg
+        ? 'Utwórz prywatne konto i Wspólną Kuchnię'
+        : 'Zaloguj się do swojej kuchni';
+    }
+
+    function showAccountFeedback(text, isError = false) {
+      const fb = document.getElementById('account-feedback-msg');
+      if (!fb) return;
+      fb.classList.remove('hidden');
+      fb.className = isError
+        ? "p-3 rounded-2xl text-xs font-semibold bg-rose-50 text-rose-800 border border-rose-200"
+        : "p-3 rounded-2xl text-xs font-semibold bg-sage-50 text-sage-800 border border-sage-200";
+      fb.textContent = text;
+    }
+
+    async function submitAuthForm(event) {
+      event.preventDefault();
+      const mode = document.getElementById('auth-mode').value;
+      const email = document.getElementById('auth-email').value.trim();
+      const password = document.getElementById('auth-password').value;
+      const displayName = document.getElementById('auth-display-name').value.trim();
+      const inviteCode = document.getElementById('auth-invite-code').value.trim().toLowerCase();
+
+      if (!window.KucharekCloud) {
+        showAccountFeedback('Brak połączenia z usługą kont w chmurze.', true);
+        return;
+      }
+
+      try {
+        if (mode === 'register') {
+          await window.KucharekCloud.registerUser(email, password, displayName, inviteCode);
+          showAccountFeedback('Konto utworzone! Twoja prywatna Wspólna Kuchnia jest gotowa.');
+        } else {
+          await window.KucharekCloud.loginUser(email, password);
+          showAccountFeedback('Zalogowano pomyślnie do Twojej Wspólnej Kuchni.');
+        }
+      } catch (err) {
+        showAccountFeedback(err.message || 'Błąd logowania lub rejestracji.', true);
+      }
+    }
+
+    async function joinPartnerKitchen() {
+      const codeInput = document.getElementById('join-kitchen-code-input');
+      const code = (codeInput ? codeInput.value : '').trim().toLowerCase();
+      if (!code) {
+        showAccountFeedback('Wpisz kod kuchni otrzymany od osoby współgotującej.', true);
+        return;
+      }
+      if (!window.KucharekCloud || !currentAccount.uid) return;
+      try {
+        await window.KucharekCloud.switchUserKitchen(code);
+        codeInput.value = '';
+        showAccountFeedback(`Połączono z kuchnią: ${code}.`);
+      } catch (err) {
+        showAccountFeedback(err.message || 'Nie udało się połączyć z podaną kuchnią.', true);
+      }
+    }
+
+    function copyKitchenCode() {
+      if (!currentAccount.kitchenId) return;
+      const temp = document.createElement('textarea');
+      temp.value = currentAccount.kitchenId;
+      document.body.appendChild(temp);
+      temp.select();
+      document.execCommand('copy');
+      document.body.removeChild(temp);
+      showAccountFeedback(`Skopiowano kod kuchni: ${currentAccount.kitchenId}`);
+    }
+
+    async function logoutAccount() {
+      if (window.KucharekCloud && window.KucharekCloud.logoutUser) {
+        await window.KucharekCloud.logoutUser();
+      }
+      currentAccount = { uid: null, email: null, kitchenId: null };
+      state = loadLocalStateForKitchen(null);
+      updateAccountUI();
+      refreshAllViewsAfterContextSwitch();
+      showAccountFeedback('Wylogowano. Pracujesz teraz w trybie lokalnym.');
+    }
+
+    function refreshAllViewsAfterContextSwitch() {
+      const quickEl = document.getElementById('quick-cooking-mode');
+      if (quickEl) quickEl.value = state.cookingMode;
+      const quickPriceEl = document.getElementById('quick-price-tier');
+      if (quickPriceEl) quickPriceEl.value = state.priceTier;
+      updateCookingModeBadge();
+      updatePriceTierBadge();
+      renderPersonFilterButtons();
+      renderDaySelector();
+      renderPlanView();
+      if (state.profiles[0]) loadProfileIntoForm(state.profiles[0].id);
+      if (state.activeTab === 'month') renderMonthView();
+      if (state.activeTab === 'shopping') renderShoppingList();
+      if (state.activeTab === 'pantry') renderPantryView();
+      if (state.activeTab === 'profiles') renderProfilesView();
+      if (state.activeTab === 'tastes') renderTastesView();
+    }
+
+    window.setActiveAccountContext = function(accountInfo) {
+      currentAccount = accountInfo || { uid: null, email: null, kitchenId: null };
+      state = loadLocalStateForKitchen(currentAccount.kitchenId);
+      updateAccountUI();
+      refreshAllViewsAfterContextSwitch();
+    };
 
     // ==================== AUTOMATYCZNE WYLICZANIE KALORII I MAKRO POD PROFIL ====================
     function calculateProfileTargets(profile) {
@@ -3531,23 +3880,10 @@
       if (remoteState.measurements) state.measurements = remoteState.measurements;
 
       try {
-        localStorage.setItem('kucharek_app_state_v3', JSON.stringify(getComparablePayload()));
+        localStorage.setItem(getStorageKeyForKitchen(currentAccount.kitchenId), JSON.stringify(getComparablePayload()));
       } catch (e) {}
 
-      const quickEl = document.getElementById('quick-cooking-mode');
-      if (quickEl) quickEl.value = state.cookingMode;
-      const quickPriceEl = document.getElementById('quick-price-tier');
-      if (quickPriceEl) quickPriceEl.value = state.priceTier;
-      updateCookingModeBadge();
-      updatePriceTierBadge();
-      renderPersonFilterButtons();
-      renderDaySelector();
-      renderPlanView();
-      if (state.activeTab === 'month') renderMonthView();
-      if (state.activeTab === 'shopping') renderShoppingList();
-      if (state.activeTab === 'pantry') renderPantryView();
-      if (state.activeTab === 'profiles') renderProfilesView();
-      if (state.activeTab === 'tastes') renderTastesView();
+      refreshAllViewsAfterContextSwitch();
     }
 
     window.applyIncomingCloudState = applyIncomingCloudState;
@@ -3555,27 +3891,14 @@
     // ==================== INICJALIZACJA ====================
     window.addEventListener('DOMContentLoaded', () => {
       state.selectedDay = getTodayDayIndex1to7();
-      const quickEl = document.getElementById('quick-cooking-mode');
-      if (quickEl) quickEl.value = state.cookingMode;
-      const quickPriceEl = document.getElementById('quick-price-tier');
-      if (quickPriceEl) quickPriceEl.value = state.priceTier;
-      updateCookingModeBadge();
-      updatePriceTierBadge();
-
-      renderPersonFilterButtons();
-      renderDaySelector();
-      renderPlanView();
-      if (state.profiles[0]) loadProfileIntoForm(state.profiles[0].id);
-
-      if (window.KucharekCloud && typeof window.KucharekCloud.startRealtimeSync === 'function') {
-        window.KucharekCloud.startRealtimeSync(applyIncomingCloudState);
-      }
+      updateAccountUI();
+      refreshAllViewsAfterContextSwitch();
     });
   </script>
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
-    import { getDatabase, ref, set, get, onValue } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-database.js";
+    import { getDatabase, ref, set, get, onValue, off } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-database.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyDCSoak1W5d13yAQN87X_agXC0dhWMg0hc",
@@ -3588,7 +3911,7 @@
       measurementId: "G-FZ5060BMS9"
     };
 
-    const ROOM_KEY = "kucharek-cicia-anielka-bogus";
+    const SESSION_STORAGE_KEY = "kucharek_logged_user_v1";
     const badgeEl = document.getElementById('cloud-sync-badge');
 
     function setSyncBadge(status, text) {
@@ -3600,95 +3923,259 @@
         badgeEl.className = "inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-amber-50 text-amber-800 border border-amber-200";
         badgeEl.innerHTML = `<span class="w-2 h-2 rounded-full bg-amber-500 animate-pulse"></span> ${text}`;
       } else {
-        badgeEl.className = "inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-rose-50 text-rose-800 border border-rose-200";
-        badgeEl.innerHTML = `<span class="w-2 h-2 rounded-full bg-rose-500"></span> ${text}`;
+        badgeEl.className = "inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-cream-100 text-walnut-700 border border-cream-300";
+        badgeEl.innerHTML = `<span class="w-2 h-2 rounded-full bg-walnut-500"></span> ${text}`;
       }
+    }
+
+    function generatePrivateKitchenCode() {
+      const rand = Math.random().toString(36).substring(2, 8);
+      return `kuchnia-${rand}`;
+    }
+
+    // Zamienia adres e-mail na bezpieczny klucz w Firebase Realtime Database
+    function emailToKey(email) {
+      return email.trim().toLowerCase().replace(/[^a-z0-9]/g, '_');
+    }
+
+    // Prosty skrót SHA-256 hasła (z fallbackiem, gdyby crypto.subtle było niedostępne)
+    async function hashPassword(password) {
+      try {
+        if (window.crypto && window.crypto.subtle) {
+          const enc = new TextEncoder().encode("kucharek_salt_" + password);
+          const buf = await window.crypto.subtle.digest("SHA-256", enc);
+          return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
+        }
+      } catch (e) {}
+      return btoa(unescape(encodeURIComponent("kucharek_" + password)));
     }
 
     try {
       const app = initializeApp(firebaseConfig);
       const db = getDatabase(app);
-      const roomRef = ref(db, `plans/${ROOM_KEY}`);
 
+      let activeUserSession = null;
+      let activeRoomRef = null;
       let isApplyingRemote = false;
       let saveTimer = null;
       let lastSyncedJson = "";
-      let listenerAttached = false;
+
+      function detachRoomListener() {
+        if (activeRoomRef) {
+          off(activeRoomRef);
+          activeRoomRef = null;
+        }
+      }
+
+      function persistSession(sessionObj) {
+        activeUserSession = sessionObj;
+        try {
+          if (sessionObj) {
+            localStorage.setItem(SESSION_STORAGE_KEY, JSON.stringify(sessionObj));
+          } else {
+            localStorage.removeItem(SESSION_STORAGE_KEY);
+          }
+        } catch (e) {}
+      }
+
+      async function bindToKitchenRoom(kitchenId, initialNameForNewKitchen = '') {
+        detachRoomListener();
+        activeRoomRef = ref(db, `kitchens/${kitchenId}`);
+
+        try {
+          const snap = await get(activeRoomRef);
+          if (snap.exists()) {
+            const data = snap.val();
+            const { _updatedAt, ...cleanData } = data;
+            lastSyncedJson = JSON.stringify(cleanData);
+            isApplyingRemote = true;
+            if (typeof window.applyIncomingCloudState === 'function') {
+              window.applyIncomingCloudState(cleanData);
+            }
+            isApplyingRemote = false;
+            setSyncBadge('ok', `Kuchnia: ${kitchenId}`);
+          } else {
+            const freshState = getDefaultStateTemplate();
+            if (initialNameForNewKitchen && freshState.profiles[0]) {
+              freshState.profiles[0].name = initialNameForNewKitchen;
+            }
+            const { activeTab, activeWeek, selectedDay, personFilter, ...cleanPayload } = freshState;
+            await set(activeRoomRef, { ...cleanPayload, _updatedAt: Date.now() });
+            lastSyncedJson = JSON.stringify(cleanPayload);
+            isApplyingRemote = true;
+            if (typeof window.applyIncomingCloudState === 'function') {
+              window.applyIncomingCloudState(cleanPayload);
+            }
+            isApplyingRemote = false;
+            setSyncBadge('ok', `Nowa kuchnia: ${kitchenId}`);
+          }
+        } catch (err) {
+          console.error("Błąd odczytu prywatnej kuchni:", err);
+          setSyncBadge('err', 'Tryb offline (lokalny)');
+        }
+
+        onValue(activeRoomRef, (snapshot) => {
+          if (!snapshot.exists()) return;
+          const data = snapshot.val();
+          const { _updatedAt, ...cleanData } = data;
+          const incomingJson = JSON.stringify(cleanData);
+          if (incomingJson === lastSyncedJson) {
+            setSyncBadge('ok', `Kuchnia: ${kitchenId}`);
+            return;
+          }
+          lastSyncedJson = incomingJson;
+          isApplyingRemote = true;
+          try {
+            if (typeof window.applyIncomingCloudState === 'function') {
+              window.applyIncomingCloudState(cleanData);
+            }
+            setSyncBadge('ok', `Kuchnia: ${kitchenId}`);
+          } finally {
+            isApplyingRemote = false;
+          }
+        }, (error) => {
+          console.error("Błąd nasłuchu kuchni:", error);
+          setSyncBadge('err', 'Błąd połączenia');
+        });
+      }
 
       window.KucharekCloud = {
         syncStateToCloud: function(payload) {
-          if (isApplyingRemote) return;
+          if (isApplyingRemote || !activeRoomRef) return;
           const serialized = JSON.stringify(payload);
           if (serialized === lastSyncedJson) return;
 
-          setSyncBadge('saving', 'Zapisywanie w chmurze...');
+          setSyncBadge('saving', 'Zapisywanie...');
           clearTimeout(saveTimer);
           saveTimer = setTimeout(async () => {
             try {
-              await set(roomRef, {
+              await set(activeRoomRef, {
                 ...payload,
                 _updatedAt: Date.now()
               });
               lastSyncedJson = serialized;
-              setSyncBadge('ok', 'Zsynchronizowano');
+              setSyncBadge('ok', `Zsynchronizowano`);
             } catch (err) {
               console.error("Błąd zapisu Firebase:", err);
-              setSyncBadge('err', 'Błąd zapisu (tryb lokalny)');
+              setSyncBadge('err', 'Błąd zapisu');
             }
           }, 300);
         },
 
-        startRealtimeSync: async function(onRemoteUpdate) {
-          if (listenerAttached) return;
-          listenerAttached = true;
+        registerUser: async function(email, password, displayName, inviteCode) {
+          const cleanEmail = email.trim().toLowerCase();
+          const userKey = emailToKey(cleanEmail);
+          const userRef = ref(db, `accounts/${userKey}`);
 
-          try {
-            const initialSnap = await get(roomRef);
-            if (initialSnap.exists()) {
-              const data = initialSnap.val();
-              const { _updatedAt, ...cleanData } = data;
-              lastSyncedJson = JSON.stringify(cleanData);
-              isApplyingRemote = true;
-              onRemoteUpdate(cleanData);
-              isApplyingRemote = false;
-              setSyncBadge('ok', 'Zsynchronizowano');
-            } else {
-              const initialPayload = getComparablePayload();
-              await set(roomRef, { ...initialPayload, _updatedAt: Date.now() });
-              lastSyncedJson = JSON.stringify(initialPayload);
-              setSyncBadge('ok', 'Zsynchronizowano (nowa baza)');
-            }
-          } catch (err) {
-            console.error("Błąd wstępnego odczytu Firebase:", err);
-            setSyncBadge('err', 'Tryb lokalny (brak sieci)');
+          const existingSnap = await get(userRef);
+          if (existingSnap.exists()) {
+            throw new Error('Konto z tym adresem e-mail już istnieje. Przełącz na zakładkę Logowanie.');
           }
 
-          onValue(roomRef, (snapshot) => {
-            if (!snapshot.exists()) return;
-            const data = snapshot.val();
-            const { _updatedAt, ...cleanData } = data;
-            const incomingJson = JSON.stringify(cleanData);
-            if (incomingJson === lastSyncedJson) {
-              setSyncBadge('ok', 'Zsynchronizowano');
-              return;
+          const cleanInvite = (inviteCode || '').replace(/[^a-z0-9-]/g, '');
+          if (cleanInvite) {
+            const inviteSnap = await get(ref(db, `kitchens/${cleanInvite}`));
+            if (!inviteSnap.exists()) {
+              throw new Error('Podany kod kuchni partnera nie istnieje. Zostaw pole puste, aby utworzyć nową kuchnię.');
             }
-            lastSyncedJson = incomingJson;
-            isApplyingRemote = true;
-            try {
-              onRemoteUpdate(cleanData);
-              setSyncBadge('ok', 'Zsynchronizowano');
-            } finally {
-              isApplyingRemote = false;
-            }
-          }, (error) => {
-            console.error("Błąd nasłuchu Firebase:", error);
-            setSyncBadge('err', 'Błąd połączenia z chmurą');
+          }
+
+          const kitchenId = cleanInvite || generatePrivateKitchenCode();
+          const passHash = await hashPassword(password);
+
+          await set(userRef, {
+            uid: userKey,
+            email: cleanEmail,
+            displayName: displayName || cleanEmail.split('@')[0],
+            passwordHash: passHash,
+            kitchenId,
+            createdAt: Date.now()
           });
+
+          const sessionObj = { uid: userKey, email: cleanEmail, kitchenId };
+          persistSession(sessionObj);
+
+          if (typeof window.setActiveAccountContext === 'function') {
+            window.setActiveAccountContext(sessionObj);
+          }
+          await bindToKitchenRoom(kitchenId, displayName);
+        },
+
+        loginUser: async function(email, password) {
+          const cleanEmail = email.trim().toLowerCase();
+          const userKey = emailToKey(cleanEmail);
+          const userRef = ref(db, `accounts/${userKey}`);
+
+          const userSnap = await get(userRef);
+          if (!userSnap.exists()) {
+            throw new Error('Nie znaleziono konta dla tego adresu e-mail. Użyj zakładki Rejestracja nowego konta.');
+          }
+
+          const userData = userSnap.val();
+          const passHash = await hashPassword(password);
+          if (userData.passwordHash !== passHash) {
+            throw new Error('Nieprawidłowe hasło do konta.');
+          }
+
+          const kitchenId = userData.kitchenId || generatePrivateKitchenCode();
+          const sessionObj = { uid: userKey, email: cleanEmail, kitchenId };
+          persistSession(sessionObj);
+
+          if (typeof window.setActiveAccountContext === 'function') {
+            window.setActiveAccountContext(sessionObj);
+          }
+          await bindToKitchenRoom(kitchenId);
+        },
+
+        switchUserKitchen: async function(newKitchenCode) {
+          if (!activeUserSession || !activeUserSession.uid) {
+            throw new Error('Najpierw zaloguj się na swoje konto.');
+          }
+          const cleanCode = newKitchenCode.replace(/[^a-z0-9-]/g, '');
+          if (cleanCode.length < 4) throw new Error('Kod kuchni jest zbyt krótki.');
+
+          const targetRef = ref(db, `kitchens/${cleanCode}`);
+          const snap = await get(targetRef);
+          if (!snap.exists()) {
+            throw new Error('Nie znaleziono kuchni o podanym kodzie. Sprawdź literówki.');
+          }
+
+          await set(ref(db, `accounts/${activeUserSession.uid}/kitchenId`), cleanCode);
+          const updatedSession = { ...activeUserSession, kitchenId: cleanCode };
+          persistSession(updatedSession);
+
+          if (typeof window.setActiveAccountContext === 'function') {
+            window.setActiveAccountContext(updatedSession);
+          }
+          await bindToKitchenRoom(cleanCode);
+        },
+
+        logoutUser: async function() {
+          detachRoomListener();
+          persistSession(null);
+          setSyncBadge('offline', 'Tryb lokalny (gość)');
         }
       };
 
-      if (typeof window.applyIncomingCloudState === 'function') {
-        window.KucharekCloud.startRealtimeSync(window.applyIncomingCloudState);
+      // Przywrócenie sesji po odświeżeniu strony
+      try {
+        const savedSessionRaw = localStorage.getItem(SESSION_STORAGE_KEY);
+        if (savedSessionRaw) {
+          const savedSession = JSON.parse(savedSessionRaw);
+          if (savedSession && savedSession.uid && savedSession.kitchenId) {
+            activeUserSession = savedSession;
+            if (typeof window.setActiveAccountContext === 'function') {
+              window.setActiveAccountContext(savedSession);
+            }
+            bindToKitchenRoom(savedSession.kitchenId);
+          } else {
+            setSyncBadge('offline', 'Tryb lokalny (zaloguj się)');
+          }
+        } else {
+          setSyncBadge('offline', 'Tryb lokalny (zaloguj się)');
+        }
+      } catch (e) {
+        setSyncBadge('offline', 'Tryb lokalny (zaloguj się)');
       }
     } catch (e) {
       console.error("Błąd inicjalizacji Firebase:", e);
