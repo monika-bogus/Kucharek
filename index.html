@@ -134,6 +134,7 @@
           </div>
           <div class="flex flex-wrap items-center gap-2">
             <span id="cooking-mode-pill" class="px-3 py-1.5 rounded-xl bg-cream-100 text-walnut-800 text-xs font-semibold"></span>
+            <span id="price-tier-pill" class="px-3 py-1.5 rounded-xl bg-amber-50 text-amber-900 border border-amber-200 text-xs font-semibold"></span>
             <button onclick="generateNextWeeks(4)" class="px-3 py-1.5 rounded-xl bg-sage-50 hover:bg-sage-100 text-sage-800 border border-sage-200 text-xs font-semibold transition-colors">
               ✨ Wygeneruj na miesiąc do przodu
             </button>
@@ -150,13 +151,23 @@
             <h2 class="font-display font-bold text-base text-walnut-800 mt-0.5 mb-2.5">Wybierz perspektywę</h2>
             <div id="person-filter-group" class="flex flex-col gap-2"></div>
           </div>
-          <div class="pt-2 border-t border-cream-200">
-            <label class="block text-[11px] font-bold uppercase tracking-wider text-walnut-500 mb-1">Tryb gotowania</label>
-            <select id="quick-cooking-mode" onchange="setCookingMode(this.value)" class="w-full px-3 py-2 rounded-xl bg-cream-50 border border-cream-300 text-xs font-bold text-walnut-800">
-              <option value="together_split">🤝 Gotujemy razem (1 baza + mięso / wege)</option>
-              <option value="together_same">🍲 Gotujemy razem (wspólne danie, różne porcje)</option>
-              <option value="separate">🍳 Gotujemy osobno (niezależne porcje)</option>
-            </select>
+          <div class="pt-2 border-t border-cream-200 space-y-2.5">
+            <div>
+              <label class="block text-[11px] font-bold uppercase tracking-wider text-walnut-500 mb-1">Tryb gotowania</label>
+              <select id="quick-cooking-mode" onchange="setCookingMode(this.value)" class="w-full px-3 py-2 rounded-xl bg-cream-50 border border-cream-300 text-xs font-bold text-walnut-800">
+                <option value="together_split">🤝 Gotujemy razem (1 baza + mięso / wege)</option>
+                <option value="together_same">🍲 Gotujemy razem (wspólne danie, różne porcje)</option>
+                <option value="separate">🍳 Gotujemy osobno (niezależne porcje)</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-[11px] font-bold uppercase tracking-wider text-walnut-500 mb-1">Półka cenowa składników</label>
+              <select id="quick-price-tier" onchange="setPriceTier(this.value)" class="w-full px-3 py-2 rounded-xl bg-cream-50 border border-cream-300 text-xs font-bold text-walnut-800">
+                <option value="economy">💰 Ekonomiczna (dyskont / podstawowe)</option>
+                <option value="standard">🛒 Standardowa (zwykły market)</option>
+                <option value="premium">✨ Premium (łosoś, halloumi, awokado, orzechy)</option>
+              </select>
+            </div>
           </div>
         </div>
 
@@ -308,10 +319,10 @@
           </div>
 
           <!-- Ustawienia trybu gotowania i generowania -->
-          <div class="bg-white rounded-3xl p-5 sm:p-6 border border-cream-200 card-shadow space-y-3">
+          <div class="bg-white rounded-3xl p-5 sm:p-6 border border-cream-200 card-shadow space-y-4">
             <span class="text-xs font-bold uppercase tracking-wider text-sage-600">Logistyka kuchni</span>
-            <h3 class="font-display font-bold text-lg text-walnut-800">Tryb gotowania i zakupy</h3>
-            <div class="space-y-2.5">
+            <h3 class="font-display font-bold text-lg text-walnut-800">Tryb gotowania i półka cenowa</h3>
+            <div class="space-y-2">
               <label class="block text-xs font-bold text-walnut-700">Jak gotujecie na co dzień?</label>
               <select id="profile-cooking-mode" onchange="setCookingMode(this.value)" class="w-full px-3.5 py-2.5 rounded-2xl bg-cream-50 border border-cream-300 text-xs sm:text-sm font-semibold text-walnut-800">
                 <option value="together_split">🤝 Gotujemy razem — wspólna baza + osobny dodatek (mięso / wege)</option>
@@ -319,8 +330,14 @@
                 <option value="separate">🍳 Gotujemy osobno — niezależne porcje i warianty</option>
               </select>
             </div>
-            <div class="p-3 rounded-2xl bg-sage-50/70 border border-sage-200 text-xs text-sage-900">
-              <strong>Półka cenowa:</strong> Ekonomiczna (normalne, łatwo dostępne składniki ze zwykłego sklepu / dyskontu).
+            <div class="space-y-2">
+              <label class="block text-xs font-bold text-walnut-700">Półka cenowa produktów</label>
+              <select id="profile-price-tier" onchange="setPriceTier(this.value)" class="w-full px-3.5 py-2.5 rounded-2xl bg-cream-50 border border-cream-300 text-xs sm:text-sm font-semibold text-walnut-800">
+                <option value="economy">💰 Ekonomiczna — tanie, podstawowe produkty z dyskontu</option>
+                <option value="standard">🛒 Standardowa — zbilansowane produkty ze zwykłego marketu</option>
+                <option value="premium">✨ Premium — łosoś, polędwiczka, halloumi, awokado, orzechy</option>
+              </select>
+              <p id="profile-price-tier-desc" class="p-3 rounded-2xl bg-sage-50/70 border border-sage-200 text-xs text-sage-900"></p>
             </div>
           </div>
 
@@ -621,14 +638,23 @@
           </div>
         </div>
 
-        <div class="p-3.5 rounded-2xl bg-sage-50/70 border border-sage-200 space-y-2">
-          <label class="block text-xs font-bold text-sage-900">Tryb gotowania w domu:</label>
-          <select id="ob-cooking-mode" class="w-full px-3 py-2 rounded-xl bg-white border border-sage-300 text-sm font-semibold text-walnut-800">
-            <option value="together_split">🤝 Gotujemy razem — 1 baza posiłku + mięso lub zamiennik wege</option>
-            <option value="together_same">🍲 Gotujemy razem — jemy to samo (różne porcje)</option>
-            <option value="separate">🍳 Gotujemy osobno</option>
-          </select>
-          <p class="text-[11px] text-sage-800">Wszystkie przepisy opierają się na normalnych, łatwo dostępnych produktach ze zwykłego sklepu.</p>
+        <div class="p-3.5 rounded-2xl bg-sage-50/70 border border-sage-200 space-y-3">
+          <div>
+            <label class="block text-xs font-bold text-sage-900 mb-1">Tryb gotowania w domu:</label>
+            <select id="ob-cooking-mode" class="w-full px-3 py-2 rounded-xl bg-white border border-sage-300 text-sm font-semibold text-walnut-800">
+              <option value="together_split">🤝 Gotujemy razem — 1 baza posiłku + mięso lub zamiennik wege</option>
+              <option value="together_same">🍲 Gotujemy razem — jemy to samo (różne porcje)</option>
+              <option value="separate">🍳 Gotujemy osobno</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-sage-900 mb-1">Półka cenowa produktów:</label>
+            <select id="ob-price-tier" class="w-full px-3 py-2 rounded-xl bg-white border border-sage-300 text-sm font-semibold text-walnut-800">
+              <option value="economy">💰 Ekonomiczna — tanie, podstawowe produkty z dyskontu</option>
+              <option value="standard">🛒 Standardowa — zbilansowane produkty ze zwykłego marketu</option>
+              <option value="premium">✨ Premium — łosoś, polędwiczka, halloumi, awokado, orzechy</option>
+            </select>
+          </div>
         </div>
 
         <div class="flex items-center justify-end gap-2 pt-2">
@@ -697,17 +723,15 @@
       return new Date(now.getFullYear(), now.getMonth(), now.getDate());
     }
 
-    // Zwraca poniedziałek bieżącego tygodnia kalendarzowego
     function getMondayOfCurrentWeek() {
       const today = getTodayDate();
-      const jsDay = today.getDay(); // 0 = Nd, 1 = Pon ... 6 = Sob
+      const jsDay = today.getDay();
       const diffToMonday = jsDay === 0 ? -6 : 1 - jsDay;
       const monday = new Date(today);
       monday.setDate(today.getDate() + diffToMonday);
       return monday;
     }
 
-    // Zwraca indeks dnia tygodnia 1..7 dla dzisiaj (1 = Poniedziałek, 7 = Niedziela)
     function getTodayDayIndex1to7() {
       const jsDay = getTodayDate().getDay();
       return jsDay === 0 ? 7 : jsDay;
@@ -733,7 +757,7 @@
       };
     }
 
-    // ==================== BAZA POSIŁKÓW (NORMALNE, TANIE SKŁADNIKI + WAGA PO UGOTOWANIU) ====================
+    // ==================== BAZA POSIŁKÓW (DOKŁADNE PRZYPRAWY, CZASY I TEMPERATURY BEZ DOMYSŁÓW) ====================
     const DIET_PLAN = [
       {
         day: 1, name: "Poniedziałek", shortName: "Pon",
@@ -741,27 +765,28 @@
           {
             id: "d1-m1", type: "Śniadanie", time: "15 min", equipment: ["Rondelek", "Blender"],
             title: "Kremowa owsianka twarogowa z bananem i jabłkiem",
-            summary: "Tania, sycąca owsianka na zwykłym mleku lub napoju sojowym ze zblendowanym twarogiem.",
+            summary: "Tania, sycąca owsianka na mleku lub napoju sojowym ze zblendowanym twarogiem i cynamonem.",
             cookedYield: {
               totalCookedGrams: 780,
               p1CookedGrams: 310,
               p2CookedGrams: 470,
-              portionGuide: "Cała ugotowana owsianka z rondelka waży ok. 780 g. Nałóż ok. 310 g (ok. 40% garnka) dla Osoby 1 oraz ok. 470 g (ok. 60% garnka) dla Osoby 2, a następnie dodaj dodatki na wierzch."
+              portionGuide: "Cała ugotowana owsianka z rondelka waży ok. 780 g. Nałóż ok. 310 g (ok. 40% garnka) dla Osoby 1 oraz ok. 470 g (ok. 60% garnka) dla Osoby 2, a następnie dodaj jabłko oraz dodatki na wierzch."
             },
             baseIngredients: [
               { name: "Płatki owsiane górskie", total: "140 g", p1: "50 g", p2: "90 g" },
               { name: "Mleko 2% lub napój sojowy bez cukru", total: "500 ml", p1: "200 ml", p2: "300 ml" },
               { name: "Twaróg półtłusty", total: "250 g", p1: "100 g", p2: "150 g" },
               { name: "Banan (dojrzały)", total: "180 g", p1: "60 g", p2: "120 g" },
-              { name: "Jabłko (starte lub pokrojone)", total: "200 g", p1: "80 g", p2: "120 g" },
-              { name: "Cynamon mielony", total: "1 łyżeczka", p1: "szczypta", p2: "szczypta" }
+              { name: "Jabłko (starte na grubych oczkach)", total: "200 g", p1: "80 g", p2: "120 g" },
+              { name: "Przyprawy: cynamon mielony + szczypta soli", total: "1 płaska łyżeczka cynamonu", p1: "1/3 łyżeczki", p2: "2/3 łyżeczki" }
             ],
             p1Ingredients: [{ name: "Pestki słonecznika (na wierzch)", amount: "10 g" }],
             p2Ingredients: [{ name: "Masło orzechowe 100% (na wierzch)", amount: "25 g" }, { name: "Pestki słonecznika", amount: "15 g" }],
             steps: [
-              "Wsyp 140 g płatków owsianych do rondelka, wlej 500 ml mleka lub napoju sojowego i gotuj na małym ogniu ok. 6 min.",
-              "Zblenduj 250 g twarogu, 180 g banana i cynamon z 3 łyżkami ciepłego płynu na gładki krem, a następnie wmieszaj w gorącą owsiankę.",
-              "Waga bazy w garnku po ugotowaniu to ok. 780 g — rozdziel ją na miski (ok. 310 g i 470 g), posyp jabłkiem oraz dodatkami."
+              "Do rondelka wsyp 140 g płatków owsianych, wlej 500 ml mleka (lub napoju sojowego) oraz dodaj małą szczyptę soli (ok. 1 g). Zagotuj na średnim ogniu (ok. 2 min), zmniejsz moc palnika na małą i gotuj pod przykryciem przez 6 minut, mieszając co 2 minuty, aż płatki wchłoną płyn i zgęstnieją.",
+              "W międzyczasie do kielicha blendera włóż 250 g twarogu półtłustego, 180 g obranego banana, 1 płaską łyżeczkę cynamonu mielonego oraz 3 łyżki ciepłego mleka z rondelka. Zblenduj przez 30–40 sekund na zupełnie gładki krem.",
+              "Zdejmij rondelek z ognia, przełóż krem twarogowo-bananowy do gorącej owsianki i energicznie wymieszaj łyżką (nie gotuj już po dodaniu twarogu, aby się nie zwarzył). Gotowa baza w garnku waży ok. 780 g.",
+              "Rozłóż bazę do misek (ok. 310 g dla Osoby 1 oraz ok. 470 g dla Osoby 2), na wierzch wyłóż starte jabłko (80 g i 120 g) oraz posyp pestkami słonecznika i masłem orzechowym."
             ],
             macros: { p1: { kcal: 515, p: 31, f: 14, c: 66 }, p2: { kcal: 1035, p: 47, f: 40, c: 118 } },
             shopping: [
@@ -775,9 +800,9 @@
             ]
           },
           {
-            id: "d1-m2", type: "Obiad", time: "30 min", equipment: ["Piekarnik / Air Fryer"],
+            id: "d1-m2", type: "Obiad", time: "30 min", equipment: ["Piekarnik / Air Fryer", "Miska"],
             title: "Pieczone ziemniaki, marchew i cukinia z sosem czosnkowym + ciecierzyca / kurczak",
-            summary: "Wspólna blacha warzyw z dyskontu oraz osobne białko (ciecierzyca z puszki lub pierś z kurczaka).",
+            summary: "Wspólna blacha warzyw z dokładnym podziałem przypraw i osobny czas pieczenia dla mięsa oraz ciecierzycy.",
             cookedYield: {
               totalCookedGrams: 840,
               p1CookedGrams: 320,
@@ -785,18 +810,26 @@
               portionGuide: "Upieczone ziemniaki i warzywa ważą łącznie ok. 840 g. Nałóż ok. 320 g warzyw dla Osoby 1 (+ całą porcję ciecierzycy) oraz ok. 520 g warzyw dla Osoby 2 (+ całego kurczaka)."
             },
             baseIngredients: [
-              { name: "Ziemniaki", total: "680 g", p1: "230 g", p2: "450 g" },
-              { name: "Marchew + cukinia + cebula", total: "450 g", p1: "200 g", p2: "250 g" },
-              { name: "Olej rzepakowy", total: "15 g", p1: "5 g", p2: "10 g" },
-              { name: "Jogurt naturalny gęsty", total: "160 g", p1: "80 g", p2: "80 g" },
-              { name: "Czosnek, koperek, sól, pieprz, papryka słodka", total: "do smaku", p1: "połowa", p2: "połowa" }
+              { name: "Ziemniaki (pokrojone w ósemki / łódki ok. 2 cm)", total: "680 g", p1: "230 g", p2: "450 g" },
+              { name: "Marchew (półplasterki 1 cm) + cukinia (kostka 2 cm) + cebula (piórka)", total: "450 g", p1: "200 g", p2: "250 g" },
+              { name: "Olej rzepakowy (do warzyw)", total: "15 g (1,5 łyżki)", p1: "5 g", p2: "10 g" },
+              { name: "Przyprawy do warzyw: słodka papryka, czosnek gran., oregano, sól, pieprz", total: "1 łyżeczka papryki + po 1/2 łyżeczki czosnku, oregano i soli + 1/3 łyżeczki pieprzu", p1: "40%", p2: "60%" },
+              { name: "Sos: jogurt naturalny gęsty + 1 ząbek czosnku + koperek + sól/pieprz", total: "160 g jogurtu + 1 łyżka koperku + 1/3 łyżeczki soli + szczypta pieprzu", p1: "80 g sosu", p2: "80 g sosu" }
             ],
-            p1Ingredients: [{ name: "Ciecierzyca z puszki (odsączona)", amount: "140 g" }],
-            p2Ingredients: [{ name: "Pierś z kurczaka (surowa)", amount: "220 g" }, { name: "Olej rzepakowy (do mięsa)", amount: "8 g" }],
+            p1Ingredients: [
+              { name: "Ciecierzyca z puszki (odsączona, osuszona ręcznikiem)", amount: "140 g" },
+              { name: "Przyprawy do ciecierzycy: 1/3 łyżeczki papryki wędzonej lub słodkiej + szczypta soli", amount: "1 porcja" }
+            ],
+            p2Ingredients: [
+              { name: "Pierś z kurczaka (przekrojona wzdłuż na 2 płaskie filety ok. 1,5 cm)", amount: "220 g" },
+              { name: "Olej rzepakowy + przyprawy do kurczaka: 1/2 łyżeczki papryki słodkiej, 1/3 łyżeczki czosnku gran., 1/3 łyżeczki soli, 1/4 łyżeczki pieprzu, 1/3 łyżeczki ziół prowansalskich", amount: "8 g oleju + przyprawy" }
+            ],
             steps: [
-              "Pokrój ziemniaki w łódki, a warzywa w kawałki, wymieszaj z 15 g oleju i przyprawami. Piecz 25 min w 195°C.",
-              "W trybie wspólnym na ostatnie 8 min dorzuć na część blachy ciecierzycę z puszki, a obok upiecz przyprawionego kurczaka.",
-              "Po upieczeniu warzywa ważą ok. 840 g — podziel je na talerze (ok. 320 g i 520 g) i polej sosem jogurtowo-czosnkowym."
+              "Nagrzej piekarnik do 195°C (grzanie góra–dół) lub 180°C (termoobieg) [w Air Fryerze: 185°C]. Pokrój ziemniaki w równe łódki (ok. 2 cm), marchew w półplasterki 1 cm, cukinię w kostkę 2 cm, a cebulę w grube piórka.",
+              "W dużej misce wymieszaj wszystkie warzywa z 15 g oleju rzepakowego oraz przyprawami: 1 pełną łyżeczką słodkiej papryki, 1/2 łyżeczki czosnku granulowanego, 1/2 łyżeczki suszonego oregano, 1/2 płaskiej łyżeczki soli oraz 1/3 łyżeczki czarnego pieprzu. Rozłóż równą warstwą na blasze z papierem do pieczenia i wstaw do piekarnika na łączny czas 25–28 minut.",
+              "Przygotowanie białka osobno: Pierś z kurczaka (220 g) przekrój wzdłuż na 2 cieńsze filety, natrzyj 8 g oleju oraz 1/2 łyżeczki papryki słodkiej, 1/3 łyżeczki czosnku granulowanego, 1/3 łyżeczki soli, 1/4 łyżeczki pieprzu i 1/3 łyżeczki ziół prowansalskich. Po 10 minutach pieczenia warzyw dołóż kurczaka obok na blachę (lub do kosza Air Fryera) i piecz przez 16–18 minut w 195°C (lub usmaż na patelni na średnim ogniu po 4,5–5 minut z każdej strony).",
+              "Na ostatnie 8 minut pieczenia dorzuć na wolny róg blachy 140 g odsączonej ciecierzycy oprószonej 1/3 łyżeczki papryki słodkiej i szczyptą soli, aby lekko się podpiekła.",
+              "Sos czosnkowy: W miseczce wymieszaj 160 g jogurtu naturalnego gęstego, 1 przeciśnięty przez praskę ząbek czosnku, 1 łyżkę posiekanego koperku, 1/3 łyżeczki soli i szczyptę pieprzu. Upieczone warzywa ważą ok. 840 g — nałóż ok. 320 g dla Osoby 1 (+ ciecierzycę) i ok. 520 g dla Osoby 2 (+ kurczaka), polej po połowie sosu."
             ],
             macros: { p1: { kcal: 595, p: 24, f: 12, c: 96 }, p2: { kcal: 1030, p: 65, f: 27, c: 126 } },
             shopping: [
@@ -811,7 +844,7 @@
           {
             id: "d1-m3", type: "Kolacja", time: "20 min", equipment: ["Garnek", "Patelnia"],
             title: "Makaron z sosem pomidorowo-szpinakowym + biała fasola / kurczak",
-            summary: "Prosty makaron ze świderków na passacie i mrożonym szpinaku z podziałem na wariant roślinny i mięsny.",
+            summary: "Makaron ze świderków w aromatycznym sosie pomidorowo-szpinakowym z podziałem na wariant wege i mięsny.",
             cookedYield: {
               totalCookedGrams: 1020,
               p1CookedGrams: 390,
@@ -822,14 +855,19 @@
               { name: "Makaron świderki / penne (suchy)", total: "210 g", p1: "70 g", p2: "140 g" },
               { name: "Szpinak mrożony rozdrobniony", total: "250 g", p1: "100 g", p2: "150 g" },
               { name: "Passata pomidorowa (kartonik)", total: "300 g", p1: "120 g", p2: "180 g" },
-              { name: "Ser mozzarella (tarty lub kulka)", total: "80 g", p1: "30 g", p2: "50 g" }
+              { name: "Przyprawy do sosu: 1 ząbek czosnku, 1 łyżeczka suszonej bazylii, 1/2 łyżeczki oregano, 1/2 łyżeczki soli, 1/3 łyżeczki pieprzu, szczypta cukru", total: "komplet do sosu", p1: "40%", p2: "60%" },
+              { name: "Ser mozzarella (tarty lub pokrojony w kostkę)", total: "80 g", p1: "30 g", p2: "50 g" }
             ],
-            p1Ingredients: [{ name: "Biała fasola z puszki (odsączona)", amount: "100 g" }],
-            p2Ingredients: [{ name: "Pierś z kurczaka lub szynka drobiowa", amount: "140 g" }, { name: "Olej rzepakowy", amount: "8 g" }],
+            p1Ingredients: [{ name: "Biała fasola z puszki (odsączona i przepłukana)", amount: "100 g" }],
+            p2Ingredients: [
+              { name: "Pierś z kurczaka (pokrojona w kostkę 1,5 cm)", amount: "140 g" },
+              { name: "Olej rzepakowy + przyprawy do kurczaka: 1/3 łyżeczki papryki słodkiej, 1/4 łyżeczki soli, szczypta pieprzu", amount: "8 g oleju + przyprawy" }
+            ],
             steps: [
-              "Ugotuj 210 g suchego makaronu al dente (po odcedzeniu waży ok. 470 g).",
-              "Na patelni podduś szpinak z czosnkiem i passatą przez 8 min (gotowy sos waży ok. 550 g). Osobno podsmaż kurczaka.",
-              "Rozłóż makaron (160 g / 310 g), polej sosem (230 g / 320 g), dodaj fasolę lub kurczaka i posyp mozzarellą."
+              "Zagotuj 1,5 litra wody z 1 płaską łyżeczką soli. Wrzuć 210 g suchego makaronu i gotuj bez przykrycia na średnim ogniu przez 8–9 minut (zgodnie z czasem al dente na opakowaniu), następnie odcedź (ugotowany makaron waży ok. 470 g).",
+              "Obróbka mięsa: Na rozgrzaną patelnię wlej 8 g oleju rzepakowego, wrzuć 140 g pokrojonej w kostkę piersi z kurczaka oprószonej 1/3 łyżeczki słodkiej papryki, 1/4 łyżeczki soli i szczyptą pieprzu. Smaż na średnio-dużym ogniu przez 6–7 minut, co minutę mieszając, aż kawałki będą ścięte i lekko złote. Zdejmij kurczaka na talerzyk.",
+              "Sos na tej samej patelni: Wrzuć 250 g mrożonego szpinaku oraz 1 przeciśnięty ząbek czosnku, podgrzewaj na średnim ogniu pod przykryciem przez 4 minuty, aż szpinak całkowicie się rozmrozi i odparuje nadmiar wody. Wlej 300 g passaty pomidorowej, wsyp 1 łyżeczkę suszonej bazylii, 1/2 łyżeczki oregano, 1/2 łyżeczki soli, 1/3 łyżeczki pieprzu i małą szczyptę cukru (balansuje kwasowość pomidorów). Duś bez przykrycia na małym ogniu przez 5 minut (gotowy sos waży ok. 550 g).",
+              "Nałóż na talerze makaron (160 g dla Osoby 1 i 310 g dla Osoby 2), polej sosem (230 g i 320 g), dodaj 100 g białej fasoli do porcji wege oraz usmażonego kurczaka do porcji mięsnej. Wierzch posyp mozzarellą (30 g i 50 g)."
             ],
             macros: { p1: { kcal: 585, p: 28, f: 15, c: 82 }, p2: { kcal: 1020, p: 62, f: 32, c: 116 } },
             shopping: [
@@ -850,25 +888,27 @@
           {
             id: "d2-m1", type: "Śniadanie", time: "10 min", equipment: ["Blender", "Opiekacz / Patelnia"],
             title: "Koktajl twarogowo-bananowy z płatkami owsianymi i grzankami",
-            summary: "Szybkie śniadanie z blendera na bazie zwykłego twarogu, płatków owsianych i mrożonych truskawek.",
+            summary: "Szybkie śniadanie z blendera z dokładnym czasem miksowania i opiekania pieczywa.",
             cookedYield: {
               totalCookedGrams: 1040,
               p1CookedGrams: 430,
               p2CookedGrams: 610,
-              portionGuide: "Cały zmiksowany koktajl waży ok. 1040 g (ok. 1 litr). Wlej ok. 430 g do szklanki Osoby 1 oraz ok. 610 g dla Osoby 2, a obok podaj grzanki."
+              portionGuide: "Cały zmiksowany koktajl waży ok. 1040 g (ok. 1 litr). Wlej ok. 430 g do szklanki Osoby 1 oraz ok. 610 g dla Osoby 2, a obok podaj chrupiące grzanki."
             },
             baseIngredients: [
               { name: "Twaróg półtłusty", total: "260 g", p1: "110 g", p2: "150 g" },
-              { name: "Truskawki mrożone", total: "240 g", p1: "100 g", p2: "140 g" },
+              { name: "Truskawki mrożone (lekko podgrzane 1 min w mikrofali lub przelane ciepłą wodą)", total: "240 g", p1: "100 g", p2: "140 g" },
               { name: "Banan", total: "150 g", p1: "60 g", p2: "90 g" },
               { name: "Płatki owsiane górskie", total: "90 g", p1: "35 g", p2: "55 g" },
-              { name: "Mleko 2% / napój sojowy", total: "350 ml", p1: "150 ml", p2: "200 ml" }
+              { name: "Mleko 2% / napój sojowy + 1/2 łyżeczki cynamonu lub cukru wanilinowego", total: "350 ml", p1: "150 ml", p2: "200 ml" }
             ],
-            p1Ingredients: [{ name: "Chleb żytni / graham", amount: "45 g" }, { name: "Masło orzechowe 100%", amount: "10 g" }],
-            p2Ingredients: [{ name: "Chleb żytni / graham", amount: "120 g" }, { name: "Masło / margaryna", amount: "15 g" }, { name: "Dżem 100% owoców lub miód", amount: "25 g" }],
+            p1Ingredients: [{ name: "Chleb żytni / graham (2 kromki)", amount: "45 g" }, { name: "Masło orzechowe 100%", amount: "10 g" }],
+            p2Ingredients: [{ name: "Chleb żytni / graham (3–4 kromki)", amount: "120 g" }, { name: "Masło / margaryna", amount: "15 g" }, { name: "Dżem 100% owoców lub miód", amount: "25 g" }],
             steps: [
-              "Wrzuć do blendera twaróg, rozmrożone truskawki, banana, płatki owsiane oraz mleko i miksuj 1 minutę na gładki shake (ok. 1040 g całości).",
-              "Rozlej po ok. 430 g i 610 g, a pieczywo podpiecz na suchej patelni lub w tosterze."
+              "Wsyp 90 g płatków owsianych do kielicha blendera i zmiksuj na sucho przez 15 sekund (dzięki temu koktajl będzie idealnie gładki bez wyczuwalnych łusek).",
+              "Dodaj 260 g twarogu, 240 g truskawek, 150 g banana, 350 ml mleka lub napoju sojowego oraz 1/2 łyżeczki cynamonu. Miksuj na najwyższych obrotach przez 45–60 sekund (całość waży ok. 1040 g).",
+              "W tym czasie podpiecz kromki chleba na suchej, rozgrzanej patelni po 1,5–2 minuty z każdej strony na średnim ogniu (lub w tosterze przez 2 minuty).",
+              "Rozlej koktajl do szklanek (ok. 430 g dla Osoby 1 i ok. 610 g dla Osoby 2), a ciepłe grzanki posmaruj dodatkami."
             ],
             macros: { p1: { kcal: 540, p: 31, f: 14, c: 72 }, p2: { kcal: 1020, p: 48, f: 32, c: 132 } },
             shopping: [
@@ -884,9 +924,9 @@
             ]
           },
           {
-            id: "d2-m2", type: "Obiad", time: "30 min", equipment: ["Garnek", "Patelnia"],
+            id: "d2-m2", type: "Obiad", time: "30 min", equipment: ["Garnek", "2 Patelnie"],
             title: "Kasza gryczana z leczo warzywnym + soczewica z puszki / schab",
-            summary: "Jeden garnek warzywnego leczo z cukinii, papryki i pomidorów z puszki.",
+            summary: "Jeden garnek warzywnego leczo z dokładnym doprawieniem oraz osobno smażone plastry schabu.",
             cookedYield: {
               totalCookedGrams: 1290,
               p1CookedGrams: 510,
@@ -895,18 +935,21 @@
             },
             baseIngredients: [
               { name: "Kasza gryczana (sucha)", total: "210 g", p1: "70 g", p2: "140 g" },
-              { name: "Cukinia", total: "300 g", p1: "130 g", p2: "170 g" },
-              { name: "Papryka czerwona", total: "240 g", p1: "100 g", p2: "140 g" },
-              { name: "Cebula", total: "120 g", p1: "50 g", p2: "70 g" },
+              { name: "Cukinia (pokrojona w półplasterki 1 cm)", total: "300 g", p1: "130 g", p2: "170 g" },
+              { name: "Papryka czerwona (paski 1,5 cm) + cebula (piórka)", total: "360 g", p1: "150 g", p2: "210 g" },
               { name: "Pomidory krojone z puszki", total: "400 g", p1: "160 g", p2: "240 g" },
-              { name: "Olej rzepakowy", total: "15 g", p1: "5 g", p2: "10 g" }
+              { name: "Olej rzepakowy + przyprawy do leczo: 1,5 łyżeczki papryki słodkiej, 1/2 łyżeczki papryki ostrej lub wędzonej, 1/2 łyżeczki czosnku gran., 1/2 łyżeczki majeranku, 2/3 łyżeczki soli, 1/3 łyżeczki pieprzu", total: "15 g oleju + przyprawy", p1: "40%", p2: "60%" }
             ],
-            p1Ingredients: [{ name: "Soczewica z puszki (odsączona)", amount: "150 g" }],
-            p2Ingredients: [{ name: "Schab wieprzowy bez kości", amount: "220 g" }, { name: "Olej rzepakowy (do mięsa)", amount: "8 g" }],
+            p1Ingredients: [{ name: "Soczewica z puszki (odsączona i przepłukana)", amount: "150 g" }],
+            p2Ingredients: [
+              { name: "Schab wieprzowy bez kości (2 plastry ok. 1,2 cm, lekko rozbite)", amount: "220 g" },
+              { name: "Olej rzepakowy + przyprawy do schabu: 1/2 łyżeczki majeranku, 1/3 łyżeczki czosnku gran., 1/3 łyżeczki soli, 1/4 łyżeczki pieprzu", amount: "8 g oleju + przyprawy" }
+            ],
             steps: [
-              "Ugotuj 210 g suchej kaszy gryczanej (po ugotowaniu waży ok. 540 g).",
-              "Na patelni podduś cebulę, cukinię, paprykę i pomidory z puszki przez 12 min (gotowe leczo waży ok. 750 g). Osobno usmaż plastry schabu.",
-              "Nałóż kaszę (180 g / 360 g), leczo (330 g / 420 g) oraz soczewicę lub schab."
+              "Kasza: W garnku zagotuj 450 ml wody z 1/2 łyżeczki soli. Wsyp 210 g opłukanej kaszy gryczanej, przykryj i gotuj na małym ogniu przez 13–15 minut, aż wchłonie całą wodę (ugotowana kasza waży ok. 540 g).",
+              "Leczo warzywne: Na głębokiej patelni rozgrzej 15 g oleju, wrzuć pokrojoną cebulę i paprykę, smaż na średnim ogniu przez 4 minuty. Dodaj cukinię i smaż kolejne 3 minuty. Wlej 400 g pomidorów z puszki, wsyp 1,5 łyżeczki słodkiej papryki, 1/2 łyżeczki papryki wędzonej, 1/2 łyżeczki czosnku granulowanego, 1/2 łyżeczki majeranku, 2/3 łyżeczki soli i 1/3 łyżeczki pieprzu. Duś pod przykryciem na małym ogniu przez 10 minut (gotowe leczo waży ok. 750 g).",
+              "Obróbka schabu: Plastry schabu (220 g) natrzyj 8 g oleju, 1/2 łyżeczki majeranku, 1/3 łyżeczki czosnku granulowanego, 1/3 łyżeczki soli i 1/4 łyżeczki pieprzu. Smaż na dobrze rozgrzanej patelni na średnim ogniu po 3,5–4 minuty z każdej strony na złoty kolor (nie smaż dłużej, aby mięso nie wyschło).",
+              "Rozłóż kaszę (180 g i 360 g), leczo (330 g i 420 g), do porcji wege dodaj 150 g soczewicy z puszki (możesz ją podgrzać 1 minutę w porcji leczo), a obok ułóż plastry schabu."
             ],
             macros: { p1: { kcal: 580, p: 25, f: 11, c: 94 }, p2: { kcal: 1050, p: 68, f: 33, c: 116 } },
             shopping: [
@@ -921,9 +964,9 @@
             ]
           },
           {
-            id: "d2-m3", type: "Kolacja", time: "15 min", equipment: ["Piekarnik / Patelnia"],
+            id: "d2-m3", type: "Kolacja", time: "15 min", equipment: ["Piekarnik / Opiekacz"],
             title: "Ciepłe tosty z serem, pomidorem i ogórkiem + serek wiejski / szynka",
-            summary: "Błyskawiczna kolacja z chleba pełnoziarnistego i klasycznych dodatków.",
+            summary: "Błyskawiczna kolacja z chleba pełnoziarnistego z ziołami i świeżymi warzywami.",
             cookedYield: {
               totalCookedGrams: 750,
               p1CookedGrams: 310,
@@ -933,14 +976,15 @@
             baseIngredients: [
               { name: "Chleb pełnoziarnisty / graham", total: "230 g", p1: "80 g", p2: "150 g" },
               { name: "Ser żółty gouda / mozzarella", total: "90 g", p1: "30 g", p2: "60 g" },
-              { name: "Pomidory", total: "250 g", p1: "110 g", p2: "140 g" },
-              { name: "Ogórek zielony", total: "200 g", p1: "100 g", p2: "100 g" }
+              { name: "Pomidory + ogórek zielony (pokrojone w plastry)", total: "450 g", p1: "210 g", p2: "240 g" },
+              { name: "Przyprawy: 1/2 łyżeczki suszonego oregano na ser + szczypta soli i pieprzu na warzywa", total: "komplet", p1: "połowa", p2: "połowa" }
             ],
-            p1Ingredients: [{ name: "Serek wiejski naturalny", amount: "150 g" }],
-            p2Ingredients: [{ name: "Szynka drobiowa", amount: "120 g" }, { name: "Masło", amount: "15 g" }],
+            p1Ingredients: [{ name: "Serek wiejski naturalny (z dodatkiem 1 łyżeczki szczypiorku)", amount: "150 g" }],
+            p2Ingredients: [{ name: "Szynka drobiowa (ułożona pod serem na tostach)", amount: "120 g" }, { name: "Masło (do posmarowania chleba)", amount: "15 g" }],
             steps: [
-              "Ułóż ser na pieczywie i podpiecz przez 6–8 minut w opiekaczu lub piekarniku.",
-              "Podaj z pokrojonym pomidorem, ogórkiem oraz serkiem wiejskim (Osoba 1) lub szynką (Osoba 2)."
+              "Nagrzej piekarnik do 190°C (góra–dół) lub rozgrzej opiekacz. Kromki Osoby 2 posmaruj 15 g masła, połóż 120 g szynki drobiowej i 60 g sera żółtego. Na kromki Osoby 1 połóż 30 g sera żółtego. Całość oprósz 1/2 łyżeczki suszonego oregano.",
+              "Zapiekaj w piekarniku przez 7–8 minut (lub 3–4 minuty w opiekaczu), aż ser się rozpuści, a spód chleba lekko zachrupie.",
+              "W międzyczasie pokrój 250 g pomidorów i 200 g ogórka w plastry, oprósz szczyptą soli i świeżo mielonego pieprzu. Podaj ciepłe tosty z warzywami oraz serkiem wiejskim (150 g dla Osoby 1)."
             ],
             macros: { p1: { kcal: 550, p: 32, f: 16, c: 66 }, p2: { kcal: 1005, p: 56, f: 40, c: 102 } },
             shopping: [
@@ -961,7 +1005,7 @@
           {
             id: "d3-m1", type: "Śniadanie", time: "25 min", equipment: ["Miska", "Patelnia"],
             title: "Naleśniki z twarożkiem i jabłkiem lub mrożonymi owocami",
-            summary: "Klasyczne naleśniki ze zwykłej mąki pszennej/orkiszowej i twarogu.",
+            summary: "Klasyczne naleśniki z dokładnym czasem smażenia z każdej strony i proporcją farszu.",
             cookedYield: {
               totalCookedGrams: 920,
               p1CookedGrams: 340,
@@ -970,17 +1014,17 @@
             },
             baseIngredients: [
               { name: "Mąka pszenna lub orkiszowa", total: "220 g", p1: "65 g", p2: "155 g" },
-              { name: "Mleko 2% / napój sojowy + woda", total: "380 ml", p1: "110 ml", p2: "270 ml" },
-              { name: "Twaróg półtłusty", total: "280 g", p1: "110 g", p2: "170 g" },
-              { name: "Jogurt naturalny gęsty", total: "100 g", p1: "40 g", p2: "60 g" },
-              { name: "Owoce mrożone lub starte jabłko", total: "220 g", p1: "90 g", p2: "130 g" },
-              { name: "Olej rzepakowy", total: "15 g", p1: "5 g", p2: "10 g" }
+              { name: "Mleko 2% / napój sojowy + 100 ml wody gazowanej lub zwykłej", total: "380 ml mleka + 100 ml wody", p1: "110 ml", p2: "270 ml" },
+              { name: "Twaróg półtłusty + 100 g jogurtu naturalnego gęstego", total: "280 g twarogu + 100 g jogurtu", p1: "150 g kremu", p2: "230 g kremu" },
+              { name: "Owoce mrożone (podgrzane 2 min w rondelku) lub starte jabłko", total: "220 g", p1: "90 g", p2: "130 g" },
+              { name: "Olej rzepakowy + przyprawy: 1/2 łyżeczki cynamonu, szczypta soli", total: "15 g oleju + przyprawy", p1: "5 g", p2: "10 g" }
             ],
-            p1Ingredients: [{ name: "Cynamon lub łyżeczka miodu", amount: "5 g" }],
+            p1Ingredients: [{ name: "Miód (do twarożku)", amount: "5 g (1 łyżeczka)" }],
             p2Ingredients: [{ name: "Masło orzechowe 100%", amount: "20 g" }, { name: "Miód lub dżem", amount: "20 g" }],
             steps: [
-              "Wymieszaj mąkę, mleko, 100 ml wody i olej na gładkie ciasto. Usmaż ok. 6–7 cienkich naleśników (łącznie ok. 520 g).",
-              "Rozgnieć twaróg z jogurtem (ok. 380 g kremu). Rozdziel 2 naleśniki dla Osoby 1 oraz 4–5 dla Osoby 2."
+              "W misce wymieszaj rózgą 220 g mąki, 380 ml mleka lub napoju sojowego, 100 ml wody, 15 g oleju rzepakowego oraz małą szczyptę soli na jednolite ciasto bez grudek. Odstaw na 5 minut.",
+              "Rozgrzej patelnię na średnim ogniu (przed pierwszym naleśnikiem przetrzyj kroplą oleju). Wylewaj po ok. 1 chochelce ciasta i smaż ok. 1,5 minuty z pierwszej strony (aż brzegi lekko odejdą, a góra przestanie być płynna) oraz 45–60 sekund z drugiej strony. Usmażysz 6–7 sztuk (ok. 520 g).",
+              "W miseczce rozgnieć widelcem 280 g twarogu z 100 g jogurtu naturalnego i 1/2 łyżeczki cynamonu (ok. 380 g farszu). Rozsmaruj po 140 g na 2 naleśnikach dla Osoby 1 i 240 g na 4–5 naleśnikach dla Osoby 2, dodaj owoce oraz dodatki."
             ],
             macros: { p1: { kcal: 545, p: 31, f: 14, c: 73 }, p2: { kcal: 1110, p: 54, f: 35, c: 144 } },
             shopping: [
@@ -995,9 +1039,9 @@
             ]
           },
           {
-            id: "d3-m2", type: "Obiad", time: "25 min", equipment: ["Garnek", "Patelnia"],
+            id: "d3-m2", type: "Obiad", time: "25 min", equipment: ["Garnek", "2 Patelnie"],
             title: "Ryż z warzywami w sosie pomidorowym + tofu wędzone / kurczak",
-            summary: "Prosty jednogarnkowy sos z mrożonej mieszanki warzyw i passaty podany z ryżem.",
+            summary: "Jednogarnkowy sos warzywno-pomidorowy z dokładnymi przyprawami oraz osobno podsmażone tofu i kurczak.",
             cookedYield: {
               totalCookedGrams: 1180,
               p1CookedGrams: 440,
@@ -1008,14 +1052,18 @@
               { name: "Ryż biały lub parboiled (suchy)", total: "220 g", p1: "65 g", p2: "155 g" },
               { name: "Mieszanka warzyw mrożona (brokuł, marchew, fasolka)", total: "450 g", p1: "200 g", p2: "250 g" },
               { name: "Passata pomidorowa", total: "250 g", p1: "100 g", p2: "150 g" },
-              { name: "Olej rzepakowy", total: "12 g", p1: "4 g", p2: "8 g" }
+              { name: "Olej rzepakowy + przyprawy do sosu: 1 łyżeczka słodkiej papryki, 1/2 łyżeczki czosnku gran., 1/2 łyżeczki ziół prowansalskich, 1/2 łyżeczki soli, 1/3 łyżeczki pieprzu", total: "12 g oleju + przyprawy", p1: "4 g", p2: "8 g" }
             ],
-            p1Ingredients: [{ name: "Tofu naturalne lub wędzone (z dyskontu)", amount: "140 g" }],
-            p2Ingredients: [{ name: "Pierś z kurczaka", amount: "220 g" }, { name: "Olej rzepakowy (do mięsa)", amount: "8 g" }],
+            p1Ingredients: [{ name: "Tofu naturalne lub wędzone (kostka 1,5 cm, oprószone 1/3 łyżeczki papryki słodkiej)", amount: "140 g" }],
+            p2Ingredients: [
+              { name: "Pierś z kurczaka (kostka 1,5 cm)", amount: "220 g" },
+              { name: "Olej rzepakowy + przyprawy do kurczaka: 1/2 łyżeczki przyprawy gyros lub papryki słodkiej, 1/3 łyżeczki czosnku gran., 1/3 łyżeczki soli, 1/4 łyżeczki pieprzu", amount: "8 g oleju + przyprawy" }
+            ],
             steps: [
-              "Ugotuj 220 g suchego ryżu (po ugotowaniu waży ok. 580 g).",
-              "Na patelni podduś mrożone warzywa z passatą i przyprawami przez 10 min (gotowy sos waży ok. 600 g). Osobno podsmaż kostkę tofu oraz kurczaka.",
-              "Rozłóż ryż (170 g / 410 g), sos warzywny (270 g / 330 g) i białko."
+              "Ryż: Zagotuj 500 ml wody z 1/2 łyżeczki soli, wsyp 220 g opłukanego ryżu, przykryj i gotuj na małym ogniu przez 13–15 minut, aż wchłonie wodę (ugotowany ryż waży ok. 580 g).",
+              "Sos warzywny: Na głębokiej patelni rozgrzej 12 g oleju, wrzuć 450 g zamrożonej mieszanki warzyw i podsmażaj na średnim ogniu przez 4 minuty. Wlej 250 g passaty pomidorowej oraz 50 ml wody, dodaj 1 łyżeczkę słodkiej papryki, 1/2 łyżeczki czosnku granulowanego, 1/2 łyżeczki ziół prowansalskich, 1/2 łyżeczki soli i 1/3 łyżeczki pieprzu. Duś pod przykryciem na małym ogniu przez 8 minut, aż warzywa będą miękkie, ale jędrne (gotowy sos waży ok. 600 g).",
+              "Białko osobno: Na drugiej patelni rozgrzej 8 g oleju. Na jednej połowie patelni ułóż pokrojoną w kostkę pierś z kurczaka (220 g) natartą 1/2 łyżeczki papryki słodkiej, 1/3 łyżeczki czosnku granulowanego, 1/3 łyżeczki soli i 1/4 łyżeczki pieprzu, a na drugiej połowie 140 g tofu w kostce oprószonego 1/3 łyżeczki papryki. Smaż na średnio-dużym ogniu przez 6–7 minut, obracając co 1,5 minuty do zarumienienia.",
+              "Rozłóż ryż (170 g i 410 g), sos warzywny (270 g i 330 g) oraz osobne białko."
             ],
             macros: { p1: { kcal: 580, p: 26, f: 14, c: 84 }, p2: { kcal: 1075, p: 66, f: 31, c: 128 } },
             shopping: [
@@ -1028,9 +1076,9 @@
             ]
           },
           {
-            id: "d3-m3", type: "Kolacja", time: "25 min", equipment: ["Garnek", "Blender"],
+            id: "d3-m3", type: "Kolacja", time: "25 min", equipment: ["Garnek", "Blender", "Piekarnik / Patelnia"],
             title: "Zupa krem z pomidorów i marchwi z grzankami serowymi",
-            summary: "Tania, gęsta zupa krem z pomidorów z puszki i włoszczyzny z grzankami.",
+            summary: "Gęsta zupa krem z dokładnym czasem gotowania warzyw, przyprawami i zapiekanymi grzankami.",
             cookedYield: {
               totalCookedGrams: 1050,
               p1CookedGrams: 450,
@@ -1039,16 +1087,18 @@
             },
             baseIngredients: [
               { name: "Pomidory krojone z puszki", total: "500 g", p1: "220 g", p2: "280 g" },
-              { name: "Marchew, ziemniaki, cebula", total: "300 g", p1: "130 g", p2: "170 g" },
-              { name: "Jogurt naturalny gęsty", total: "80 g", p1: "30 g", p2: "50 g" },
-              { name: "Chleb pełnoziarnisty", total: "145 g", p1: "45 g", p2: "100 g" },
-              { name: "Ser żółty", total: "75 g", p1: "25 g", p2: "50 g" }
+              { name: "Marchew, ziemniaki, cebula (pokrojone w kostkę ok. 1,5 cm)", total: "300 g", p1: "130 g", p2: "170 g" },
+              { name: "Przyprawy do zupy: 1 łyżeczka słodkiej papryki, 1 łyżeczka suszonej bazylii, 1/2 łyżeczki czosnku gran., 2/3 łyżeczki soli, 1/3 łyżeczki pieprzu, szczypta cukru", total: "komplet do garnka", p1: "40%", p2: "60%" },
+              { name: "Jogurt naturalny gęsty (do zabielenia po zblendowaniu)", total: "80 g", p1: "30 g", p2: "50 g" },
+              { name: "Chleb pełnoziarnisty + ser żółty (na grzanki)", total: "145 g chleba + 75 g sera", p1: "45 g + 25 g", p2: "100 g + 50 g" }
             ],
-            p1Ingredients: [{ name: "Biała fasola z puszki (do zupy)", amount: "100 g" }, { name: "Pestki słonecznika", amount: "10 g" }],
-            p2Ingredients: [{ name: "Szynka drobiowa (na grzanki)", amount: "100 g" }],
+            p1Ingredients: [{ name: "Biała fasola z puszki (odsączona, wrzucona do miski zupy)", amount: "100 g" }, { name: "Pestki słonecznika", amount: "10 g" }],
+            p2Ingredients: [{ name: "Szynka drobiowa (ułożona pod serem na grzankach)", amount: "100 g" }],
             steps: [
-              "Ugotuj pokrojoną marchew, ziemniaki i cebulę w 400 ml wody z pomidorami z puszki (ok. 15 min), zblenduj z jogurtem na krem (ok. 1050 g całości).",
-              "Nalej zupę (450 g i 600 g), podaj z zapieczonymi grzankami z serem."
+              "Do garnka włóż 300 g pokrojonych warzyw (marchew, ziemniaki, cebulę), wlej 400 ml wody oraz 500 g pomidorów krojonych z puszki. Wsyp 1 łyżeczkę słodkiej papryki, 1 łyżeczkę suszonej bazylii, 1/2 łyżeczki czosnku granulowanego, 2/3 łyżeczki soli, 1/3 łyżeczki pieprzu i szczyptę cukru.",
+              "Zagotuj na dużym ogniu, zmniejsz moc palnika na małą i gotuj pod przykryciem przez 15–17 minut, aż marchew i ziemniaki będą całkowicie miękkie.",
+              "W międzyczasie na chleb połóż szynkę (100 g na grzanki Osoby 2) oraz ser żółty (25 g i 50 g). Podpiecz w piekarniku przez 6–7 minut w 190°C lub na suchej patelni pod przykryciem przez 4 minuty na małym ogniu.",
+              "Zdejmij zupę z ognia, dodaj 80 g jogurtu naturalnego i zblenduj ręcznym blenderem przez 45 sekund na aksamitny krem (ok. 1050 g całości). Nalej do misek (450 g i 600 g), do porcji Osoby 1 wsyp 100 g białej fasoli i 10 g pestek słonecznika."
             ],
             macros: { p1: { kcal: 560, p: 28, f: 16, c: 76 }, p2: { kcal: 900, p: 50, f: 34, c: 94 } },
             shopping: [
@@ -1070,7 +1120,7 @@
           {
             id: "d4-m1", type: "Śniadanie", time: "15 min", equipment: ["Rondelek"],
             title: "Kasza manna na mleku ze startym jabłkiem, cynamonem i jogurtem",
-            summary: "Domowa kasza manna o smaku szarlotki ze zwykłych produktów.",
+            summary: "Domowa kasza manna o smaku szarlotki z dokładnym czasem gotowania i ilością przypraw.",
             cookedYield: {
               totalCookedGrams: 980,
               p1CookedGrams: 370,
@@ -1080,13 +1130,15 @@
             baseIngredients: [
               { name: "Kasza manna (sucha)", total: "145 g", p1: "45 g", p2: "100 g" },
               { name: "Mleko 2% / napój sojowy", total: "650 ml", p1: "250 ml", p2: "400 ml" },
-              { name: "Jabłka (starte)", total: "260 g", p1: "110 g", p2: "150 g" }
+              { name: "Jabłka (obrane i starte na grubych oczkach)", total: "260 g", p1: "110 g", p2: "150 g" },
+              { name: "Przyprawy: 1 płaska łyżeczka cynamonu + mała szczypta soli", total: "komplet", p1: "1/3 łyżeczki", p2: "2/3 łyżeczki" }
             ],
             p1Ingredients: [{ name: "Jogurt gęsty / Skyr naturalny", amount: "150 g" }, { name: "Pestki słonecznika", amount: "10 g" }],
             p2Ingredients: [{ name: "Jogurt gęsty / Skyr naturalny", amount: "150 g" }, { name: "Masło orzechowe 100%", amount: "25 g" }, { name: "Rodzynki", amount: "20 g" }],
             steps: [
-              "Zagotuj 650 ml mleka lub napoju sojowego, wsyp strumieniem 145 g kaszy manny i gotuj 3–4 min mieszając. Wmieszaj starte jabłka i cynamon.",
-              "Całość waży ok. 980 g — nałóż 370 g dla Osoby 1 oraz 610 g dla Osoby 2, dodaj jogurt i dodatki."
+              "Do rondelka wlej 650 ml mleka lub napoju sojowego, dodaj małą szczyptę soli i zagotuj na średnim ogniu.",
+              "Zmniejsz ogień na mały i wsypuj powoli 145 g kaszy manny, cały czas mieszając rózgą lub łyżką, aby nie powstały grudki. Gotuj na małym ogniu przez 3–4 minuty do zgęstnienia.",
+              "Zdejmij rondelek z palnika, wmieszaj 260 g startego jabłka oraz 1 płaską łyżeczkę cynamonu. Gotowa kasza waży ok. 980 g — przełóż 370 g dla Osoby 1 i 610 g dla Osoby 2, na wierzch połóż po 150 g jogurtu gęstego oraz dodatki."
             ],
             macros: { p1: { kcal: 515, p: 32, f: 13, c: 68 }, p2: { kcal: 1025, p: 49, f: 30, c: 140 } },
             shopping: [
@@ -1100,9 +1152,9 @@
             ]
           },
           {
-            id: "d4-m2", type: "Obiad", time: "30 min", equipment: ["Garnek", "Patelnia"],
+            id: "d4-m2", type: "Obiad", time: "30 min", equipment: ["Garnek", "Patelnia", "Rondelek"],
             title: "Spaghetti z sosem pomidorowo-warzywnym + czerwona soczewica / mięso mielone",
-            summary: "Wspólna baza warzywno-pomidorowa podzielona na sos z czerwoną soczewicą i klasyczne bolognese.",
+            summary: "Wspólna baza warzywno-pomidorowa rozdzielona na sos z czerwoną soczewicą i klasyczne bolognese z dokładnym czasem duszenia.",
             cookedYield: {
               totalCookedGrams: 1160,
               p1CookedGrams: 430,
@@ -1112,16 +1164,17 @@
             baseIngredients: [
               { name: "Makaron spaghetti (suchy)", total: "215 g", p1: "65 g", p2: "150 g" },
               { name: "Passata pomidorowa / pomidory z puszki", total: "550 g", p1: "220 g", p2: "330 g" },
-              { name: "Marchew, cebula, czosnek", total: "260 g", p1: "110 g", p2: "150 g" },
-              { name: "Olej rzepakowy", total: "15 g", p1: "5 g", p2: "10 g" },
+              { name: "Marchew (starta na drobnych oczkach), cebula (kostka), 2 ząbki czosnku", total: "260 g", p1: "110 g", p2: "150 g" },
+              { name: "Olej rzepakowy + przyprawy do sosu: 1 łyżeczka oregano, 1 łyżeczka bazylii, 1 łyżeczka papryki słodkiej, 2/3 łyżeczki soli, 1/3 łyżeczki pieprzu", total: "15 g oleju + przyprawy", p1: "5 g", p2: "10 g" },
               { name: "Ser żółty tarty", total: "45 g", p1: "15 g", p2: "30 g" }
             ],
-            p1Ingredients: [{ name: "Soczewica czerwona sucha (ugotowana w sosie)", amount: "55 g" }],
-            p2Ingredients: [{ name: "Mięso mielone z indyka lub wieprzowo-wołowe", amount: "210 g" }],
+            p1Ingredients: [{ name: "Soczewica czerwona sucha (przepłukana, gotowana w sosie)", amount: "55 g" }],
+            p2Ingredients: [{ name: "Mięso mielone z indyka lub wieprzowo-wołowe (doprawione 1/3 łyżeczki soli i 1/4 łyżeczki pieprzu)", amount: "210 g" }],
             steps: [
-              "Ugotuj 215 g spaghetti (po ugotowaniu waży ok. 480 g). Zeszklij startą marchew z cebulą, wlej passatę i duś 10 min (baza sosu waży ok. 680 g).",
-              "Przełóż ok. 280 g sosu do małego rondelka i dogotuj w nim 55 g czerwonej soczewicy (ok. 10 min). Do reszty sosu (ok. 400 g) dodaj podsmażone mięso mielone.",
-              "Rozłóż makaron (150 g i 330 g), sosy i posyp tartym serem."
+              "Makaron: Zagotuj 1,5 l wody z 1 płaską łyżeczką soli. Wrzuć 215 g spaghetti i gotuj bez przykrycia na średnim ogniu przez 8–9 minut al dente, odcedź (ugotowany makaron waży ok. 480 g).",
+              "Wspólna baza sosu: Na głębokiej patelni rozgrzej 15 g oleju rzepakowego, wrzuć pokrojoną cebulę i startą marchew, smaż na średnim ogniu przez 4 minuty. Dodaj 2 przeciśnięte ząbki czosnku i smaż 30 sekund. Wlej 550 g passaty pomidorowej, wsyp po 1 łyżeczce oregano, bazylii i słodkiej papryki oraz 2/3 łyżeczki soli i 1/3 łyżeczki pieprzu. Duś na małym ogniu przez 6 minut (baza sosu waży ok. 680 g).",
+              "Podział na 2 warianty: Przełóż ok. 280 g bazy sosu do małego rondelka, dolej 100 ml wody i wsyp 55 g przepłukanej czerwonej soczewicy — gotuj pod przykryciem na małym ogniu przez 10–12 minut, aż soczewica zmięknie. W tym czasie na osobnej patelni podsmaż 210 g mięsa mielonego (oprószonego 1/3 łyżeczki soli i 1/4 łyżeczki pieprzu) na średnio-dużym ogniu przez 6–7 minut, rozdrabniając łopatką, po czym połącz z resztą sosu (ok. 400 g) i duś razem 3 minuty.",
+              "Rozłóż makaron (150 g i 330 g), polej odpowiednimi sosami i posyp tartym serem (15 g i 30 g)."
             ],
             macros: { p1: { kcal: 610, p: 29, f: 12, c: 96 }, p2: { kcal: 1110, p: 70, f: 33, c: 132 } },
             shopping: [
@@ -1137,7 +1190,7 @@
           {
             id: "d4-m3", type: "Kolacja", time: "20 min", equipment: ["Garnek", "Miska"],
             title: "Sałatka ziemniaczano-fasolowa z ogórkiem kiszonym i jogurtem",
-            summary: "Tania, sycąca sałatka na chłodno — świetna także jako lekki posiłek wieczorny.",
+            summary: "Sycąca sałatka na chłodno z dokładnym czasem gotowania ziemniaków i proporcją sosu musztardowego.",
             cookedYield: {
               totalCookedGrams: 1020,
               p1CookedGrams: 420,
@@ -1145,18 +1198,19 @@
               portionGuide: "Wymieszana sałatka waży łącznie ok. 1020 g. Nałóż ok. 420 g (ok. 40% miski) dla Osoby 1 oraz ok. 600 g (ok. 60% miski) dla Osoby 2, podaj z pieczywem."
             },
             baseIngredients: [
-              { name: "Ziemniaki", total: "550 g", p1: "200 g", p2: "350 g" },
-              { name: "Fasola czerwona z puszki (odsączona)", total: "240 g", p1: "120 g", p2: "120 g" },
-              { name: "Ogórki kiszone", total: "180 g", p1: "80 g", p2: "100 g" },
-              { name: "Cebula i szczypiorek", total: "50 g", p1: "20 g", p2: "30 g" },
-              { name: "Jogurt naturalny gęsty + łyżeczka musztardy", total: "140 g", p1: "60 g", p2: "80 g" },
+              { name: "Ziemniaki (obrane i pokrojone w kostkę 2 cm)", total: "550 g", p1: "200 g", p2: "350 g" },
+              { name: "Fasola czerwona z puszki (odsączona i przepłukana)", total: "240 g", p1: "120 g", p2: "120 g" },
+              { name: "Ogórki kiszone (pokrojone w drobną kostkę)", total: "180 g", p1: "80 g", p2: "100 g" },
+              { name: "Cebula czerwona lub biała (drobna kostka) + posiekany szczypiorek", total: "50 g", p1: "20 g", p2: "30 g" },
+              { name: "Sos: 140 g jogurtu naturalnego gęstego + 1 pełna łyżeczka musztardy + 1/3 łyżeczki soli + 1/3 łyżeczki pieprzu + 1/2 łyżeczki koperku", total: "komplet sosu", p1: "60 g", p2: "80 g" },
               { name: "Chleb pełnoziarnisty", total: "155 g", p1: "45 g", p2: "110 g" }
             ],
-            p1Ingredients: [{ name: "Olej rzepakowy", amount: "5 g" }],
-            p2Ingredients: [{ name: "Szynka drobiowa lub pieczony kurczak", amount: "130 g" }],
+            p1Ingredients: [{ name: "Olej rzepakowy (wymieszany w sałatce)", amount: "5 g" }],
+            p2Ingredients: [{ name: "Szynka drobiowa lub pieczony kurczak (pokrojone w paski)", amount: "130 g" }],
             steps: [
-              "Ugotuj ziemniaki w mundurkach lub w kostkę, ostudź i wymieszaj z fasolą, ogórkiem kiszonym, cebulą i sosem jogurtowo-musztardowym (ok. 1020 g całości).",
-              "Nałóż ok. 420 g i 600 g do misek, dodaj chleb oraz szynkę w porcji mięsnej."
+              "Pokrojone w kostkę ziemniaki (550 g) zalej zimną wodą z 1/2 łyżeczki soli, zagotuj i gotuj pod przykryciem na małym ogniu przez 12–14 minut (do miękkości, ale nie rozpadania). Odcedź i przelej zimną wodą przez 20 sekund, aby szybko ostygły.",
+              "W dużej misce połącz ostudzone ziemniaki, 240 g fasoli czerwonej, 180 g pokrojonych ogórków kiszonych oraz 50 g cebuli ze szczypiorkiem.",
+              "W kubku wymieszaj 140 g jogurtu naturalnego, 1 pełną łyżeczkę musztardy stołowej lub sarepskiej, 1/3 łyżeczki soli, 1/3 łyżeczki czarnego pieprzu i 1/2 łyżeczki koperku. Wymieszaj sos z sałatką (ok. 1020 g całości), nałóż po 420 g i 600 g, dodaj chleb oraz szynkę (130 g dla Osoby 2)."
             ],
             macros: { p1: { kcal: 560, p: 24, f: 11, c: 88 }, p2: { kcal: 950, p: 56, f: 22, c: 128 } },
             shopping: [
@@ -1177,7 +1231,7 @@
           {
             id: "d5-m1", type: "Śniadanie", time: "20 min", equipment: ["Blender", "Patelnia"],
             title: "Placuszki twarogowo-owsiane z bananem i jabłkiem",
-            summary: "Tanie placuszki z blendera bez wymyślnych mąk.",
+            summary: "Tanie placuszki z blendera z dokładnym czasem smażenia na każdej stronie.",
             cookedYield: {
               totalCookedGrams: 540,
               p1CookedGrams: 200,
@@ -1187,16 +1241,17 @@
             baseIngredients: [
               { name: "Twaróg półtłusty", total: "250 g", p1: "100 g", p2: "150 g" },
               { name: "Płatki owsiane górskie", total: "130 g", p1: "45 g", p2: "85 g" },
-              { name: "Banany", total: "180 g", p1: "60 g", p2: "120 g" },
-              { name: "Mleko 2% / napój sojowy", total: "60 ml", p1: "20 ml", p2: "40 ml" },
-              { name: "Olej rzepakowy", total: "10 g", p1: "3 g", p2: "7 g" },
-              { name: "Jabłko lub owoce mrożone", total: "200 g", p1: "80 g", p2: "120 g" }
+              { name: "Banany (dojrzałe)", total: "180 g", p1: "60 g", p2: "120 g" },
+              { name: "Mleko 2% / napój sojowy + 1/2 łyżeczki proszku do pieczenia + 1/2 łyżeczki cynamonu + szczypta soli", total: "60 ml + dodatki", p1: "20 ml", p2: "40 ml" },
+              { name: "Olej rzepakowy (do smażenia)", total: "10 g (1 łyżka)", p1: "3 g", p2: "7 g" },
+              { name: "Jabłko lub owoce mrożone (na wierzch)", total: "200 g", p1: "80 g", p2: "120 g" }
             ],
             p1Ingredients: [{ name: "Jogurt naturalny gęsty", amount: "60 g" }],
             p2Ingredients: [{ name: "Masło orzechowe 100%", amount: "25 g" }, { name: "Dżem / miód", amount: "15 g" }],
             steps: [
-              "Zblenduj twaróg, płatki owsiane, banany, mleko i pół łyżeczki proszku do pieczenia.",
-              "Usmaż ok. 10–12 małych placuszków (ok. 540 g). Podaj 4 szt. (200 g) Osobie 1 i 7–8 szt. (340 g) Osobie 2."
+              "Do blendera wrzuć 250 g twarogu, 130 g płatków owsianych, 180 g bananów, 60 ml mleka lub napoju sojowego, 1/2 łyżeczki proszku do pieczenia, 1/2 łyżeczki cynamonu i małą szczyptę soli. Zmiksuj przez 40–50 sekund na gęste ciasto i odstaw na 3 minuty, aby płatki napęczniały.",
+              "Rozgrzej patelnię na małym/średnim ogniu i posmaruj cienko olejem (10 g). Nakładaj po 1 czubatej łyżce ciasta na placuszek.",
+              "Smaż pod przykryciem przez 2,5–3 minuty, aż spód będzie rumiany, a na powierzchni pojawią się bąbelki; przewróć łopatką i smaż bez przykrycia przez 1,5–2 minuty z drugiej strony (łącznie ok. 10–12 placuszków = 540 g). Podaj 4 szt. (200 g) Osobie 1 i 7–8 szt. (340 g) Osobie 2."
             ],
             macros: { p1: { kcal: 520, p: 29, f: 13, c: 70 }, p2: { kcal: 1045, p: 50, f: 34, c: 134 } },
             shopping: [
@@ -1212,9 +1267,9 @@
             ]
           },
           {
-            id: "d5-m2", type: "Obiad", time: "30 min", equipment: ["Piekarnik / Air Fryer"],
+            id: "d5-m2", type: "Obiad", time: "30 min", equipment: ["Piekarnik / Air Fryer", "Miska"],
             title: "Domowe frytki z piekarnika i surówka z kapusty + kotlet warzywny / kurczak",
-            summary: "Tani klasyk z ziemniaków i białej/pekińskiej kapusty.",
+            summary: "Chrupiące frytki ziemniaczane z dokładnymi przyprawami, surówka oraz precyzyjny czas pieczenia mięsa.",
             cookedYield: {
               totalCookedGrams: 820,
               p1CookedGrams: 320,
@@ -1222,15 +1277,20 @@
               portionGuide: "Upieczone frytki ważą ok. 460 g (nałóż 160 g dla Osoby 1 i 300 g dla Osoby 2), a surówka z kapusty ok. 360 g (160 g dla Osoby 1 i 200 g dla Osoby 2)."
             },
             baseIngredients: [
-              { name: "Ziemniaki", total: "680 g", p1: "230 g", p2: "450 g" },
-              { name: "Olej rzepakowy", total: "20 g", p1: "7 g", p2: "13 g" },
-              { name: "Kapusta biała/pekińska, marchew, ogórek", total: "360 g", p1: "160 g", p2: "200 g" }
+              { name: "Ziemniaki (pokrojone w słupki ok. 1 × 1 cm, osuszone ręcznikiem)", total: "680 g", p1: "230 g", p2: "450 g" },
+              { name: "Olej rzepakowy + przyprawy do frytek: 1 łyżeczka słodkiej papryki, 1/2 łyżeczki czosnku gran., 1/2 łyżeczki soli, 1/4 łyżeczki pieprzu", total: "20 g oleju + przyprawy", p1: "7 g", p2: "13 g" },
+              { name: "Surówka: kapusta biała/pekińska, starta marchew, ogórek + 1 łyżeczka oleju + 1 łyżeczka soku z cytryny lub octu jabłkowego + 1/3 łyżeczki soli + szczypta cukru i pieprzu", total: "360 g warzyw + sos", p1: "160 g", p2: "200 g" }
             ],
-            p1Ingredients: [{ name: "Kotlet warzywny lub falafel (z marketu)", amount: "150 g" }],
-            p2Ingredients: [{ name: "Pierś z kurczaka", amount: "220 g" }],
+            p1Ingredients: [{ name: "Kotlet warzywny lub falafel (pieczony na blasze przez ostatnie 12 minut)", amount: "150 g" }],
+            p2Ingredients: [
+              { name: "Pierś z kurczaka (przekrojona wzdłuż na 2 płaskie filety ok. 1,5 cm)", amount: "220 g" },
+              { name: "Przyprawy do kurczaka: 1/2 łyżeczki przyprawy złocistej do kurczaka lub papryki słodkiej, 1/3 łyżeczki czosnku gran., 1/3 łyżeczki soli, 1/4 łyżeczki pieprzu", amount: "komplet" }
+            ],
             steps: [
-              "Pokrój ziemniaki w słupki, wymieszaj z olejem i solą, upiecz na chrupko (po upieczeniu ważą ok. 460 g). Obok upiecz kurczaka oraz kotlet warzywny.",
-              "Poszatkuj kapustę i zetrzyj marchew (ok. 360 g surówki). Rozdziel frytki (160 g / 300 g) i surówkę (160 g / 200 g)."
+              "Nagrzej piekarnik do 200°C (góra–dół) lub 185°C (termoobieg) [Air Fryer: 190°C]. Pokrojone w słupki 1×1 cm ziemniaki (680 g) dokładnie osusz ręcznikiem papierowym, wymieszaj w misce z 20 g oleju, 1 łyżeczką słodkiej papryki, 1/2 łyżeczki czosnku granulowanego, 1/2 łyżeczki soli i 1/4 łyżeczki pieprzu.",
+              "Rozłóż frytki pojedynczą warstwą na blasze i wstaw do piekarnika na łączny czas 26–28 minut (w połowie czasu, po 13 minutach, przemieszaj je łopatką).",
+              "Obróbka mięsa i kotleta: Pierś z kurczaka (220 g) przekrój na 2 płaskie filety i natrzyj 1/2 łyżeczki słodkiej papryki, 1/3 łyżeczki czosnku granulowanego, 1/3 łyżeczki soli i 1/4 łyżeczki pieprzu. Po 10 minutach pieczenia frytek dołóż kurczaka na blachę obok frytek i piecz przez 16–18 minut w 200°C (lub usmaż na patelni po 4,5 minuty z każdej strony). Kotlet warzywny/falafel (150 g) dołóż na blachę na ostatnie 12 minut pieczenia.",
+              "W międzyczasie poszatkuj kapustę, zetrzyj marchew i pokrój ogórek (360 g łącznie), wymieszaj z 1 łyżeczką oleju, 1 łyżeczką soku z cytryny, 1/3 łyżeczki soli, szczyptą cukru i pieprzu. Rozłóż frytki (160 g i 300 g), surówkę (160 g i 200 g) oraz białko."
             ],
             macros: { p1: { kcal: 585, p: 24, f: 16, c: 84 }, p2: { kcal: 1050, p: 64, f: 26, c: 138 } },
             shopping: [
@@ -1244,7 +1304,7 @@
           {
             id: "d5-m3", type: "Kolacja", time: "20 min", equipment: ["Patelnia", "Piekarnik"],
             title: "Zapiekanki z pieczarkami, cebulką i serem",
-            summary: "Domowe zapiekanki z tanich pieczarek i zwykłej bułki lub bagietki.",
+            summary: "Domowe zapiekanki z dokładnym czasem odparowania pieczarek i zapiekania.",
             cookedYield: {
               totalCookedGrams: 610,
               p1CookedGrams: 240,
@@ -1252,18 +1312,18 @@
               portionGuide: "Uduszone pieczarki z cebulą ważą ok. 230 g (nałóż 100 g na bułkę Osoby 1 i 130 g na bagietkę Osoby 2)."
             },
             baseIngredients: [
-              { name: "Bagietka lub bułki grahamki", total: "230 g", p1: "80 g", p2: "150 g" },
-              { name: "Pieczarki", total: "300 g", p1: "130 g", p2: "170 g" },
-              { name: "Cebula", total: "100 g", p1: "40 g", p2: "60 g" },
-              { name: "Olej rzepakowy", total: "10 g", p1: "4 g", p2: "6 g" },
-              { name: "Ser żółty tarty", total: "90 g", p1: "30 g", p2: "60 g" },
-              { name: "Pomidor i ogórek", total: "220 g", p1: "110 g", p2: "110 g" }
+              { name: "Bagietka lub bułki grahamki (przekrojone wzdłuż na pół)", total: "230 g", p1: "80 g", p2: "150 g" },
+              { name: "Pieczarki (starte na grubych oczkach) + cebula (drobna kostka)", total: "300 g pieczarek + 100 g cebuli", p1: "170 g", p2: "230 g" },
+              { name: "Olej rzepakowy + przyprawy do pieczarek: 1/2 łyżeczki soli, 1/2 łyżeczki pieprzu, 1/2 łyżeczki tymianku lub oregano, 1/3 łyżeczki czosnku gran.", total: "10 g oleju + przyprawy", p1: "4 g", p2: "6 g" },
+              { name: "Ser żółty tarty + 1/2 łyżeczki oregano na wierzch", total: "90 g", p1: "30 g", p2: "60 g" },
+              { name: "Pomidor i ogórek (pokrojone obok)", total: "220 g", p1: "110 g", p2: "110 g" }
             ],
             p1Ingredients: [{ name: "Serek wiejski naturalny", amount: "150 g" }],
-            p2Ingredients: [{ name: "Szynka drobiowa", amount: "110 g" }],
+            p2Ingredients: [{ name: "Szynka drobiowa (ułożona pod farszem pieczarkowym)", amount: "110 g" }],
             steps: [
-              "Zetrzyj pieczarki i podsmaż z cebulą do odparowania wody (gotowy farsz waży ok. 230 g).",
-              "Nałóż farsz (100 g / 130 g) i ser na pieczywo, zapiecz 8 min i podaj z warzywami."
+              "Nagrzej piekarnik do 195°C (góra–dół). Na patelni rozgrzej 10 g oleju rzepakowego, wrzuć 100 g drobno posiekanej cebuli i smaż na średnim ogniu przez 2 minuty.",
+              "Dodaj 300 g startych pieczarek, wsyp 1/2 łyżeczki soli, 1/2 łyżeczki czarnego pieprzu, 1/2 łyżeczki suszonego tymianku (lub oregano) oraz 1/3 łyżeczki czosnku granulowanego. Smaż bez przykrycia na średnio-dużym ogniu przez 6–7 minut, mieszając, aż cały płyn z pieczarek całkowicie odparuje (gotowy farsz waży ok. 230 g).",
+              "Na przekrojone pieczywo Osoby 2 połóż 110 g szynki drobiowej, nałóż farsz pieczarkowy (100 g dla Osoby 1 i 130 g dla Osoby 2), posyp serem żółtym (30 g i 60 g) oraz 1/2 łyżeczki oregano. Zapiekaj przez 8–9 minut w 195°C do roztopienia sera i chrupkości pieczywa."
             ],
             macros: { p1: { kcal: 575, p: 32, f: 17, c: 70 }, p2: { kcal: 995, p: 56, f: 33, c: 114 } },
             shopping: [
@@ -1285,7 +1345,7 @@
           {
             id: "d6-m1", type: "Śniadanie", time: "20 min", equipment: ["Garnek", "Blender"],
             title: "Budyń jaglany na mleku z bananem i jabłkiem",
-            summary: "Tania kasza jaglana zblendowana na aksamitny budyń.",
+            summary: "Aksamitny budyń z kaszy jaglanej z dokładnym czasem płukania i gotowania bez goryczki.",
             cookedYield: {
               totalCookedGrams: 920,
               p1CookedGrams: 340,
@@ -1295,14 +1355,16 @@
             baseIngredients: [
               { name: "Kasza jaglana (sucha)", total: "145 g", p1: "45 g", p2: "100 g" },
               { name: "Mleko 2% / napój sojowy", total: "600 ml", p1: "220 ml", p2: "380 ml" },
-              { name: "Banany", total: "150 g", p1: "60 g", p2: "90 g" },
-              { name: "Jabłko lub owoce mrożone", total: "200 g", p1: "80 g", p2: "120 g" }
+              { name: "Banany (dojrzałe)", total: "150 g", p1: "60 g", p2: "90 g" },
+              { name: "Jabłko lub owoce mrożone (na wierzch)", total: "200 g", p1: "80 g", p2: "120 g" },
+              { name: "Przyprawy: 1 płaska łyżeczka cynamonu + szczypta soli", total: "komplet", p1: "1/3 łyżeczki", p2: "2/3 łyżeczki" }
             ],
             p1Ingredients: [{ name: "Jogurt gęsty / Skyr naturalny", amount: "150 g" }, { name: "Pestki słonecznika", amount: "10 g" }],
             p2Ingredients: [{ name: "Jogurt gęsty / Skyr naturalny", amount: "150 g" }, { name: "Masło orzechowe 100%", amount: "25 g" }],
             steps: [
-              "Przepłucz kaszę jaglaną wrzątkiem i ugotuj na 600 ml mleka lub napoju sojowego (ok. 15 min), zblenduj z bananem na budyń (ok. 920 g).",
-              "Rozdziel do misek (340 g i 580 g), dodaj jogurt i owoce."
+              "Wsyp 145 g kaszy jaglanej na sitko i przelej najpierw 0,5 litra wrzątku, a następnie zimną wodą przez 10 sekund (usuwa naturalną goryczkę kaszy).",
+              "Przełóż kaszę do garnka, wlej 600 ml mleka (lub napoju sojowego) oraz dodaj małą szczyptę soli. Zagotuj na średnim ogniu, zmniejsz palnik na mały i gotuj pod przykryciem przez 15 minut, mieszając co 4 minuty, aż kasza całkowicie zmięknie i wchłonie mleko.",
+              "Zdejmij garnek z ognia, dodaj 150 g banana oraz 1 płaską łyżeczkę cynamonu i zblenduj ręcznym blenderem przez 45 sekund na gładki budyń (waży ok. 920 g). Rozłóż do misek (340 g i 580 g), na wierzch połóż po 150 g jogurtu, owoce oraz dodatki."
             ],
             macros: { p1: { kcal: 525, p: 28, f: 11, c: 76 }, p2: { kcal: 1045, p: 46, f: 32, c: 142 } },
             shopping: [
@@ -1316,9 +1378,9 @@
             ]
           },
           {
-            id: "d6-m2", type: "Obiad", time: "25 min", equipment: ["Piekarnik / Patelnia"],
+            id: "d6-m2", type: "Obiad", time: "25 min", equipment: ["Piekarnik", "Patelnia"],
             title: "Domowa pizza na tortilli z pieczarkami, papryką i mozzarellą",
-            summary: "Szybka sobotnia pizza na zwykłych plackach tortilli z dyskontu.",
+            summary: "Chrupiąca pizza na tortilli z doprawionym sosem pomidorowym i precyzyjnym czasem pieczenia.",
             cookedYield: {
               totalCookedGrams: 820,
               p1CookedGrams: 310,
@@ -1327,15 +1389,20 @@
             },
             baseIngredients: [
               { name: "Tortille pszenne duże (3 placki)", total: "195 g", p1: "65 g (1 szt.)", p2: "130 g (2 szt.)" },
-              { name: "Passata pomidorowa", total: "180 g", p1: "60 g", p2: "120 g" },
-              { name: "Ser mozzarella", total: "130 g", p1: "45 g", p2: "85 g" },
-              { name: "Pieczarki, papryka, kukurydza z puszki, cebula", total: "260 g", p1: "90 g", p2: "170 g" }
+              { name: "Passata pomidorowa + przyprawy do sosu: 1 łyżeczka oregano, 1/2 łyżeczki bazylii, 1/3 łyżeczki czosnku gran., 1/3 łyżeczki soli, szczypta pieprzu", total: "180 g passaty + przyprawy", p1: "60 g", p2: "120 g" },
+              { name: "Ser mozzarella (starty na grubych oczkach)", total: "130 g", p1: "45 g", p2: "85 g" },
+              { name: "Pieczarki (cienkie plasterki 3 mm), papryka (paski), kukurydza z puszki, cebula (cienkie piórka)", total: "260 g", p1: "90 g", p2: "170 g" }
             ],
-            p1Ingredients: [{ name: "Fasola czerwona z puszki", amount: "80 g" }],
-            p2Ingredients: [{ name: "Pierś z kurczaka lub szynka", amount: "180 g" }],
+            p1Ingredients: [{ name: "Fasola czerwona z puszki (odsączona)", amount: "80 g" }],
+            p2Ingredients: [
+              { name: "Pierś z kurczaka (pokrojona w drobną kostkę 1 cm)", amount: "180 g" },
+              { name: "Przyprawy do kurczaka: 1/2 łyżeczki papryki słodkiej, 1/3 łyżeczki soli, 1/4 łyżeczki pieprzu + 5 g oleju", amount: "komplet" }
+            ],
             steps: [
-              "Posmaruj tortille passatą z oregano, rozłóż warzywa, mozzarellę oraz osobne dodatki (fasola na 1 tortilli, kurczak/szynka na 2 tortillach).",
-              "Piecz 8–10 min w 200°C do zarumienienia brzegów."
+              "Nagrzej piekarnik do 200°C (góra–dół) lub 185°C (termoobieg). Wymieszaj w miseczce 180 g passaty pomidorowej z 1 łyżeczką suszonego oregano, 1/2 łyżeczki bazylii, 1/3 łyżeczki czosnku granulowanego, 1/3 łyżeczki soli i szczyptą pieprzu.",
+              "Obróbka kurczaka: Jeśli używasz surowej piersi z kurczaka (180 g), pokrój ją w drobną kostkę 1 cm, wymieszaj z 1/2 łyżeczki papryki słodkiej, 1/3 łyżeczki soli i 1/4 łyżeczki pieprzu, a następnie podsmaż na 5 g oleju na średnio-dużym ogniu przez 5 minut (jeśli używasz szynki, nie musisz jej podsmażać).",
+              "Ułóż 3 tortille na blachach z papierem do pieczenia (1 dla Osoby 1, 2 dla Osoby 2). Posmaruj sosem pomidorowym, posyp mozzarellą (45 g i 85 g), rozłóż cienko pokrojone pieczarki, paprykę, kukurydzę, cebulę oraz fasolę (80 g na 1 tortillę) i kurczaka (na 2 tortille).",
+              "Piecz przez 9–11 minut w 200°C, aż ser będzie bulgotać, a brzegi tortilli staną się chrupiące i lekko złote."
             ],
             macros: { p1: { kcal: 585, p: 28, f: 17, c: 76 }, p2: { kcal: 1090, p: 68, f: 34, c: 126 } },
             shopping: [
@@ -1350,7 +1417,7 @@
           {
             id: "d6-m3", type: "Kolacja", time: "15 min", equipment: ["Miska"],
             title: "Twarożek ze szczypiorkiem, rzodkiewką i chlebem",
-            summary: "Lekka, tania kolacja na zimno ze zwykłego twarogu i warzyw.",
+            summary: "Klasyczny twarożek z dokładną ilością soli, pieprzu i warzyw.",
             cookedYield: {
               totalCookedGrams: 680,
               p1CookedGrams: 300,
@@ -1360,14 +1427,16 @@
             baseIngredients: [
               { name: "Twaróg półtłusty", total: "300 g", p1: "130 g", p2: "170 g" },
               { name: "Jogurt naturalny gęsty", total: "120 g", p1: "50 g", p2: "70 g" },
-              { name: "Rzodkiewka, ogórek, szczypiorek", total: "260 g", p1: "120 g", p2: "140 g" },
+              { name: "Rzodkiewka (półplasterki), ogórek (drobna kostka), szczypiorek (posiekany)", total: "260 g", p1: "120 g", p2: "140 g" },
+              { name: "Przyprawy: 1/2 płaskiej łyżeczki soli + 1/3 łyżeczki świeżo mielonego pieprzu + opcjonalnie 1/3 łyżeczki słodkiej papryki", total: "komplet", p1: "45%", p2: "55%" },
               { name: "Chleb żytni / pełnoziarnisty", total: "215 g", p1: "75 g", p2: "140 g" }
             ],
-            p1Ingredients: [{ name: "Pestki słonecznika", amount: "10 g" }],
+            p1Ingredients: [{ name: "Pestki słonecznika (posypane na wierzch)", amount: "10 g" }],
             p2Ingredients: [{ name: "Szynka drobiowa", amount: "120 g" }, { name: "Masło", amount: "15 g" }],
             steps: [
-              "Rozgnieć twaróg z jogurtem i posiekanymi warzywami (ok. 680 g całości).",
-              "Rozdziel do misek (300 g i 380 g) i podaj z chlebem."
+              "W misce rozgnieć widelcem 300 g twarogu z 120 g jogurtu naturalnego gęstego na kremową masę.",
+              "Dodaj 260 g pokrojonych warzyw (rzodkiewkę, ogórka i szczypiorek) oraz dopraw 1/2 płaskiej łyżeczki soli i 1/3 łyżeczki czarnego pieprzu. Dokładnie wymieszaj (gotowy twarożek waży ok. 680 g).",
+              "Przełóż do miseczek (300 g dla Osoby 1 i 380 g dla Osoby 2), podaj z chlebem, pestkami słonecznika oraz szynką z masłem."
             ],
             macros: { p1: { kcal: 565, p: 34, f: 16, c: 68 }, p2: { kcal: 940, p: 58, f: 30, c: 106 } },
             shopping: [
@@ -1388,7 +1457,7 @@
           {
             id: "d7-m1", type: "Śniadanie", time: "15 min", equipment: ["Rondelek"],
             title: "Owsianka jabłkowo-cynamonowa z twarogiem i masłem orzechowym",
-            summary: "Niedzielna owsianka na zwykłych płatkach owsianych i jabłku.",
+            summary: "Niedzielna owsianka z podduszonym jabłkiem i dokładnymi proporcjami przypraw.",
             cookedYield: {
               totalCookedGrams: 820,
               p1CookedGrams: 320,
@@ -1398,14 +1467,16 @@
             baseIngredients: [
               { name: "Płatki owsiane górskie", total: "145 g", p1: "50 g", p2: "95 g" },
               { name: "Mleko 2% / napój sojowy", total: "500 ml", p1: "200 ml", p2: "300 ml" },
-              { name: "Jabłka (pokrojone w kostkę)", total: "250 g", p1: "100 g", p2: "150 g" },
+              { name: "Jabłka (pokrojone w kostkę 1,5 cm)", total: "250 g", p1: "100 g", p2: "150 g" },
+              { name: "Przyprawy: 1 płaska łyżeczka cynamonu + mała szczypta soli", total: "komplet", p1: "1/3 łyżeczki", p2: "2/3 łyżeczki" },
               { name: "Twaróg półtłusty (pokruszony na wierzch)", total: "260 g", p1: "110 g", p2: "150 g" }
             ],
             p1Ingredients: [{ name: "Pestki słonecznika", amount: "10 g" }],
             p2Ingredients: [{ name: "Masło orzechowe 100%", amount: "25 g" }, { name: "Rodzynki lub pestki", amount: "20 g" }],
             steps: [
-              "Ugotuj płatki owsiane na mleku z pokrojonym jabłkiem i cynamonem (ok. 820 g gotowej owsianki).",
-              "Przełóż do misek (320 g i 500 g) i posyp pokruszonym twarogiem oraz dodatkami."
+              "Do rondelka wsyp 145 g płatków owsianych, 250 g pokrojonych w kostkę jabłek, 1 płaską łyżeczkę cynamonu, małą szczyptę soli oraz wlej 500 ml mleka lub napoju sojowego.",
+              "Zagotuj na średnim ogniu (ok. 2 min), zmniejsz palnik na mały i gotuj pod przykryciem przez 6–7 minut, mieszając co 2 minuty, aż jabłka zmiękną, a płatki wchłoną płyn (gotowa owsianka waży ok. 820 g).",
+              "Przełóż do misek (320 g dla Osoby 1 i 500 g dla Osoby 2), na wierzch pokrusz twaróg (110 g i 150 g) i dodaj pestki, rodzynki oraz masło orzechowe."
             ],
             macros: { p1: { kcal: 525, p: 30, f: 14, c: 68 }, p2: { kcal: 1045, p: 48, f: 36, c: 126 } },
             shopping: [
@@ -1419,9 +1490,9 @@
             ]
           },
           {
-            id: "d7-m2", type: "Obiad", time: "35 min", equipment: ["Garnek", "Patelnia"],
+            id: "d7-m2", type: "Obiad", time: "35 min", equipment: ["Garnek", "2 Patelnie", "Rondelek"],
             title: "Ziemniaki z koperkiem, buraczki + sos pieczarkowy z ciecierzycą / kurczakiem",
-            summary: "Tradycyjny niedzielny obiad z gotowych tartych buraczków z dyskontu.",
+            summary: "Niedzielny obiad z dokładnym czasem gotowania ziemniaków, podsmażania pieczarek i pieczenia/smażenia kurczaka.",
             cookedYield: {
               totalCookedGrams: 1120,
               p1CookedGrams: 440,
@@ -1429,16 +1500,21 @@
               portionGuide: "Ugotowane ziemniaki ważą ok. 620 g (nałóż 210 g dla Osoby 1 i 410 g dla Osoby 2), buraczki 300 g (130 g i 170 g), a baza sosu pieczarkowego ok. 200 g (po 100 g na osobę)."
             },
             baseIngredients: [
-              { name: "Ziemniaki", total: "680 g", p1: "230 g", p2: "450 g" },
-              { name: "Buraczki tarte (słoik / woreczek)", total: "300 g", p1: "130 g", p2: "170 g" },
-              { name: "Pieczarki i cebula", total: "200 g", p1: "80 g", p2: "120 g" },
-              { name: "Olej rzepakowy", total: "15 g", p1: "5 g", p2: "10 g" }
+              { name: "Ziemniaki (obrane i pokrojone na równe kawałki ok. 3 cm)", total: "680 g", p1: "230 g", p2: "450 g" },
+              { name: "Buraczki tarte (doprawione szczyptą soli, pieprzu i 1/2 łyżeczki soku z cytryny)", total: "300 g", p1: "130 g", p2: "170 g" },
+              { name: "Pieczarki (plasterki 4 mm) + cebula (drobna kostka)", total: "200 g", p1: "80 g", p2: "120 g" },
+              { name: "Olej rzepakowy + przyprawy do sosu: 1/2 łyżeczki soli, 1/3 łyżeczki pieprzu, 1/2 łyżeczki tymianku, 1 łyżka posiekanego koperku", total: "15 g oleju + przyprawy", p1: "5 g", p2: "10 g" }
             ],
-            p1Ingredients: [{ name: "Ciecierzyca z puszki (do sosu pieczarkowego)", amount: "150 g" }],
-            p2Ingredients: [{ name: "Udko z kurczaka bez kości lub pierś", amount: "220 g" }, { name: "Olej rzepakowy (do mięsa)", amount: "8 g" }],
+            p1Ingredients: [{ name: "Ciecierzyca z puszki (odsączona, podgrzana w swojej połowie sosu pieczarkowego)", amount: "150 g" }],
+            p2Ingredients: [
+              { name: "Udko z kurczaka bez kości lub pierś (2 płaskie filety ok. 1,5 cm)", amount: "220 g" },
+              { name: "Olej rzepakowy + przyprawy do kurczaka: 1/2 łyżeczki papryki słodkiej, 1/3 łyżeczki czosnku gran., 1/3 łyżeczki soli, 1/4 łyżeczki pieprzu", amount: "8 g oleju + przyprawy" }
+            ],
             steps: [
-              "Ugotuj 680 g ziemniaków (po ugotowaniu ważą ok. 620 g). Podsmaż pieczarki z cebulą i 100 ml wody (ok. 200 g bazy sosu).",
-              "Nałóż ziemniaki (210 g / 410 g), podgrzane buraczki (130 g / 170 g), po 100 g sosu pieczarkowego oraz ciecierzycę lub kurczaka."
+              "Ziemniaki: Obrane ziemniaki (680 g) zalej zimną wodą z 1 płaską łyżeczką soli. Zagotuj i gotuj pod przykryciem na małym/średnim ogniu przez 18–20 minut (sprawdź widelcem, czy są miękkie). Odcedź, odparuj 30 sekund i posyp 1 łyżką posiekanego koperku (ważą ok. 620 g).",
+              "Obróbka kurczaka: Mięso z kurczaka (220 g) natrzyj 8 g oleju, 1/2 łyżeczki słodkiej papryki, 1/3 łyżeczki czosnku granulowanego, 1/3 łyżeczki soli i 1/4 łyżeczki pieprzu. Smaż na średnim ogniu: pierś po 4,5–5 minut z każdej strony, a udko bez kości po 6–7 minut z każdej strony pod przykryciem (lub piecz w piekarniku 18 minut w 195°C).",
+              "Sos pieczarkowy: Na patelni rozgrzej 15 g oleju, wrzuć cebulę i pieczarki, smaż na średnim ogniu przez 5 minut, aż lekko się zrumienią. Wlej 120 ml wody, dodaj 1/2 łyżeczki tymianku, 1/2 łyżeczki soli, 1/3 łyżeczki pieprzu oraz opcjonalnie 1 łyżkę jogurtu lub śmietanki 12% i duś 3 minuty (baza sosu waży ok. 200 g). Do 100 g sosu dla Osoby 1 wrzuć 150 g ciecierzycy i podgrzej 2 minuty.",
+              "W małym rondelku podgrzej 300 g tartych buraczków przez 3 minuty na małym ogniu. Rozłóż ziemniaki (210 g i 410 g), buraczki (130 g i 170 g), sos pieczarkowy oraz białko."
             ],
             macros: { p1: { kcal: 590, p: 24, f: 11, c: 96 }, p2: { kcal: 1075, p: 64, f: 33, c: 126 } },
             shopping: [
@@ -1451,9 +1527,9 @@
             ]
           },
           {
-            id: "d7-m3", type: "Kolacja", time: "20 min", equipment: ["Garnek", "Patelnia"],
+            id: "d7-m3", type: "Kolacja", time: "20 min", equipment: ["Garnek", "2 Patelnie"],
             title: "Makaron z warzywami z patelni i sosem sojowym + tofu / kurczak",
-            summary: "Szybki makaron ze świderków i mrożonych warzyw na patelnię.",
+            summary: "Szybkie danie z patelni z dokładną ilością sosu sojowego, imbiru/czosnku oraz czasem smażenia.",
             cookedYield: {
               totalCookedGrams: 860,
               p1CookedGrams: 330,
@@ -1463,14 +1539,16 @@
             baseIngredients: [
               { name: "Makaron świderki / penne (suchy)", total: "210 g", p1: "65 g", p2: "145 g" },
               { name: "Mieszanka warzyw na patelnię (mrożona)", total: "400 g", p1: "180 g", p2: "220 g" },
-              { name: "Sos sojowy", total: "30 ml", p1: "12 ml", p2: "18 ml" },
+              { name: "Sos sojowy + przyprawy: 1/2 łyżeczki czosnku gran., 1/3 łyżeczki imbiru mielonego lub papryki słodkiej, 1/4 łyżeczki pieprzu (bez dodatkowej soli, bo sos sojowy jest słony)", total: "30 ml sosu (2 łyżki) + przyprawy", p1: "12 ml", p2: "18 ml" },
               { name: "Olej rzepakowy", total: "15 g", p1: "5 g", p2: "10 g" }
             ],
-            p1Ingredients: [{ name: "Tofu wędzone lub ciecierzyca z puszki", amount: "130 g" }],
-            p2Ingredients: [{ name: "Pierś z kurczaka", amount: "160 g" }],
+            p1Ingredients: [{ name: "Tofu wędzone lub ciecierzyca z puszki (kostka 1,5 cm)", amount: "130 g" }],
+            p2Ingredients: [{ name: "Pierś z kurczaka (paski ok. 1 cm, oprószone 1/3 łyżeczki papryki słodkiej i 1/4 łyżeczki pieprzu)", amount: "160 g" }],
             steps: [
-              "Ugotuj 210 g suchego makaronu (po ugotowaniu ok. 470 g). Podsmaż mrożone warzywa na oleju z sosem sojowym (ok. 390 g gotowych warzyw).",
-              "Rozłóż makaron (150 g / 320 g), warzywa (180 g / 210 g) oraz osobno podsmażone tofu lub kurczaka."
+              "Makaron: Zagotuj 1,5 l wody z 1 płaską łyżeczką soli. Ugotuj 210 g makaronu al dente przez 8–9 minut i odcedź (ugotowany makaron waży ok. 470 g).",
+              "Białko osobno: Na patelni rozgrzej 5 g oleju. Na połowie patelni ułóż pokrojoną w cienkie paski pierś z kurczaka (160 g) oprószoną 1/3 łyżeczki słodkiej papryki i 1/4 łyżeczki pieprzu, a na drugiej połowie pokrojone w kostkę tofu (130 g). Smaż na średnio-dużym ogniu przez 5–6 minut, obracając co 1,5 minuty, aż kurczak będzie ścięty, a tofu rumiane. Zdejmij na talerz.",
+              "Warzywa: Na tę samą patelnię wlej 10 g oleju, wrzuć 400 g zamrożonych warzyw na patelnię i smaż na dużym ogniu przez 6–7 minut, często mieszając, aż odparuje woda, a warzywa pozostaną lekko chrupiące. Wlej 30 ml sosu sojowego, wsyp 1/2 łyżeczki czosnku granulowanego, 1/3 łyżeczki imbiru (lub słodkiej papryki) i 1/4 łyżeczki pieprzu, smaż jeszcze 1 minutę (gotowe warzywa ważą ok. 390 g).",
+              "Rozłóż makaron (150 g i 320 g), warzywa (180 g i 210 g) oraz osobno tofu i kurczaka."
             ],
             macros: { p1: { kcal: 560, p: 27, f: 15, c: 76 }, p2: { kcal: 960, p: 58, f: 25, c: 122 } },
             shopping: [
@@ -1490,7 +1568,7 @@
       {
         id: "alt-b1", type: "Śniadanie", time: "15 min", equipment: ["Rondelek"],
         title: "Owsianka kakaowa z bananem, jogurtem i masłem orzechowym",
-        summary: "Prosta owsianka ze zwykłym ciemnym kakao, bananem i mlekiem lub napojem sojowym.",
+        summary: "Owsianka z ciemnym kakao i dokładną proporcją płynu oraz czasu gotowania.",
         cookedYield: {
           totalCookedGrams: 760,
           p1CookedGrams: 290,
@@ -1500,14 +1578,15 @@
         baseIngredients: [
           { name: "Płatki owsiane górskie", total: "145 g", p1: "50 g", p2: "95 g" },
           { name: "Mleko 2% / napój sojowy bez cukru", total: "520 ml", p1: "200 ml", p2: "320 ml" },
-          { name: "Banany", total: "180 g", p1: "60 g", p2: "120 g" },
-          { name: "Kakao ciemne 100%", total: "15 g", p1: "5 g", p2: "10 g" }
+          { name: "Kakao ciemne 100% + szczypta soli + opcjonalnie 1/3 łyżeczki cynamonu", total: "15 g kakao (1,5 łyżki)", p1: "5 g", p2: "10 g" },
+          { name: "Banany (połowa rozgnieciona do garnka, połowa w plasterkach na wierzch)", total: "180 g", p1: "60 g", p2: "120 g" }
         ],
         p1Ingredients: [{ name: "Jogurt gęsty / Skyr naturalny", amount: "150 g" }, { name: "Pestki słonecznika", amount: "10 g" }],
         p2Ingredients: [{ name: "Jogurt gęsty / Skyr naturalny", amount: "150 g" }, { name: "Masło orzechowe 100%", amount: "30 g" }],
         steps: [
-          "Ugotuj płatki owsiane z kakao i mlekiem lub napojem sojowym przez 6–7 min (całość waży ok. 760 g).",
-          "Przełóż po ok. 290 g i 470 g do misek, ułóż pokrojonego banana, jogurt oraz masło orzechowe / pestki."
+          "Do rondelka wsyp 145 g płatków owsianych, 15 g kakao ciemnego (1,5 płaskiej łyżki), małą szczyptę soli oraz 1/3 łyżeczki cynamonu. Wlej 520 ml mleka lub napoju sojowego i dokładnie wymieszaj, aby kakao nie utworzyło grudek.",
+          "Zagotuj na średnim ogniu, zmniejsz moc palnika na małą i gotuj pod przykryciem przez 6–7 minut, mieszając co 2 minuty. Na ostatnią minutę wmieszaj połowę banana rozgniecionego widelcem dla naturalnej słodyczy (całość waży ok. 760 g).",
+          "Przełóż do misek (290 g dla Osoby 1 i 470 g dla Osoby 2), na wierzch połóż po 150 g jogurtu gęstego, resztę banana w plasterkach oraz masło orzechowe / pestki."
         ],
         macros: { p1: { kcal: 520, p: 30, f: 13, c: 70 }, p2: { kcal: 1040, p: 48, f: 37, c: 128 } },
         shopping: [
@@ -1521,9 +1600,9 @@
         ]
       },
       {
-        id: "alt-l1", type: "Obiad", time: "25 min", equipment: ["Garnek", "Patelnia"],
+        id: "alt-l1", type: "Obiad", time: "25 min", equipment: ["Garnek", "2 Patelnie"],
         title: "Ryż z fasolą czerwoną, kukurydzą i sosem pomidorowym (+ mięso mielone)",
-        summary: "Szybkie chili z puszek z dyskontu z możliwością dodania mięsa mielonego dla drugiej osoby.",
+        summary: "Szybkie chili z dokładnymi przyprawami meksykańskimi i czasem duszenia.",
         cookedYield: {
           totalCookedGrams: 1220,
           p1CookedGrams: 470,
@@ -1532,16 +1611,18 @@
         },
         baseIngredients: [
           { name: "Ryż biały / parboiled (suchy)", total: "215 g", p1: "65 g", p2: "150 g" },
-          { name: "Fasola czerwona z puszki (odsączona)", total: "240 g", p1: "140 g", p2: "100 g" },
-          { name: "Kukurydza z puszki, papryka, cebula", total: "300 g", p1: "130 g", p2: "170 g" },
+          { name: "Fasola czerwona z puszki (odsączona i przepłukana)", total: "240 g", p1: "140 g", p2: "100 g" },
+          { name: "Kukurydza z puszki (odsączona), papryka (kostka 1 cm), cebula (kostka)", total: "300 g", p1: "130 g", p2: "170 g" },
           { name: "Pomidory krojone z puszki", total: "400 g", p1: "170 g", p2: "230 g" },
-          { name: "Olej rzepakowy", total: "15 g", p1: "5 g", p2: "10 g" }
+          { name: "Olej rzepakowy + przyprawy do chili: 1,5 łyżeczki papryki słodkiej, 1/2 łyżeczki kminu rzymskiego (kuminu) lub oregano, 1/2 łyżeczki czosnku gran., 2/3 łyżeczki soli, 1/3 łyżeczki pieprzu, szczypta chili", total: "15 g oleju + przyprawy", p1: "5 g", p2: "10 g" }
         ],
         p1Ingredients: [{ name: "Jogurt naturalny gęsty (kleks na wierzch)", amount: "50 g" }],
-        p2Ingredients: [{ name: "Mięso mielone z indyka lub wieprzowe", amount: "200 g" }, { name: "Ser żółty tarty", amount: "25 g" }],
+        p2Ingredients: [{ name: "Mięso mielone z indyka lub wieprzowe (doprawione 1/3 łyżeczki soli i 1/4 łyżeczki pieprzu)", amount: "200 g" }, { name: "Ser żółty tarty", amount: "25 g" }],
         steps: [
-          "Ugotuj 215 g suchego ryżu (po ugotowaniu ok. 560 g). Duś pomidory z puszki z fasolą, kukurydzą, papryką i cebulą ok. 12 min (ok. 660 g).",
-          "Rozłóż ryż (170 g / 390 g) i chili (300 g / 360 g), a do porcji mięsnej dodaj podsmażone mięso mielone."
+          "Ryż: Zagotuj 500 ml wody z 1/2 łyżeczki soli, wsyp 215 g opłukanego ryżu, przykryj i gotuj na małym ogniu przez 13–15 minut (ugotowany ryż waży ok. 560 g).",
+          "Baza chili: Na głębokiej patelni rozgrzej 15 g oleju, wrzuć pokrojoną cebulę i paprykę, smaż na średnim ogniu przez 4 minuty. Dodaj 400 g pomidorów z puszki, 240 g czerwonej fasoli, odsączoną kukurydzę oraz przyprawy: 1,5 łyżeczki papryki słodkiej, 1/2 łyżeczki kminu rzymskiego (lub oregano), 1/2 łyżeczki czosnku granulowanego, 2/3 łyżeczki soli, 1/3 łyżeczki pieprzu i małą szczyptę chili. Duś bez przykrycia na małym ogniu przez 8–10 minut (gotowa baza chili waży ok. 660 g).",
+          "Mięso dla Osoby 2: Na osobnej patelni podsmaż 200 g mięsa mielonego oprószonego 1/3 łyżeczki soli i 1/4 łyżeczki pieprzu przez 6–7 minut na średnio-dużym ogniu, mieszając i rozdrabniając grudki.",
+          "Nałóż ryż (170 g i 390 g), gorące chili (300 g i 360 g), na porcję Osoby 1 połóż 50 g jogurtu gęstego, a do porcji Osoby 2 dodaj usmażone mięso i posyp 25 g sera żółtego."
         ],
         macros: { p1: { kcal: 580, p: 24, f: 11, c: 96 }, p2: { kcal: 1095, p: 66, f: 33, c: 132 } },
         shopping: [
@@ -1558,7 +1639,7 @@
       {
         id: "alt-d1", type: "Kolacja", time: "15 min", equipment: ["Patelnia"],
         title: "Chrupiące tortille z serem, fasolą i kukurydzą (+ kurczak)",
-        summary: "Szybkie quesadillas z patelni na bazie zwykłych tortilli i strączków z puszki.",
+        summary: "Szybkie quesadillas z dokładnym doprawieniem farszu i czasem opiekania na patelni.",
         cookedYield: {
           totalCookedGrams: 620,
           p1CookedGrams: 260,
@@ -1568,14 +1649,17 @@
         baseIngredients: [
           { name: "Tortille pszenne (3 placki)", total: "195 g", p1: "65 g (1 szt.)", p2: "130 g (2 szt.)" },
           { name: "Ser żółty tarty / mozzarella", total: "95 g", p1: "35 g", p2: "60 g" },
-          { name: "Fasola czerwona, kukurydza, papryka", total: "240 g", p1: "120 g", p2: "120 g" },
-          { name: "Jogurt naturalny gęsty (dip)", total: "100 g", p1: "45 g", p2: "55 g" }
+          { name: "Fasola czerwona (odsączona), kukurydza (odsączona), papryka (drobna kostka)", total: "240 g", p1: "120 g", p2: "120 g" },
+          { name: "Przyprawy do farszu: 1/2 łyżeczki słodkiej papryki, 1/3 łyżeczki oregano, 1/3 łyżeczki soli, 1/4 łyżeczki pieprzu", total: "komplet", p1: "połowa", p2: "połowa" },
+          { name: "Dip: 100 g jogurtu naturalnego gęstego + 1/3 łyżeczki czosnku gran. + szczypta soli", total: "100 g", p1: "45 g", p2: "55 g" }
         ],
-        p1Ingredients: [{ name: "Serek wiejski (obok lub w środku)", amount: "80 g" }],
-        p2Ingredients: [{ name: "Pierś z kurczaka lub szynka", amount: "130 g" }],
+        p1Ingredients: [{ name: "Serek wiejski (odsączony, włożony do środka tortilli)", amount: "80 g" }],
+        p2Ingredients: [{ name: "Pierś z kurczaka (drobna kostka 1 cm, podsmażona 5 min z 1/3 łyżeczki papryki słodkiej i 1/4 łyżeczki soli)", amount: "130 g" }],
         steps: [
-          "Nałóż farsz z fasoli, kukurydzy, papryki i sera na połówki tortilli (oraz kurczaka/szynkę do porcji mięsnej), złóż na pół.",
-          "Podpiecz na suchej patelni po 2–3 min z każdej strony do roztopienia sera."
+          "W miseczce wymieszaj 240 g odsączonej fasoli, kukurydzy i drobno pokrojonej papryki z 1/2 łyżeczki słodkiej papryki, 1/3 łyżeczki oregano, 1/3 łyżeczki soli i 1/4 łyżeczki pieprzu.",
+          "Jeśli używasz surowej piersi z kurczaka (130 g), pokrój ją w kostkę 1 cm, oprósz 1/3 łyżeczki papryki słodkiej i 1/4 łyżeczki soli, podsmaż na patelni przez 5 minut na średnim ogniu i zdejmij na talerz.",
+          "Na połowie każdej tortilli rozłóż starty ser (35 g na 1 szt. dla Osoby 1, 60 g na 2 szt. dla Osoby 2), farsz warzywno-fasolowy oraz serek wiejski (80 g dla Osoby 1) lub kurczaka (130 g dla Osoby 2). Złóż tortille na pół.",
+          "Podpiekaj na suchej, rozgrzanej patelni na średnim ogniu po 2–2,5 minuty z każdej strony, aż ser w środku całkowicie się roztopi, a placek zrumieni. Podaj z dipem jogurtowo-czosnkowym."
         ],
         macros: { p1: { kcal: 545, p: 28, f: 16, c: 70 }, p2: { kcal: 990, p: 58, f: 34, c: 108 } },
         shopping: [
@@ -1589,12 +1673,11 @@
       }
     ];
 
-    // Dodatkowy lekki 4. posiłek, gdy użytkownik wybierze 4 lub 5 posiłków w formularzu
     const SNACK_MEALS = [
       {
         id: "snack-1", type: "Przekąska / 4. posiłek", time: "5 min", equipment: ["Miska"],
         title: "Jogurt gęsty z bananem, jabłkiem i pestkami słonecznika",
-        summary: "Lekki, szybki posiłek bez gotowania — dobry także na późniejszy wieczór.",
+        summary: "Lekki, szybki posiłek bez gotowania z dokładną ilością cynamonu i dodatków.",
         cookedYield: {
           totalCookedGrams: 540,
           p1CookedGrams: 220,
@@ -1603,12 +1686,15 @@
         },
         baseIngredients: [
           { name: "Jogurt naturalny gęsty / Skyr", total: "300 g", p1: "120 g", p2: "180 g" },
-          { name: "Jabłko lub banan", total: "220 g", p1: "90 g", p2: "130 g" },
-          { name: "Pestki słonecznika / dyni", total: "20 g", p1: "8 g", p2: "12 g" }
+          { name: "Jabłko lub banan (pokrojone w kostkę 1,5 cm)", total: "220 g", p1: "90 g", p2: "130 g" },
+          { name: "Pestki słonecznika / dyni + 1/2 łyżeczki cynamonu", total: "20 g pestek + cynamon", p1: "8 g", p2: "12 g" }
         ],
-        p1Ingredients: [{ name: "Cynamon", amount: "szczypta" }],
-        p2Ingredients: [{ name: "Płatki owsiane lub masło orzechowe", amount: "15 g" }],
-        steps: ["Wymieszaj jogurt z pokrojonym owocem i posyp pestkami."],
+        p1Ingredients: [{ name: "Cynamon mielony", amount: "1/4 łyżeczki" }],
+        p2Ingredients: [{ name: "Płatki owsiane lub masło orzechowe 100%", amount: "15 g (1 łyżka)" }],
+        steps: [
+          "Przełóż jogurt naturalny gęsty do dwóch miseczek (120 g dla Osoby 1 i 180 g dla Osoby 2).",
+          "Obierz i pokrój owoc w kostkę 1,5 cm (90 g i 130 g), ułóż na jogurcie, oprósz łącznie 1/2 łyżeczki cynamonu mielonego oraz posyp pestkami (8 g i 12 g) i masłem orzechowym/płatkami (15 g dla Osoby 2)."
+        ],
         macros: { p1: { kcal: 210, p: 13, f: 5, c: 28 }, p2: { kcal: 360, p: 20, f: 13, c: 41 } },
         shopping: [
           { name: "Jogurt naturalny gęsty / Skyr", grams: 300, unit: "g", cat: "Nabiał i napoje" },
@@ -1617,6 +1703,41 @@
         ]
       }
     ];
+
+    // ==================== KONFIGURACJA PÓŁKI CENOWEJ PRODUKTÓW ====================
+    const PRICE_TIER_CONFIG = {
+      economy: {
+        shortLabel: "💰 Ekonomiczna",
+        fullLabel: "💰 Ekonomiczna — tanie, podstawowe produkty z dyskontu",
+        description: "Podstawowe, budżetowe składniki z dyskontu: pierś z kurczaka, twaróg półtłusty, ziemniaki, płatki owsiane, kasze, pestki słonecznika, warzywa sezonowe i mrożone.",
+        upgrades: {}
+      },
+      standard: {
+        shortLabel: "🛒 Standardowa",
+        fullLabel: "🛒 Standardowa — zbilansowane produkty ze zwykłego marketu",
+        description: "Produkty ze średniej półki z marketu: filet z indyka zamiast kurczaka, Skyr / serek wiejski, pestki dyni, pieczywo pełnoziarniste rzemieślnicze i świeże warzywa.",
+        upgrades: {
+          "pierś z kurczaka": { name: "Filet z piersi indyka (świeży)", ratio: 1.0, cat: "Mięso / ryby" },
+          "pestki słonecznika": { name: "Pestki dyni łuskane", ratio: 1.0, cat: "Strączki i dodatki" },
+          "chleb żytni / graham": { name: "Chleb żytni na zakwasie (piekarnia)", ratio: 1.0, cat: "Produkty suche" },
+          "chleb pełnoziarnisty": { name: "Chleb wieloziarnisty na zakwasie", ratio: 1.0, cat: "Produkty suche" }
+        }
+      },
+      premium: {
+        shortLabel: "✨ Premium",
+        fullLabel: "✨ Premium — łosoś, polędwiczka, halloumi, awokado, orzechy",
+        description: "Produkty jakościowe i droższe dodatki: filet z łososia lub polędwiczka z indyka, ser halloumi / feta, orzechy włoskie i nerkowca, awokado oraz owoce jagodowe.",
+        upgrades: {
+          "pierś z kurczaka": { name: "Filet z łososia świeżego lub polędwiczka z indyka", ratio: 0.92, cat: "Mięso / ryby" },
+          "schab wieprzowy": { name: "Polędwiczka wieprzowa lub łosoś", ratio: 0.95, cat: "Mięso / ryby" },
+          "pestki słonecznika": { name: "Orzechy włoskie / nerkowce", ratio: 0.90, cat: "Strączki i dodatki" },
+          "ser mozzarella": { name: "Ser halloumi lub mozzarella di bufala", ratio: 0.95, cat: "Nabiał i napoje" },
+          "ser żółty": { name: "Ser cheddar dojrzewający lub gouda premium", ratio: 0.95, cat: "Nabiał i napoje" },
+          "tofu": { name: "Ser halloumi lub tofu marynowane bio", ratio: 0.90, cat: "Nabiał i napoje" },
+          "jabłka": { name: "Borówki amerykańskie / maliny świeże + jabłko", ratio: 1.0, cat: "Warzywa i owoce" }
+        }
+      }
+    };
 
     const SWAP_RULES = [
       {
@@ -1673,10 +1794,11 @@
     let state = {
       activeTab: 'plan',
       activeWeek: 1,
-      selectedDay: INITIAL_TODAY_DAY, // Domyślnie dzisiejszy dzień tygodnia z kalendarza!
+      selectedDay: INITIAL_TODAY_DAY,
       personFilter: 'all',
-      cookingMode: 'together_split', // 'together_split' | 'together_same' | 'separate'
-      shoppingSelectedDays: [INITIAL_TODAY_DAY], // Wybrane dni do listy zakupów
+      cookingMode: 'together_split',
+      priceTier: 'economy',
+      shoppingSelectedDays: [INITIAL_TODAY_DAY],
       onboardingCompleted: false,
       eatenMeals: {},
       checkedShopping: {},
@@ -1734,9 +1856,10 @@
         state = {
           ...state,
           ...parsed,
-          selectedDay: INITIAL_TODAY_DAY, // Zawsze otwieraj na dzisiejszym dniu z kalendarza!
+          selectedDay: INITIAL_TODAY_DAY,
           activeWeek: 1,
           cookingMode: parsed.cookingMode || 'together_split',
+          priceTier: parsed.priceTier || 'economy',
           shoppingSelectedDays: Array.isArray(parsed.shoppingSelectedDays) && parsed.shoppingSelectedDays.length > 0
             ? parsed.shoppingSelectedDays
             : [INITIAL_TODAY_DAY],
@@ -1752,6 +1875,7 @@
     function getComparablePayload() {
       return {
         cookingMode: state.cookingMode,
+        priceTier: state.priceTier,
         shoppingSelectedDays: state.shoppingSelectedDays,
         onboardingCompleted: state.onboardingCompleted,
         eatenMeals: state.eatenMeals,
@@ -1853,7 +1977,7 @@
 
     function scaleTextAmounts(text, scale) {
       if (!text || Math.abs(scale - 1) < 0.03) return text;
-      return text.replace(/(\d+(?:[.,]\d+)?)\s*(g|ml) /gi, (match, numStr, unit) => {
+      return text.replace(/(\d+(?:[.,]\d+)?)\s*(g|ml)\b/gi, (match, numStr, unit) => {
         const val = parseFloat(numStr.replace(',', '.'));
         if (isNaN(val)) return match;
         return `${Math.max(1, Math.round(val * scale))} ${unit}`;
@@ -1919,42 +2043,57 @@
 
     function scaleGramString(str, ratio) {
       if (!str || ratio === 1) return str;
-      return str.replace(/(\d+(?:[.,]\d+)?)\s*(g|ml) /gi, (match, numStr, unit) => {
+      return str.replace(/(\d+(?:[.,]\d+)?)\s*(g|ml)\b/gi, (match, numStr, unit) => {
         const val = parseFloat(numStr.replace(',', '.'));
         if (isNaN(val)) return match;
         return `${Math.max(1, Math.round(val * ratio))} ${unit}`;
       });
     }
 
+    function getPriceTierUpgrade(ingName) {
+      const tier = PRICE_TIER_CONFIG[state.priceTier] || PRICE_TIER_CONFIG.economy;
+      if (!tier.upgrades) return null;
+      const lower = ingName.toLowerCase();
+      const matchedKey = Object.keys(tier.upgrades).find(k => lower.includes(k));
+      return matchedKey ? tier.upgrades[matchedKey] : null;
+    }
+
     function getResolvedIngredient(mealId, scope, idx, originalIng) {
       const key = `${mealId}|${scope}|${idx}`;
-      const swap = state.ingredientSwaps[key];
-      if (!swap) return { ...originalIng, isSwapped: false, swapKey: key };
+      const manualSwap = state.ingredientSwaps[key];
+      const tierUpgrade = !manualSwap ? getPriceTierUpgrade(originalIng.name) : null;
+      const activeSwap = manualSwap || tierUpgrade;
+
+      if (!activeSwap) return { ...originalIng, isSwapped: false, swapBadge: '', swapKey: key };
+
+      const badgeLabel = manualSwap ? 'Zamiennik' : (state.priceTier === 'premium' ? '✨ Premium' : '🛒 Standard');
       if (scope === 'base') {
         return {
-          name: swap.name,
-          total: scaleGramString(originalIng.total, swap.ratio),
-          p1: scaleGramString(originalIng.p1, swap.ratio),
-          p2: scaleGramString(originalIng.p2, swap.ratio),
+          name: activeSwap.name,
+          total: scaleGramString(originalIng.total, activeSwap.ratio),
+          p1: scaleGramString(originalIng.p1, activeSwap.ratio),
+          p2: scaleGramString(originalIng.p2, activeSwap.ratio),
           isSwapped: true,
+          swapBadge: badgeLabel,
           originalName: originalIng.name,
           swapKey: key,
-          ratio: swap.ratio,
-          cat: swap.cat
+          ratio: activeSwap.ratio,
+          cat: activeSwap.cat
         };
       }
       return {
-        name: swap.name,
-        amount: scaleGramString(originalIng.amount, swap.ratio),
+        name: activeSwap.name,
+        amount: scaleGramString(originalIng.amount, activeSwap.ratio),
         isSwapped: true,
+        swapBadge: badgeLabel,
         originalName: originalIng.name,
         swapKey: key,
-        ratio: swap.ratio,
-        cat: swap.cat
+        ratio: activeSwap.ratio,
+        cat: activeSwap.cat
       };
     }
 
-    // ==================== TRYB GOTOWANIA I ONBOARDING ====================
+    // ==================== TRYB GOTOWANIA, PÓŁKA CENOWA I ONBOARDING ====================
     function setCookingMode(mode) {
       state.cookingMode = mode;
       const quickEl = document.getElementById('quick-cooking-mode');
@@ -1966,6 +2105,18 @@
       renderPlanView();
     }
 
+    function setPriceTier(tier) {
+      state.priceTier = PRICE_TIER_CONFIG[tier] ? tier : 'economy';
+      const quickEl = document.getElementById('quick-price-tier');
+      const profEl = document.getElementById('profile-price-tier');
+      if (quickEl) quickEl.value = state.priceTier;
+      if (profEl) profEl.value = state.priceTier;
+      updatePriceTierBadge();
+      saveState();
+      renderPlanView();
+      if (state.activeTab === 'shopping') renderShoppingList();
+    }
+
     function updateCookingModeBadge() {
       const pill = document.getElementById('cooking-mode-pill');
       if (!pill) return;
@@ -1975,6 +2126,14 @@
         separate: '🍳 Gotujemy osobno'
       };
       pill.textContent = labels[state.cookingMode] || labels.together_split;
+    }
+
+    function updatePriceTierBadge() {
+      const cfg = PRICE_TIER_CONFIG[state.priceTier] || PRICE_TIER_CONFIG.economy;
+      const pill = document.getElementById('price-tier-pill');
+      if (pill) pill.textContent = `Półka: ${cfg.shortLabel}`;
+      const descEl = document.getElementById('profile-price-tier-desc');
+      if (descEl) descEl.textContent = cfg.description;
     }
 
     function openOnboardingModal() {
@@ -1990,6 +2149,8 @@
       document.getElementById('ob-meals').value = String(p1.mealsPerDay || 4);
       document.getElementById('ob-activity').value = String(p1.activity || 1.375);
       document.getElementById('ob-cooking-mode').value = state.cookingMode || 'together_split';
+      const obPriceEl = document.getElementById('ob-price-tier');
+      if (obPriceEl) obPriceEl.value = state.priceTier || 'economy';
 
       const modal = document.getElementById('modal-onboarding');
       modal.classList.remove('hidden');
@@ -2020,11 +2181,14 @@
 
       state.profiles[0] = p1;
       state.cookingMode = document.getElementById('ob-cooking-mode').value;
+      const obPriceEl = document.getElementById('ob-price-tier');
+      if (obPriceEl) state.priceTier = obPriceEl.value;
       state.onboardingCompleted = true;
 
       saveState();
       closeOnboardingModal();
       setCookingMode(state.cookingMode);
+      setPriceTier(state.priceTier);
       renderPersonFilterButtons();
       renderDaySelector();
       renderPlanView();
@@ -2209,7 +2373,7 @@
       const currentMeal = getActiveMealForSlot(dayNum, slotIdx, state.activeWeek);
       if (!currentMeal) return;
       modalContext = { dayNum, mealSlotIdx: slotIdx };
-      const cal = getCalendarInfoForSlot(dayNum, state.activeWeek);
+      const cal = getCalendarInfoForSlot(state.activeWeek, dayNum);
       document.getElementById('meal-modal-subtitle').textContent = `${cal.fullName} (${cal.dateShort}) • ${currentMeal.type}`;
       document.getElementById('meal-modal-title').textContent = `Wymień: ${currentMeal.title}`;
 
@@ -2443,7 +2607,6 @@
         const totalF = Math.round((m1.f + (state.profiles.length > 1 ? m2.f : 0)) * 10) / 10;
         const totalC = Math.round((m1.c + (state.profiles.length > 1 ? m2.c : 0)) * 10) / 10;
 
-        // Przeliczenie orientacyjnej wagi po ugotowaniu z uwzględnieniem skali profili
         const avgScale = state.profiles.length > 1 ? (m1.scale + m2.scale) / 2 : m1.scale;
         const yInfo = meal.cookedYield || { totalCookedGrams: 700, p1CookedGrams: 280, p2CookedGrams: 420, portionGuide: '' };
         const cookedTotal = Math.round(yInfo.totalCookedGrams * avgScale);
@@ -2463,7 +2626,7 @@
             <li class="py-2.5 border-b border-cream-100 last:border-none flex flex-col sm:flex-row sm:items-center justify-between gap-1.5 text-sm">
               <div class="flex items-center gap-2 flex-wrap">
                 <span class="${ing.isSwapped ? 'font-semibold text-sage-800' : 'text-walnut-800'}">${ing.name}</span>
-                ${ing.isSwapped ? `<span class="text-[10px] font-bold px-1.5 py-0.5 rounded-md bg-sage-100 text-sage-700">Zamiennik</span>` : ''}
+                ${ing.isSwapped ? `<span class="text-[10px] font-bold px-1.5 py-0.5 rounded-md bg-sage-100 text-sage-700">${ing.swapBadge || 'Zamiennik'}</span>` : ''}
                 ${hasSwapRule ? `
                   <button onclick="openIngredientModal('${meal.id}', 'base', ${idx})" class="inline-flex items-center gap-1 text-[11px] font-semibold px-2 py-0.5 rounded-lg bg-white hover:bg-sage-50 text-sage-700 border border-cream-300">⇄ Zamień</button>
                 ` : ''}
@@ -2479,7 +2642,6 @@
 
         return `
           <article class="bg-white rounded-3xl border transition-all card-shadow overflow-hidden ${isEaten ? 'border-sage-400 ring-2 ring-sage-200/60' : 'border-cream-200'}">
-            <!-- Nagłówek przepisu -->
             <div class="p-5 sm:p-6 bg-cream-50/60 border-b border-cream-200 space-y-4">
               <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
                 <div class="space-y-1.5">
@@ -2500,7 +2662,6 @@
                 </div>
               </div>
 
-              <!-- DOKŁADNE MAKRO DLA KAŻDEGO POSIŁKU I KAŻDEJ OSOBY -->
               <div class="grid grid-cols-1 md:grid-cols-${state.profiles.length > 1 ? '3' : '1'} gap-2.5 pt-1">
                 <div class="rounded-2xl bg-sage-50 border border-sage-200 px-3.5 py-2.5 flex items-center justify-between">
                   <div>
@@ -2528,7 +2689,6 @@
               </div>
             </div>
 
-            <!-- Treść przepisu -->
             <div class="p-5 sm:p-6 grid grid-cols-1 lg:grid-cols-12 gap-6">
               <div class="lg:col-span-6 space-y-4">
                 <div>
@@ -2538,7 +2698,6 @@
                   <ul class="bg-cream-50/50 rounded-2xl px-4 py-1 border border-cream-200">${baseRows}</ul>
                 </div>
 
-                <!-- Dodatki indywidualne (mięso lub zamiennik wege) -->
                 <div>
                   <h4 class="text-xs font-bold uppercase tracking-wider text-walnut-500 mb-2">
                     ${state.cookingMode === 'together_same' ? 'Dodatki do wykończenia porcji' : '2. Dodatki indywidualne (mięso lub zamiennik wege)'}
@@ -2567,7 +2726,6 @@
                   </div>
                 </div>
 
-                <!-- WAGA PO UGOTOWANIU I ILE NAŁOŻYĆ KOLEJNEJ OSOBIE -->
                 <div class="rounded-2xl bg-amber-50/80 border border-amber-200 p-4 space-y-2.5">
                   <div class="flex flex-wrap items-center justify-between gap-2">
                     <span class="text-xs font-bold uppercase tracking-wider text-amber-900">⚖️ Waga po ugotowaniu i jak nałożyć</span>
@@ -2602,7 +2760,6 @@
                   </ol>
                 </div>
 
-                <!-- Zdjęcie po przygotowaniu -->
                 <div class="rounded-2xl bg-cream-50 border border-cream-200 p-4 space-y-2.5">
                   <div class="flex items-center justify-between gap-2">
                     <span class="text-xs font-bold uppercase tracking-wider text-walnut-600">📷 Zdjęcie po przygotowaniu</span>
@@ -2621,7 +2778,6 @@
                   `}
                 </div>
 
-                <!-- Gwiazdki kotję -->
                 <div class="bg-white rounded-2xl p-4 border border-cream-200 space-y-3">
                   <div class="flex flex-wrap items-center justify-between gap-2">
                     <span class="text-xs font-bold uppercase tracking-wider text-walnut-600">Gwiazdki kotję ${review.rating ? `(${review.rating}/5)` : '(brak oceny)'}</span>
@@ -2811,6 +2967,14 @@
             const res = getResolvedIngredient(meal.id, 'base', idx, orig);
             if (res.isSwapped) activeSwaps.push(res);
           });
+          meal.p1Ingredients.forEach((orig, idx) => {
+            const res = getResolvedIngredient(meal.id, 'p1', idx, orig);
+            if (res.isSwapped) activeSwaps.push(res);
+          });
+          meal.p2Ingredients.forEach((orig, idx) => {
+            const res = getResolvedIngredient(meal.id, 'p2', idx, orig);
+            if (res.isSwapped) activeSwaps.push(res);
+          });
 
           meal.shopping.forEach(item => {
             let finalName = item.name;
@@ -2825,6 +2989,13 @@
               finalName = matchedSwap.name;
               finalGrams = Math.max(1, Math.round(finalGrams * matchedSwap.ratio));
               if (matchedSwap.cat) finalCat = matchedSwap.cat;
+            } else {
+              const tierUp = getPriceTierUpgrade(item.name);
+              if (tierUp) {
+                finalName = tierUp.name;
+                finalGrams = Math.max(1, Math.round(finalGrams * tierUp.ratio));
+                if (tierUp.cat) finalCat = tierUp.cat;
+              }
             }
 
             if (hidePantry && isIngredientInPantry(finalName)) return;
@@ -2870,7 +3041,7 @@
                     <li>
                       <label class="flex items-center justify-between gap-3 p-2.5 rounded-2xl cursor-pointer ${isChecked ? 'bg-cream-50 text-walnut-400 line-through' : 'hover:bg-cream-50 text-walnut-800'}">
                         <div class="flex items-center gap-3">
-                          <input type="checkbox" ${isChecked ? 'checked' : ''} onchange="toggleShoppingItem('${checkKey.replace(/'/g, "\'")}')" class="w-5 h-5 accent-sage-600 rounded" />
+                          <input type="checkbox" ${isChecked ? 'checked' : ''} onchange="toggleShoppingItem('${checkKey.replace(/'/g, "\\'")}')" class="w-5 h-5 accent-sage-600 rounded" />
                           <span class="text-sm font-medium">${it.name}</span>
                         </div>
                         <span class="text-xs font-bold px-2.5 py-1 rounded-xl bg-sage-50 text-sage-800 border border-sage-200">${it.amount} ${it.unit}</span>
@@ -3065,6 +3236,9 @@
     function renderProfilesView() {
       const profModeEl = document.getElementById('profile-cooking-mode');
       if (profModeEl) profModeEl.value = state.cookingMode;
+      const profPriceEl = document.getElementById('profile-price-tier');
+      if (profPriceEl) profPriceEl.value = state.priceTier;
+      updatePriceTierBadge();
 
       const cardsEl = document.getElementById('profiles-cards-list');
       cardsEl.innerHTML = state.profiles.map(p => {
@@ -3340,6 +3514,7 @@
     function applyIncomingCloudState(remoteState) {
       if (!remoteState || typeof remoteState !== 'object') return;
       if (remoteState.cookingMode) state.cookingMode = remoteState.cookingMode;
+      if (remoteState.priceTier && PRICE_TIER_CONFIG[remoteState.priceTier]) state.priceTier = remoteState.priceTier;
       if (Array.isArray(remoteState.shoppingSelectedDays) && remoteState.shoppingSelectedDays.length > 0) {
         state.shoppingSelectedDays = remoteState.shoppingSelectedDays;
       }
@@ -3361,7 +3536,10 @@
 
       const quickEl = document.getElementById('quick-cooking-mode');
       if (quickEl) quickEl.value = state.cookingMode;
+      const quickPriceEl = document.getElementById('quick-price-tier');
+      if (quickPriceEl) quickPriceEl.value = state.priceTier;
       updateCookingModeBadge();
+      updatePriceTierBadge();
       renderPersonFilterButtons();
       renderDaySelector();
       renderPlanView();
@@ -3376,18 +3554,19 @@
 
     // ==================== INICJALIZACJA ====================
     window.addEventListener('DOMContentLoaded', () => {
-      // Ustaw dzisiejszy dzień z kalendarza na starcie
       state.selectedDay = getTodayDayIndex1to7();
       const quickEl = document.getElementById('quick-cooking-mode');
       if (quickEl) quickEl.value = state.cookingMode;
+      const quickPriceEl = document.getElementById('quick-price-tier');
+      if (quickPriceEl) quickPriceEl.value = state.priceTier;
       updateCookingModeBadge();
+      updatePriceTierBadge();
 
       renderPersonFilterButtons();
       renderDaySelector();
       renderPlanView();
       if (state.profiles[0]) loadProfileIntoForm(state.profiles[0].id);
 
-      // Jeśli chmura zdążyła się połączyć przed DOMContentLoaded
       if (window.KucharekCloud && typeof window.KucharekCloud.startRealtimeSync === 'function') {
         window.KucharekCloud.startRealtimeSync(applyIncomingCloudState);
       }
@@ -3474,7 +3653,6 @@
               isApplyingRemote = false;
               setSyncBadge('ok', 'Zsynchronizowano');
             } else {
-              // Jeśli baza w chmurze jest pusta, wyślij bieżący stan lokalny
               const initialPayload = getComparablePayload();
               await set(roomRef, { ...initialPayload, _updatedAt: Date.now() });
               lastSyncedJson = JSON.stringify(initialPayload);
